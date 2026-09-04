@@ -81,6 +81,53 @@ home page, several non-adjacent weeks, an assessment, the deck, and the
 policies page, at two viewports. Note: **"Restyling isn't required"** —
 visual polish is not the focus; coherence and completeness are.
 
+## HD (High Distinction) marking criteria
+
+Source: https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#marking-rubric
+
+All three assignments (A1, A2, Final Project) share one set of band
+descriptors across three criteria, each scored /100 then weighted.
+
+**Bands:** HD 80–100, D–Cr 60–79, P 50–59, N below 50.
+
+### Criterion 1: Legibility of Process (45%)
+
+**HD band:**
+> "beyond checking out, the evidence shows deliberate direction" — with
+> justification of key calls.
+
+Other bands (for contrast): D–Cr requires the account to check out with a
+working but routine process; P describes process merely asserted, not
+evidenced; N is no real directed process, or history contradicting the
+account.
+
+### Criterion 2: Working Deployed Artefact (20%)
+
+**HD band:**
+> "holds up under use it wasn't designed for: the keyboard, a resize
+> mid-interaction, a slow connection"
+
+Other bands: D–Cr means it's live and meets the brief at both viewports; P
+has notable gaps like an unreliable core interaction; N fails to deploy or
+doesn't work at all.
+
+### Criterion 3: Response to the Brief (35%)
+
+**HD band:**
+> "a pointed, surprising answer to the provocation, scoped with judgement:
+> one idea, carried all the way"
+
+Other bands: D–Cr is a well-scoped response with real substance but minor
+drift; P meets the brief loosely, mis-scoped or lacking a viewpoint; N is
+off-brief entirely.
+
+### General note
+
+There is no single combined "overall HD" descriptor — each criterion is
+judged independently against its own band, then the three are weighted and
+summed into holistic judgements per task, rather than one unified rubric
+line.
+
 ## Key dates
 
 - **Due:** noon, Monday 21 September 2026.
