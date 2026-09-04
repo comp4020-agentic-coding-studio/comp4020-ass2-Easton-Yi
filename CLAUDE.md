@@ -52,3 +52,45 @@ from `comp4020-crit4-Easton-Yi`), not specific to any one prototype's content:
   Pages base path, not an absolute `/`-rooted asset or link path --- Astro
   handles this in `.md`/`.astro` links, but a hand-written root-absolute
   `href` in an `.astro` file skips it silently (see `README.md`).
+
+## Process-logging harness (Ass1 feedback: process 72/100, D-band)
+
+Marker's comment: "I would've liked to know more about the process that you
+used to get the agent to build your website." Confirmed by `spec/improvement.png`
+--- a mature agentic workflow existed but wasn't shown in the repo. The gap
+is documentation, not engineering: **capture the process as it happens,
+don't reconstruct it at the end.**
+
+- **Keep `PROCESS_LOG.md`** (gitignored, append-only, never marked). For
+  every non-trivial step, log in the same sitting: the prompt/instruction
+  given to the agent, one line on what the agent produced, and if a fix was
+  involved, the other way it could have been fixed and why this way won.
+  Memory reconstructed after the fact is not evidence.
+- **`PROCESS.md` is a curated distillation of the log**, cited to real
+  commits. Every entry needs all eight lines below, each answering one
+  question --- skip none of them, they were the exact gap Ass1 lost marks on:
+  1. Problem: what was broken/needed, one line.
+  2. Directed via: the actual instruction given to the agent (quoted/paraphrased).
+  3. Agent's result fell short because: what specifically was not ideal in
+     what the agent returned --- if nothing was wrong first try, say so and
+     skip to Verified by.
+  4. Considered and rejected: the other plausible fix, and why it lost.
+  5. My decision: which choice was mine, not the agent's, and why this
+     solution over the rejected one.
+  6. Fix/iterate: what changed, and how many rounds it took.
+  7. Verified by: the check/screenshot/viewport that confirmed it *before*
+     acceptance --- both 1920x1080 and 390x844 for anything visual.
+  8. Evidence: commit hash + link, and a CLAUDE.md diff link if the harness
+     itself changed as a result.
+  If lines 3--5 can't be filled in honestly, it's attempt-accept-repeat, not
+  judgement --- don't count the entry as HD-grade evidence.
+- **CLAUDE.md edits are first-class citations.** When a bug gets fixed at
+  the rule level (a new "never do X" line here), cite that commit
+  *separately* from the code-fix commit and name which failure mode the
+  rule now blocks permanently. This is what "systemic fix, not repetition"
+  looks like to a marker --- it's invisible unless named.
+- **Close `PROCESS.md` with one structural alternative for the whole
+  build** --- a different mechanic, data source, or framing you considered
+  for the prototype as a whole and didn't take, and why. Per-bug judgement
+  isn't enough for HD; the rubric wants judgement visible at project scale
+  too.
