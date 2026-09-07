@@ -1,0 +1,17 @@
+---
+import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
+import { siteConfig } from "../../site-config";
+import { courseMeta } from "../../course-config";
+---
+
+<ContentLayout
+  title="Schedule"
+  description={`One chronological view of the ${courseMeta.session}, ${courseMeta.year} teaching period: lectures, weekly sessions, project milestones, and the break.`}
+  {...siteConfig}
+>
+  <p>
+    The full week-by-week schedule --- lectures, labs, clinics, guided
+    sessions, and the three project deadlines --- is populated once the
+    twelve-week teaching content is implemented.
+  </p>
+</ContentLayout>

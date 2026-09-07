@@ -1,14 +1,359 @@
 ---
 title: Policies and support
 description:
-  The course-wide rules for late work, extensions, academic integrity and
-  getting help.
+  The course-wide rules for compute, data, integrity, submission, extensions,
+  accessibility, safety, and privacy that apply to all three projects.
 ---
 
 # Policies and support
 
-{/* STARTER_CONTENT: replace this policy page, then remove this comment. */}
+## Before you begin
 
-Replace this page. Course-wide rules live here so an assessment brief can link
-to one place; a course with no rules worth a page can delete it, along with its
-entry in `src/site-config.ts`.
+These policies apply to all three projects. Each assessment page may restate
+the rule most relevant to that task, but the meaning must remain consistent
+with this page. Course teaching materials authored for this site are released
+under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+International** licence unless a resource states otherwise. Third-party code,
+datasets, model weights, papers, figures, and templates retain their own
+licences and attribution requirements.
+
+## 1. Compute allocation
+
+Google Colab Free is the recommended starting environment. Its interruptions
+and limited availability are part of the course's budget-engineering setting,
+but no student is required to rely on an uncertain free service to complete
+assessed work.
+
+For each project, SlopU provides every enrolled student with up to **USD 50
+of course-managed RunPod credit**. This guaranteed fallback is supplied
+without a personal subscription or payment card. It may be used when Colab is
+unavailable, when a reproducible final run needs a stable instance, or when
+the student decides that predictable runtime is worth part of the project
+budget.
+
+The monetary credit and assessed compute allowance are different limits:
+
+- the credit determines how much fallback infrastructure SlopU will fund;
+- `budget.json` defines the maximum assessed training computation: Project 1
+  permits 24 T4-equivalent GPU-hours and 4.0×10<sup>17</sup> training FLOPs;
+  Project 2 permits 18 hours and 2.5×10<sup>17</sup> FLOPs; Project 3 permits
+  12 hours and 1.5×10<sup>17</sup> FLOPs;
+- both the time and FLOP ceilings apply, using the published hardware
+  conversion factors;
+- all pilots, ablations, failed runs that consumed meaningful compute, and
+  final training runs count;
+- staff demonstrations and unmodified lab toy exercises do not count, but
+  project-specific modified runs do;
+- evaluation-only inference is reported separately and is not silently
+  converted into extra training budget; and
+- paid Colab, private GPUs, or unused credit do not increase the formal
+  allowance.
+
+Students include the automatically generated `compute-ledger.json` in the
+frozen GitLab and Hugging Face packages and summarise it in the report.
+Deliberately disabling or altering accounting is an academic-integrity
+breach. A calculation error made in good faith should be reported rather than
+hidden.
+
+## 2. Starter code, dataset licences, and additional data
+
+Each project is released as an individual private GitLab repository
+constructed from the course's attributed adaptation of
+[Karpathy's nanoGPT](https://github.com/karpathy/nanoGPT). The original
+licence and attribution remain in the repository. The repository is the
+canonical location for the default model and starter configuration. Students
+clone their assigned repository and may change parameters, the tokenizer,
+data pipeline, sampler, model architecture, or training framework where the
+project permits it.
+
+Before training, the supplied preflight command prints the learned-parameter
+count. The design target is 32M parameters, with a published 5% tolerance and
+an absolute maximum of 33.6M. Students must check this output before
+committing compute; a submitted checkpoint above 33.6M is not eligible for
+model marks.
+
+Every submitted dataset must be lawful to access and suitable for the
+intended use. The report must identify:
+
+- dataset or source name and stable URL;
+- creator or publisher;
+- licence or public-domain basis;
+- exact version, revision, download date, and split where available;
+- raw and processed size, including token count;
+- filtering, normalisation, deduplication, and document-level splitting;
+- any excluded material and the reason for exclusion; and
+- the role the data was expected to play in the training plan.
+
+Course-provided story and web-text data includes a data card, source record,
+licence statement, checksum, and reproducible preprocessing script. Project 1
+includes a basic story corpus. Project 2 includes processed, verified
+public-domain editions of *Grimm's Fairy Tales* and *One Thousand and One
+Nights*. These are both usable starting points and examples of how to turn
+permitted electronic editions into model-ready text.
+
+Students may locate and process additional data when it supports a clear
+hypothesis:
+
+- **Hugging Face datasets** may be used when the dataset card states a
+  licence compatible with the project. Presence on the Hub is not by itself
+  evidence of permission.
+- **Openly licensed or public-domain books** may be used with the edition,
+  source, and public-domain or licence basis recorded.
+- **Existing public web corpora** with documented provenance are preferred to
+  a new crawl because they are easier to licence, reproduce, and audit.
+- **Direct web crawling** is allowed only for public pages whose terms and
+  access rules permit it. Students must honour `robots.txt`, use a reasonable
+  request rate, avoid login-gated or paywalled pages, collect no personal or
+  sensitive information, and obtain written course approval before a large
+  crawl. A list of domains, collection dates, and crawler/preprocessing code
+  must be submitted.
+- **Synthetic or AI-filtered data** must name the generator or judge, version
+  where known, prompt or filtering procedure, quantity, and validation
+  method. It cannot be described as human-authored or human-labelled.
+
+The teaching team may reject a source whose licence, privacy risk, or
+provenance cannot be established. Extra data receives no automatic credit;
+its value must be demonstrated against its processing and compute cost.
+
+## 3. Evaluation-set contamination
+
+Each project supplies five public development examples with ground truth and
+ten public tutor-evaluation prompts whose ground truth is withheld. All
+fifteen items are assessment material, separated from permitted corpora at
+document, story, or task-template level as appropriate. The five development
+examples support pipeline testing and report analysis; they are not
+permission to tune against the formal evaluation distribution.
+
+Released prompts, development ground truth, withheld tutor ground truth, and
+clean reserve cases must not be used for training, validation, retrieval,
+tokenizer construction, filtering, prompt-template design, synthetic-data
+seeding, sampler tuning, checkpoint selection, or manual editing. Students
+must not reconstruct source continuations, search for withheld answers, or
+attempt to obtain private material from staff, peers, repository history,
+network requests, or the marking harness.
+
+Before training, students must run the supplied exact- and near-duplicate
+separation validator on their proposed data and retain its report. If a
+student discovers likely overlap or encounters material they believe belongs
+to the withheld or reserve set, they must stop using it and email
+`llm-training@slopu.edu.au`. Prompt disclosure made promptly and in good
+faith will be handled as a contamination incident, not concealed misconduct.
+The teaching team may remove affected items or evaluate the checkpoint on a
+clean reserve set.
+
+## 4. Individual work, collaboration, and AI assistance
+
+All three projects are **individual assessments**. Students may discuss
+lecture concepts, public papers, general PyTorch usage, error messages, and
+debugging strategies. They may not exchange project code, processed datasets
+created for the assessment, configurations, checkpoints, experiment logs,
+generated evaluation sets, report text, or conclusions. Showing another
+student where a framework function is documented is acceptable; copying
+their implementation or experimental decision is not.
+
+AI assistance is allowed for coding, debugging, explanations, documentation
+search, language editing, and planning support. The student remains
+responsible for understanding and validating everything submitted. AI output
+cannot substitute for the student's experimental judgement, interpretation of
+results, or truthful account of failures.
+
+Every CVPR-format report includes a short **AI Assistance Statement** naming
+the tools used, the tasks they assisted with, any material code or text they
+influenced, and how the student checked the result. A full prompt transcript
+is not required unless an academic-integrity review requests it. Using AI is
+not penalised when it is declared; hiding material assistance is.
+
+## 5. Academic integrity and research reporting
+
+The report uses the supplied CVPR paper template and a consistent scholarly
+citation style. Papers, datasets, code, pretrained checkpoints, figures,
+tables, evaluation methods, and copied or adapted text must be cited or
+attributed at the point of use. Repository licences and model/data cards do
+not replace an appropriate report citation.
+
+The checkpoint, code, experiment record, and report must be the student's own
+assessed work. The following are prohibited:
+
+- fabrication or alteration of logs, metrics, human ratings, runtime, or
+  compute use;
+- presenting selected samples as random or representative when they were
+  manually chosen;
+- removing material failed runs or contrary results in order to support a
+  claim;
+- manually editing generated text without labelling it as edited;
+- presenting SFT, synthetic preference labels, DPO, or AI feedback as full
+  human-feedback RLHF; and
+- using another student's repository, checkpoint, private data, or report
+  language.
+
+Students may be asked to load the submitted model, explain a code path, or
+discuss an experiment after submission. The purpose is to verify authorship
+and understanding, not to introduce a new assessed task.
+
+## 6. Code, checkpoint, and report submission
+
+Each assessment page contains its own submission panel showing the opening
+time, deadline, required files, and submission status. Because the course
+site is a static GitHub Pages site, the panel links to the authenticated
+**SlopU Submission Portal**; it does not upload files or collect credentials
+directly.
+
+Project 1 opens Monday 1 March 2027 at 00:00 AET; Project 2 opens Monday 22
+March 2027 at 00:00 AET; and Project 3 opens Monday 26 April 2027 at 00:00
+AET. Before opening, the page states when the panel will become available.
+Once open, the authenticated portal displays **To be submitted** until a
+successful receipt exists, then **Submitted** with the receipt time and
+frozen identifiers.
+
+Before the deadline, students must:
+
+1. push the final code, configuration, preprocessing scripts, and evaluation
+   commands to the default branch of their assigned private GitLab
+   repository;
+2. record the final Git commit SHA;
+3. upload the model package to the private Hugging Face model repository
+   provisioned for that student and project inside the SlopU organisation;
+4. verify that the course marking service account can read the exact
+   submitted Hugging Face revision; and
+5. upload `ass1_report.pdf`, `ass2_report.pdf`, or `ass3_report.pdf` as
+   appropriate and enter the final GitLab commit SHA through the project
+   submission panel.
+
+The report's first page must include the student's full name and student
+ID. The frozen GitLab revision's `submission-manifest.json` records the
+assigned Hugging Face repository ID, exact model revision, checkpoint
+checksum, and compute-ledger path. `compute-ledger.json` remains inside the
+frozen GitLab revision and Hugging Face package rather than being uploaded as
+a second portal attachment.
+
+The Hugging Face package must contain:
+
+- `checkpoint.pt` containing the final weights;
+- model configuration and the verified learned-parameter count;
+- tokenizer vocabulary/model files and special-token mapping when they differ
+  from the course default;
+- sampler or generation configuration required to reproduce submitted
+  outputs;
+- dependency or environment information;
+- a short model card naming the project, allowed starting checkpoint, data
+  sources, and exact evaluation command; and
+- checksums for the principal submitted files.
+
+The submitted Git and Hugging Face revisions are frozen for marking. Later
+pushes are not considered unless an approved extension or a marker-requested
+packaging correction explicitly permits them. A packaging correction may
+make an already submitted model loadable; it may not replace weights,
+retrain the model, or change reported results.
+
+Students must **never submit an HF access token**. They use their own
+credential locally only to upload to the provisioned private repository,
+while the marking account receives access through the SlopU Hugging Face
+organisation. Tokens, API keys, cookies, private data, and `.env` files must
+not be committed to GitLab, uploaded with the model, pasted into the report,
+or entered into the public course website.
+
+## 7. Hardware and training failure
+
+Students are expected to design resumable runs, save periodic checkpoints,
+retain logs outside the active runtime, and test the final loading command
+before submission. A normal Colab disconnect, exhausted free quota, coding
+error, or loss of an unsaved run does not automatically create an extension,
+because these are foreseeable risks addressed by the course workflow and the
+RunPod fallback.
+
+For a persistent infrastructure failure, students should contact
+`compute@slopu.edu.au` as soon as possible with the project, time, platform,
+instance type, last successful checkpoint, relevant error output, and
+remaining budget. The Compute Steward may provide a fallback instance,
+correct the ledger, or declare a cohort-wide incident. Students must not
+compensate by silently exceeding the compute ceiling.
+
+A verified SlopU, GitLab, submission-portal, or course-managed compute
+outage may result in a published deadline adjustment. An individual hardware
+failure is considered through the normal extension process when it is
+reported before the deadline and supported by the available logs.
+
+## 8. Extensions and late submission
+
+No application form is required by the course-site template. Students
+request an extension by emailing `llm-training@slopu.edu.au` **before the
+deadline**, naming the project, requested new deadline, brief reason, and
+supporting evidence where appropriate. Personal or confidential
+circumstances may instead be sent to `yiwei.easton@slopu.edu.au`. Approval
+must be received in writing; sending a request does not by itself change the
+deadline.
+
+An approved extension carries no late penalty until its revised deadline.
+Without an approved extension, the submission loses **5% of the marks
+available for that project per commenced 24-hour period**. Work more than
+five days late is not accepted unless a formal accessibility or
+exceptional-circumstances arrangement applies. The timestamp recorded by the
+SlopU Submission Portal is authoritative.
+
+## 9. Accessibility, materials, and support
+
+- Lecture slides are available on the course site by the end of the day
+  before the lecture and can be viewed online or downloaded.
+- Formal lab notebooks are published on Monday in Weeks 2, 6, and 10. Lab
+  attendance is optional, although strongly recommended before changing the
+  relevant project pipeline.
+- Formal lab solutions are released after the final scheduled lab of that
+  week so that every lab group has the same opportunity to attempt the
+  activity first.
+- Drop-in clinics run in Weeks 3, 7, and 11. They use students' own
+  de-identified evidence and therefore have no model solution; a short
+  clinic-notes page summarising common issues is released after the final
+  clinic without identifying students or publishing assessed work.
+- Each project release produces a site announcement, and the site displays a
+  reminder before its deadline.
+- Materials use selectable text, meaningful heading order, alt text for
+  informative images, labelled links, keyboard-accessible controls, and
+  colour choices that do not carry meaning alone. Code and slide downloads
+  provide an alternative to the live presentation view.
+- Students with an approved accessibility adjustment receive materials,
+  timing changes, or an alternative participation route according to that
+  plan without needing to disclose personal details to the class.
+- General questions go to the course forum or `llm-training@slopu.edu.au`;
+  technical environment problems go to `compute@slopu.edu.au`; personal
+  matters may go to `yiwei.easton@slopu.edu.au`.
+
+## 10. Unsafe or inappropriate generated content
+
+Story and web corpora can reproduce violence, prejudice, sexual material,
+personal information, or other harmful patterns. Students are not expected
+to make a 32M-parameter model universally safe, but they must not
+deliberately train or demonstrate it for targeted harassment, hateful or
+sexual content, instructions for wrongdoing, or disclosure of personal
+information.
+
+Unexpected harmful output should be recorded as a model limitation and
+handled proportionately. Include only the minimum excerpt needed for
+analysis, add a content note where appropriate, and redact personal
+information. Do not publish an interactive checkpoint or gallery that
+exposes unrestricted unsafe generation. Students who reasonably prefer not to
+work with a supplied story or prompt may request an equivalent alternative
+without academic penalty.
+
+## 11. Human evaluation and privacy
+
+Human evaluation uses de-identified model and sample IDs. Evaluators see
+only the prompt, candidate outputs, task definition, and published anchors;
+they do not see the student's identity, architecture choice, grade, or
+private report. Three trained raters independently review each story-based
+tutor-evaluation output. Rating disagreements are handled by the
+adjudication rule in the Evaluation protocol rather than by revealing the
+student's identity.
+
+Human ratings are used for marking and formative aggregate analysis. They
+are not reused as a research dataset or published with identifiable comments
+without separate informed consent. Raw identifiable records, if any are
+created by the authenticated portal, are restricted to the teaching team and
+removed after the grade-review period; reports retain only de-identified or
+aggregated results.
+
+Prompts and evaluation examples must not contain real personal data.
+Students must not place HF tokens, API keys, GitLab credentials, private
+emails, participant names, or other secrets in the cloned repository, model
+package, generated samples, screenshots, or evaluation form. If a secret is
+committed or uploaded, revoke it immediately and contact the technical
+tutor; deleting a later commit is not sufficient protection by itself.

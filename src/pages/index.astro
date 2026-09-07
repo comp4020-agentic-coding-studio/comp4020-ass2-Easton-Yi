@@ -2,17 +2,17 @@
 import Card from "astro-theme-university/components/Card.astro";
 import CardGrid from "astro-theme-university/components/CardGrid.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
-import heroImage from "../assets/images/hero-home.avif";
-import { courseMeta } from "../course-config";
-import { sessionLabels, siteConfig } from "../site-config";
-
+import { withBase } from "astro-theme-university/url";
 // STARTER_CONTENT: replace the hero artwork and its alt text below, then
 // remove this comment.
+import heroImage from "../assets/images/hero-home.avif";
+import { courseMeta } from "../course-config";
+import { siteConfig } from "../site-config";
 ---
 
 <ContentLayout
-  title={`${courseMeta.code}: ${courseMeta.title}`}
-  description={courseMeta.description}
+  title={`${courseMeta.code} · ${courseMeta.session}, ${courseMeta.year}`}
+  description="Frontier practice through budgeted 32M-scale experiments."
   heroImage={heroImage}
   heroImageAlt="A lecture theatre reduced to flat gold and black shapes, rows of seats sweeping past the frame, in a two-ink risograph print"
   {...siteConfig}
@@ -21,29 +21,183 @@ import { sessionLabels, siteConfig } from "../site-config";
     {courseMeta.tags.map((tag) => <li>{tag}</li>)}
   </ul>
 
-  <!-- STARTER_CONTENT: replace the authored page below, then remove this comment. -->
-  <h2>What you will do</h2>
+  <p class="hero-lead">
+    Most language-model courses begin after the expensive decisions have
+    already been made. This course begins before the first training token.
+    You will choose how to spend a limited model and compute budget, build a
+    narrative language model from scratch, reshape its behaviour through
+    post-training, and adapt it for one bounded specialist task.
+  </p>
   <p>
-    Say what a student spends their time on — the making, reading, arguing or
-    measuring that fills the weeks. Name the artefact they walk out with.
+    The objective is not to imitate a frontier model at miniature scale. It
+    is to learn which claims survive contact with limited parameters,
+    limited data, limited compute, and evidence you must be able to defend.
   </p>
 
-  <h2>Who it is for</h2>
-  <p>
-    Say who this is aimed at and what they need to already know. Be specific
-    enough that someone can rule themselves in or out without emailing you.
+  <p class="hero-ctas">
+    <a class="at-button" href={withBase("/lectures/week-01/")}>Start with Week 1</a>
+    <a class="at-button at-button--outline" href={withBase("/assessments/")}>View the three projects</a>
   </p>
+
+  <h2>The course in three stages</h2>
+  <CardGrid columns={3}>
+    <Card title="1. Build language ability" headingLevel="h3">
+      <p>
+        Pre-train a decoder-only Transformer on a supplied narrative corpus.
+        Decide how model capacity, tokenization, data, optimisation, and
+        runtime fit together under a 32M-parameter design target.
+      </p>
+      <p><strong>Project 1:</strong> Build a Narrative Base Model · 20% · due end of Week 4</p>
+    </Card>
+    <Card title="2. Shape model behaviour" headingLevel="h3">
+      <p>
+        Start from a narrative checkpoint and give the model a recognisable
+        voice. Compare continued pre-training, supervised instruction
+        tuning, preference-based methods, or a justified combination
+        without hiding regressions behind one improved metric.
+      </p>
+      <p><strong>Project 2:</strong> Give the Model a Voice · 50% · due end of Week 8</p>
+    </Card>
+    <Card title="3. Build a specialist" headingLevel="h3">
+      <p>
+        Adapt a permitted checkpoint for one measurable function. Choose a
+        bounded narrative capability or arithmetic reasoning, test
+        generalisation, and determine what the intervention changed as well
+        as what it damaged.
+      </p>
+      <p><strong>Project 3:</strong> Build a Specialist · 30% · due end of Week 12</p>
+    </Card>
+  </CardGrid>
+
+  <h2>What you will learn to do</h2>
+  <p>By the end of the course, you should be able to:</p>
+  <ol>
+    <li>
+      explain and critically evaluate current language-model architectures,
+      data practices, training stages, efficiency techniques, and emerging
+      claims;
+    </li>
+    <li>
+      plan model capacity, data, optimisation, compute, time, and evaluation
+      as one constrained engineering system;
+    </li>
+    <li>
+      run controlled experiments, inspect quantitative results and
+      qualitative failures, and revise a plan when the evidence requires it;
+      and
+    </li>
+    <li>
+      transfer ideas from frontier systems into small-scale experiments
+      while identifying what may not transfer across scale.
+    </li>
+  </ol>
+
+  <h2>One budget, not unlimited search</h2>
+  <p>
+    Every project has a learned-parameter boundary and two cumulative
+    compute ceilings. Pilots, ablations, failed training runs, and final
+    runs all count. The constraint is part of the subject: strong work
+    chooses informative experiments, preserves evidence, and stops when
+    another run would not answer a useful question.
+  </p>
+  <p>
+    The course provides working starter repositories, versioned data, Colab
+    notebooks, evaluation packs, and course-managed fallback compute. Prior
+    experience training an LLM or using a GPU is not required;
+    introductory machine learning, basic Python, and willingness to inspect
+    PyTorch code are expected.
+  </p>
+
+  <h2>Assessment timeline</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Teaching block</th>
+          <th scope="col">Project</th>
+          <th scope="col">Weight</th>
+          <th scope="col">Deadline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Weeks 1–4 · Pre-training</td>
+          <td>Project 1 — Build a Narrative Base Model</td>
+          <td>20%</td>
+          <td>Sunday 21 March 2027, 23:59 AET</td>
+        </tr>
+        <tr>
+          <td>Weeks 5–8 · Post-training</td>
+          <td>Project 2 — Give the Model a Voice</td>
+          <td>50%</td>
+          <td>Sunday 25 April 2027, 23:59 AET</td>
+        </tr>
+        <tr>
+          <td>Weeks 9–12 · Specialisation</td>
+          <td>Project 3 — Build a Specialist</td>
+          <td>30%</td>
+          <td>Sunday 23 May 2027, 23:59 AET</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><strong>Total</strong></td>
+          <td><strong>100%</strong></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>How the course works</h2>
+  <ul>
+    <li><strong>Lectures</strong> connect mechanisms, public evidence, and the decisions students must make at 32M scale.</li>
+    <li>
+      <strong>Labs</strong> run in Weeks 2, 6, and 10. Each turns a central
+      mechanism into a bounded, carefully supported exercise: read it, run
+      it, inspect it, change one thing, and transfer the result into the
+      current project.
+    </li>
+    <li>
+      <strong>Drop-in clinics</strong> run in Weeks 3, 7, and 11. Bring
+      evidence from your own project: a configuration, curve, comparison,
+      output pair, failed command, or proposed claim. Clinics help you
+      diagnose and decide; they do not choose an assessed method for you.
+    </li>
+    <li>
+      <strong>Guided sessions</strong> run in the remaining six teaching
+      weeks. These short launch, validation, evaluation, and packaging
+      activities connect the lecture, lab, and project without creating
+      extra graded work.
+    </li>
+    <li>
+      <strong>Projects</strong> assess the resulting engineering judgement
+      through a reproducible report and a frozen submitted checkpoint.
+    </li>
+    <li>
+      <strong>Frontier Notes</strong> occasionally introduce a relevant new
+      paper or model report. They are optional and are never silently added
+      to assessed prerequisite knowledge.
+    </li>
+  </ul>
 
   <h2>Where to go next</h2>
-  <CardGrid columns={2}>
-    <Card title={sessionLabels.plural} href="/sessions/">
-      <p>The weekly schedule and what happens in each teaching session.</p>
+  <p>
+    Training begins with the target, not the training loop. In Week 1, you
+    will turn story text into token targets and make the first decision
+    that affects every later result.
+  </p>
+  <p class="hero-ctas">
+    <a class="at-button" href={withBase("/lectures/week-01/")}>Open Week 1 — What a Language Model Learns</a>
+  </p>
+  <CardGrid columns={3}>
+    <Card title="Schedule" href="/schedule/">
+      <p>One chronological view of lectures, weekly sessions, and project milestones.</p>
     </Card>
-    <Card title="Assessment" href="/assessments/">
-      <p>What is marked, what it is worth, and when it is due.</p>
+    <Card title="Assessments" href="/assessments/">
+      <p>The three project briefs, rubrics, resources, and due dates.</p>
     </Card>
-    <Card title="People" href="/people/">
-      <p>Who teaches the course and how to reach them.</p>
+    <Card title="Policies" href="/policies/">
+      <p>Rules covering compute, data, evaluation, submission, support, and privacy.</p>
     </Card>
   </CardGrid>
 </ContentLayout>
@@ -64,5 +218,20 @@ import { sessionLabels, siteConfig } from "../site-config";
     color: var(--at-text-secondary);
     background: var(--at-bg-alt);
     font-size: 0.9rem;
+  }
+
+  .hero-lead {
+    font-size: 1.15rem;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block: 1.5rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
   }
 </style>

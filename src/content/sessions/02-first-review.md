@@ -6,12 +6,12 @@ description:
 week: 2
 date: 2027-03-01
 teachers:
-  - idris-fenn
+  - maya-rao
 spec:
   - work from week 1 is running and can be shown in under two minutes
   - you can name the one decision you are least sure about
 related:
-  - assessments/assignment-1
+  - assessments/project-1
 ---
 
 <!-- STARTER_CONTENT: replace this session, then remove this comment. -->

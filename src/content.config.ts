@@ -48,8 +48,11 @@ export const collections = {
     schema: courseNodeSchema
       .extend({
         week: weekSchema,
+        project: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+        opens: z.coerce.date(),
         due: z.coerce.date(),
         weight: z.coerce.number().positive().max(100),
+        reportFilename: z.string().trim().regex(/^ass\d_report\.pdf$/),
         marking: z.discriminatedUnion("mode", [weightedMarking, holisticMarking]).optional(),
       })
       .loose(),
