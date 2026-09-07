@@ -51,7 +51,14 @@ from `comp4020-crit4-Easton-Yi`), not specific to any one prototype's content:
 - **Base path.** The production build must work from this repo's GitHub
   Pages base path, not an absolute `/`-rooted asset or link path --- Astro
   handles this in `.md`/`.astro` links, but a hand-written root-absolute
-  `href` in an `.astro` file skips it silently (see `README.md`).
+  `href` in an `.astro` file skips it silently (see `README.md`). Concretely:
+  a bare `href="/foo/"` on a hand-written `<a>` in an `.astro` file builds
+  clean locally and only fails `pnpm build`'s link-base-path check (not
+  `pnpm dev`) --- wrap it in `withBase()` from `astro-theme-university/url`
+  (no `.js` suffix on the import specifier --- that's the package's
+  exports-map key), the same helper `Card`/`Nav`/`Sidebar` already use
+  internally. `Card`/`CardGrid` hrefs need no such wrapping; only a raw
+  hand-written `<a href="/...">` does.
 
 ## Course-site implementation rules
 
