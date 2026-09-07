@@ -1,48 +1,269 @@
 ---
-title: Opening lecture
-description: The placeholder deck — replace it with a real deck for your course
+title: "Week 1 — What a Language Model Learns"
+description: Probability over text, next-token prediction, maximum likelihood and cross-entropy, n-gram intuition, and perplexity as limited evidence
 ---
 
-# Opening lecture
+{/* _class: impact */}
 
-{/* STARTER_CONTENT: replace this deck, then remove this comment. */}
+# A language model is not a sentence database
 
-Replace this deck. It is here to show that slides are part of the site, built
-from the same markdown as everything else.
+Given "The cat sat on the ___", what is the model actually computing?
+
+```notes
+Collect a few silent guesses before revealing the framing on the next slide —
+most first guesses describe retrieval ("it looks up sentences"), not a
+conditional probability distribution. Return to this question at the exit
+ticket.
+```
 
 ---
 
-## Slides are markdown
+## It estimates a distribution, not a lookup
 
-A `---` starts a new slide. Everything else is ordinary markdown: headings,
-lists, links, tables, images, fenced code.
+<svg viewBox="0 0 480 220" role="img" aria-label="A five-token prefix, The cat sat on the, feeding a highlighted next-token slot with a bar chart of candidate probabilities for mat, floor, chair, and roof.">
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="currentColor">
+    <text x="10" y="30">"The cat sat on the ___"</text>
+  </g>
+  <line x1="40" y1="60" x2="40" y2="190" stroke="currentColor" stroke-width="2" />
+  <line x1="40" y1="190" x2="460" y2="190" stroke="currentColor" stroke-width="2" />
+  <g fill="currentColor">
+    <rect x="70" y="80" width="50" height="110" opacity="0.9" />
+    <rect x="150" y="130" width="50" height="60" opacity="0.6" />
+    <rect x="230" y="150" width="50" height="40" opacity="0.4" />
+    <rect x="310" y="165" width="50" height="25" opacity="0.25" />
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="currentColor">
+    <text x="75" y="205">mat</text>
+    <text x="155" y="205">floor</text>
+    <text x="235" y="205">chair</text>
+    <text x="315" y="205">roof</text>
+    <text x="10" y="120" transform="rotate(-90 10 120)">P(next token)</text>
+  </g>
+</svg>
 
-- one idea per slide
-- the fewest words that carry it
-- the deck is a performance artefact, so it can say things a page wouldn't
+For a fixed prefix, the model outputs one probability per candidate next
+token — a distribution that changes as the prefix changes.
+
+```notes
+This is an original schematic drawn for this deck, illustrating the shape of
+the computation, not a screenshot of any trained model's actual output
+probabilities. Reused from the week-01 lecture banner's concept.
+```
+
+---
+
+## From one token to a whole sequence
+
+The chain rule turns local next-token predictions into a probability for a
+complete sequence:
+
+**P(x₁, ..., x_T) = P(x₁) · P(x₂ | x₁) · P(x₃ | x₁, x₂) · ... · P(x_T | x₁, ..., x_T₋₁)**
+
+Sampling repeatedly from the changing next-token distribution — one draw,
+append, repeat — is how a trained model produces text.
+
+**Discuss:** does "the model has a probability for this exact sentence" mean
+the sentence was ever seen during training?
+
+```notes
+No — the whole point of the conditional/chain-rule construction is that it
+assigns probability to sequences it has never seen, by composing next-token
+steps it has learned. This distinguishes the model from a database of
+complete sentences.
+```
+
+---
+
+## What n-grams teach us
+
+| Context length | Easy to count? | Preserves structure? |
+| --- | --- | --- |
+| Unigram (no context) | yes | almost none |
+| Bigram (1 token back) | yes | a little |
+| Trigram (2 tokens back) | mostly | more, but sparse |
+| Long context | no — most combinations unseen | most, in principle |
+
+**The trade-off:** a short context is countable but weak; a long context is
+informative but suffers from sparsity — most long combinations never appear
+in any corpus.
+
+```notes
+N-grams are conceptual scaffolding for this course, not an assessed
+implementation. The point is naming the trade-off that neural models exist
+to solve, not building a count table.
+```
+
+---
+
+## Where neural models change the picture
+
+Instead of an explicit count table per context, a neural language model
+learns a **differentiable function** from context to next-token
+distribution.
+
+- shares statistical strength across similar contexts, rather than treating
+  each exact context as a separate bucket
+- can assign sensible probability to a context it has never exactly seen
+  before, by generalising from similar ones
+- is trained by gradient descent, not by counting
+
+**Takeaway:** the shift from n-grams to neural models is a shift from
+counting exact contexts to learning a smooth function over them.
+
+---
+
+## Turning a corpus into a training objective
+
+For a token sequence x₁, ..., x_T, **teacher forcing** creates many
+supervised targets from one document: at every position, the true prefix is
+given, and the true next token is the label.
+
+| Position | Input prefix | Target |
+| --- | --- | --- |
+| 1 | "The" | "cat" |
+| 2 | "The cat" | "sat" |
+| 3 | "The cat sat" | "on" |
+| 4 | "The cat sat on" | "the" |
+
+One document of length T yields T-1 supervised next-token problems.
+
+```notes
+This table is illustrative, not a real corpus sample — the point is showing
+how a single sequence is reshaped into many (prefix, target) pairs via
+shifting, which is exactly what Project 1's data pipeline does.
+```
+
+---
+
+## Mean negative log-likelihood *is* cross-entropy
+
+Training maximises the probability the model assigns to the true next
+token at every position — equivalently, it **minimises the mean negative
+log-likelihood** of the observed tokens.
+
+**NLL for one token:** −log P(true next token | prefix)
+
+Averaged over all positions in a batch, this is exactly **token-level
+cross-entropy loss**, the quantity `loss.backward()` differentiates with
+respect to model parameters so an optimiser can update them.
+
+**Same objective, three names:** maximum likelihood, negative
+log-likelihood, cross-entropy.
+
+---
+
+## Perplexity: exponentiated average NLL
+
+**Perplexity = exp(mean negative log-likelihood)**
+
+- useful for comparing checkpoints evaluated with a *common* token-accounting
+  method
+- roughly reads as "how many tokens the model was, on average, as unsure
+  as choosing uniformly among"
+- lower is better, but "better at predicting the next token" is **not**
+  the same claim as "better at telling a coherent story"
+
+**Discuss:** name one way a model could achieve very low perplexity while
+still producing an unsatisfying story.
+
+```notes
+Example answers: memorising near-duplicate training text, favouring common
+but repetitive continuations, or exploiting corpus-specific formatting
+patterns that do not reflect general narrative quality.
+```
+
+---
+
+## Splits must respect story boundaries
+
+Perplexity's evidence is only as good as the split it is measured on.
+
+**The trap:** cutting token *windows* into train/validation/test first can
+put near-identical windows from the same story on both sides of the split —
+the model then looks good by partial memorisation, not generalisation.
+
+**The fix:** create the split at the **story or source level**, before any
+token windows are formed.
+
+| Split | Role |
+| --- | --- |
+| Training | parameters are updated on this data |
+| Validation | used during development to compare configurations |
+| Development / tutor-evaluation | held out for a further, independent check |
+
+---
+
+## Decision: is this evidence enough?
+
+A fictional Project 1 checkpoint: validation perplexity has dropped 15%
+since the previous checkpoint, and the split was made at the story level.
+
+**Choose:** is this alone sufficient evidence that the model tells better
+stories now? What additional evidence would you ask for?
+
+```notes
+No single correct answer to reveal — the exercise is naming what perplexity
+cannot show on its own (coherence, originality, reasoning, instruction
+following) and proposing a second, qualitative check such as blind human
+review or a fixed-prompt sample comparison.
+```
+
+---
+
+## Project 1's evaluation combines both
+
+Project 1 does not rely on perplexity alone:
+
+1. **continuation-only, reference-token-normalised PPL** — a quantitative,
+   comparable-across-checkpoints signal
+2. **blind human review** — a qualitative check for coherence and
+   originality that a single number cannot carry
+3. **qualitative failure analysis** — reading actual generated samples for
+   specific failure patterns (repetition, incoherence, memorisation)
+
+**Takeaway:** one number selects candidates; reading actual text decides
+between them.
 
 ---
 
 {/* _class: impact */}
 
-# A slide class
+## Exit ticket
 
-`{/* _class: impact */}` fills the slide with the brand colour. `quote`,
-`banner` and `centered` are the others the theme styles.
+Submit: the difference between "the model has learned probabilities" and
+"the model has memorised sentences" · one reason lower validation loss is
+not sufficient evidence of better storytelling · your two-sentence Project 1
+target (what the model should continue well, and which evidence will test
+that claim).
+
+[Required reading: TinyStories, Sections 1–2](https://arxiv.org/abs/2305.07759)
+
+```notes
+Close the loop with the opening question: most students should now describe
+the blank-filling task as a conditional probability distribution rather than
+a lookup, and should be able to say why that distinction matters for
+Project 1's evaluation design.
+```
 
 ---
 
-## What else is here
+## Figure and source register
 
-```sh
-pnpm dev
-pnpm check
+- Next-token distribution diagram: original schematic drawn for this course,
+  reusing the concept from this lecture's own banner illustration — not a
+  screenshot of any trained model's actual output.
+- Required reading: Ronen Eldan and Yuanzhi Li, [*TinyStories: How Small Can
+  Language Models Be and Still Speak Coherent
+  English?*](https://arxiv.org/abs/2305.07759), Sections 1–2.
+- Optional reading: Alec Radford et al., [*Improving Language Understanding
+  by Generative Pre-Training*](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf),
+  introduction and Figure 1.
+- Course facts (teacher-forcing example, split definitions, evaluation
+  protocol): restated from `src/content/lectures/week-01.md` and the Project
+  1 assessment page, not screenshotted, since no starter-repository run
+  exists yet to capture.
+
+```notes
+This slide is the deck's compact asset register, per docs/ASSIGNMENT_BRIEF.md
+"Weekly visual system" — every implemented deck carries one.
 ```
-
-The second command proves the deck compiles with the rest of the site. Use the
-first to inspect every slide at the desktop and phone marking viewports; slide
-fit and legibility are visual judgements.
-
-The [astromotion](https://github.com/ANUcybernetics/astromotion) README has the
-rest of the syntax: speaker notes, backgrounds, QR codes, fragments, and
-components hydrated per slide.

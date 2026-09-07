@@ -3,8 +3,6 @@ import Card from "astro-theme-university/components/Card.astro";
 import CardGrid from "astro-theme-university/components/CardGrid.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import { withBase } from "astro-theme-university/url";
-// STARTER_CONTENT: replace the hero artwork and its alt text below, then
-// remove this comment.
 import heroImage from "../assets/images/hero-home.avif";
 import { courseMeta } from "../course-config";
 import { siteConfig } from "../site-config";
@@ -14,7 +12,7 @@ import { siteConfig } from "../site-config";
   title={`${courseMeta.code} · ${courseMeta.session}, ${courseMeta.year}`}
   description="Frontier practice through budgeted 32M-scale experiments."
   heroImage={heroImage}
-  heroImageAlt="A lecture theatre reduced to flat gold and black shapes, rows of seats sweeping past the frame, in a two-ink risograph print"
+  heroImageAlt="An original schematic diagram: a stack of token blocks feeds into a 32M-parameter model box, which produces a bar chart of next-token probabilities, above the course code SLOP4225 and its title."
   {...siteConfig}
 >
   <ul class="course-tags" aria-label="Course tags">
