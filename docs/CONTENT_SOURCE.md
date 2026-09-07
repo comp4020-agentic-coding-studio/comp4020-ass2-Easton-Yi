@@ -1,6 +1,6 @@
 # Website Content Source
 
-> **Status:** Canonical student-facing copy in development. Course identity and dates, Home, assessment tasks and rubrics, evaluation rules, Policies, People, starter-model policy, dataset roles, compute budgets, report limits, and checkpoint fallback rules are approved and ready for implementation. Weekly lecture, lab, and slide-deck copy remains to be authored. Final repository, dataset, checkpoint, and submission URLs are inserted when the corresponding course resources are published.
+> **Status:** Canonical student-facing copy in development. Course identity and dates, Home, assessment tasks and rubrics, evaluation rules, Policies, People, all twelve lecture pages, three formal labs, three drop-in clinics, and the first complete slide deck are approved and ready for implementation. Final repository, dataset, checkpoint, and submission URLs are inserted when the corresponding course resources are published.
 
 ## Purpose and source-of-truth rules
 
@@ -91,7 +91,8 @@ The course provides working starter repositories, versioned data, Colab notebook
 ### How the course works
 
 - **Lectures** connect mechanisms, public evidence, and the decisions students must make at 32M scale.
-- **Labs** turn one mechanism into a bounded exercise: read it, run it, inspect it, change one thing, and transfer the result into the current project.
+- **Labs** run in Weeks 2, 6, and 10. Each turns a central mechanism into a bounded, carefully supported exercise: read it, run it, inspect it, change one thing, and transfer the result into the current project.
+- **Drop-in clinics** run in Weeks 3, 7, and 11. Bring evidence from your own project: a configuration, curve, comparison, output pair, failed command, or proposed claim. Clinics help you diagnose and decide; they do not choose an assessed method for you.
 - **Projects** assess the resulting engineering judgement through a reproducible report and a frozen submitted checkpoint.
 - **Frontier Notes** occasionally introduce a relevant new paper or model report. They are optional and are never silently added to assessed prerequisite knowledge.
 
@@ -107,9 +108,9 @@ Training begins with the target, not the training loop. In Week 1, you will turn
 | Label | Destination | Purpose |
 | --- | --- | --- |
 | Home | Course home | Course identity, value, pathway, and current starting point |
-| Schedule | Twelve-week schedule | One chronological view of lectures, labs, project milestones, and the break |
+| Schedule | Twelve-week schedule | One chronological view of lectures, three labs, three drop-in clinics, project milestones, and the break |
 | Lectures | Lecture index | Weekly teaching pages, readings, slides, and Frontier Notes |
-| Labs | Lab index | Preparation, notebooks/activities, expected outputs, and solution releases |
+| Labs | Practical-sessions index | The three formal labs and three drop-in clinics, with preparation, activities, expected outputs, and release information |
 | Assessments | Assessment index | Project briefs, rubrics, resources, due dates, and submission panels |
 | Policies | Policies page | Rules covering compute, data, evaluation, submission, support, and privacy |
 | People | People page | Teaching roles, contact routing, and consultation times |
@@ -602,7 +603,7 @@ Maya runs the practical labs and model clinics, with a focus on PyTorch, dataset
 - **Responsibilities:** lab facilitation, technical debugging, starter-platform guidance, and formative feedback on whether an experiment is well controlled.
 - **Support boundary:** technical support can help locate and understand a fault, but it will not choose an assessed architecture, training recipe, or report conclusion for a student.
 - **Contact:** the `Technical help` area of the course forum or `maya.rao@slopu.edu.au` for an individual access problem.
-- **Consultation:** Thursdays, 16:00–17:00 AET, Compute Commons 2.14. An additional model clinic runs online on Monday, 15:00–16:00 AET, during Weeks 4, 8, and 12.
+- **Consultation:** Thursdays, 16:00–17:00 AET, Compute Commons 2.14. Maya also leads the scheduled online project clinics on Monday, 15:00–16:00 AET, during Weeks 3, 7, and 11.
 
 ### Eli Morgan
 
@@ -748,8 +749,9 @@ An approved extension carries no late penalty until its revised deadline. Withou
 ### 9. Accessibility, materials, and support
 
 - Lecture slides are available on the course site by the end of the day before the lecture and can be viewed online or downloaded.
-- The week's lab notebook is published each Monday. Lab attendance is optional, although strongly recommended before changing the relevant project pipeline.
-- Lab solutions are released after the final scheduled lab of that week so that every lab group has the same opportunity to attempt the activity first.
+- Formal lab notebooks are published on Monday in Weeks 2, 6, and 10. Lab attendance is optional, although strongly recommended before changing the relevant project pipeline.
+- Formal lab solutions are released after the final scheduled lab of that week so that every lab group has the same opportunity to attempt the activity first.
+- Drop-in clinics run in Weeks 3, 7, and 11. They use students' own de-identified evidence and therefore have no model solution; a short clinic-notes page summarising common issues is released after the final clinic without identifying students or publishing assessed work.
 - Each project release produces a site announcement, and the site displays a reminder before its deadline.
 - Materials use selectable text, meaningful heading order, alt text for informative images, labelled links, keyboard-accessible controls, and colour choices that do not carry meaning alone. Code and slide downloads provide an alternative to the live presentation view.
 - Students with an approved accessibility adjustment receive materials, timing changes, or an alternative participation route according to that plan without needing to disclose personal details to the class.
@@ -768,6 +770,838 @@ Human evaluation uses de-identified model and sample IDs. Evaluators see only th
 Human ratings are used for marking and formative aggregate analysis. They are not reused as a research dataset or published with identifiable comments without separate informed consent. Raw identifiable records, if any are created by the authenticated portal, are restricted to the teaching team and removed after the grade-review period; reports retain only de-identified or aggregated results.
 
 Prompts and evaluation examples must not contain real personal data. Students must not place HF tokens, API keys, GitLab credentials, private emails, participant names, or other secrets in the cloned repository, model package, generated samples, screenshots, or evaluation form. If a secret is committed or uploaded, revoke it immediately and contact the technical tutor; deleting a later commit is not sufficient protection by itself.
+
+---
+
+## Teaching schedule and weekly lecture pages
+
+The course is taught as three four-week engineering cycles. Each cycle begins with a model or behaviour question, gives students one deep practical lab in its second week, provides a project clinic in its third week, and ends with evaluation and submission in its fourth week.
+
+| Stage | Weeks | Central question | Formal support | Assessment milestone |
+| --- | --- | --- | --- | --- |
+| Build language ability | 1–4 | How should a small decoder-only model divide capacity, data, and compute to learn narrative continuation? | Lab 1 in Week 2; Project 1 clinic in Week 3 | Project 1 due end of Week 4 |
+| Shape model behaviour | 5–8 | Which post-training signal changes the target behaviour, and what existing ability does it risk damaging? | Lab 2 in Week 6; Project 2 clinic in Week 7 | Project 2 due end of Week 8 |
+| Build a specialist | 9–12 | How can a permitted checkpoint acquire one verifiable capability and generalise beyond its training templates? | Lab 3 in Week 10; Project 3 clinic in Week 11 | Project 3 due end of Week 12 |
+
+There is no formal lab in submission weeks. The time is deliberately left for evaluation, packaging, report writing, and consultation rather than a new disconnected exercise.
+
+### Schedule-page table
+
+| Week | Week beginning | Lecture | Practical/support session | Milestone |
+| ---: | --- | --- | --- | --- |
+| 1 | 22 February | What a Language Model Learns | No formal session | Project 1 opens; validate data and define the target |
+| 2 | 1 March | Inside a Decoder-Only Transformer | **Lab 1:** Spend a 32M Parameter Budget | Freeze a feasible baseline architecture |
+| 3 | 8 March | Scale, Data, and Optimisation Under Fixed Compute | **Drop-in:** Project 1 Pilot Clinic | Freeze the principal run plan |
+| 4 | 15 March | Evaluate, Decode, and Package a Base Model | Protected evaluation/submission time | **Project 1 due 21 March, 23:59 AET** |
+| 5 | 22 March | From a Base Model to a Target Behaviour | No formal session | Project 2 opens; define the target voice and baseline |
+| 6 | 29 March | Supervised Fine-Tuning and Data That Teaches Behaviour | **Lab 2:** Build and Inspect a Post-Training Batch | Produce a masking check and viable pilot |
+| — | 5 April | **Mid-semester break, 5–11 April** | No teaching | Preserve logs and checkpoints outside the runtime |
+| 7 | 12 April | Learning from Preferences Without Hiding the Cost | **Drop-in:** Project 2 Behaviour Clinic | Freeze the evaluation comparison |
+| 8 | 19 April | Did the Behaviour Change, and What Regressed? | Protected evaluation/submission time | **Project 2 due 25 April, 23:59 AET** |
+| 9 | 26 April | Reasoning as Generated and Verifiable Behaviour | No formal session | Project 3 opens; proposal due 2 May for alternative Track A tasks |
+| 10 | 3 May | Train a Specialist That Can Be Tested | **Lab 3:** Train and Verify a Specialist | Produce one loadable pilot and valid metric |
+| 11 | 10 May | Generalisation, Supervision, and One Honest Ablation | **Drop-in:** Project 3 Generalisation Clinic | Freeze the candidate checkpoint and bounded claim |
+| 12 | 17 May | Audit the Training System | Protected evaluation/submission time | **Project 3 due 23 May, 23:59 AET** |
+
+### Week 1 — What a Language Model Learns
+
+**Week beginning:** Monday 22 February 2027  
+**Stage:** Build language ability · Project 1 begins
+
+#### Summary
+
+A language model assigns probabilities to possible continuations. Training turns a text corpus into many next-token prediction problems and adjusts the model to increase the probability of the observed next token. This lecture connects the probability view to the exact tensors students will use in Project 1: token sequences, shifted targets, cross-entropy loss, train/validation/test separation, and perplexity. Historical n-gram models provide useful intuition about context and sparsity, but the practical focus is the neural autoregressive objective. The final question is engineering rather than definitional: what evidence would show that a training run learned a reusable narrative distribution instead of memorising its data or merely reducing one number?
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. express the probability of a token sequence as a product of conditional next-token probabilities;
+2. construct input and shifted-target sequences for causal language-model training;
+3. explain maximum likelihood, cross-entropy, negative log-likelihood, and perplexity as connected views of one objective;
+4. distinguish the roles of training, validation, development, and tutor-evaluation data; and
+5. state at least two reasons why lower validation loss is insufficient evidence of better story generation.
+
+#### 1. From plausible text to conditional probability
+
+We begin by ranking grammatical, semantically plausible, and stylistically consistent sentences. The exercise reveals that a language model is not a database of complete sentences: it estimates a distribution over the next token given the preceding context. The chain rule converts those local predictions into a probability for a complete sequence. Sampling repeatedly from the changing next-token distribution produces text.
+
+#### 2. What n-grams teach us—and where they fail
+
+Unigram, bigram, and trigram examples make the context trade-off visible. A short context is easy to count but cannot preserve much structure; a long context is informative but most combinations are unseen. Neural language models replace explicit count tables with a differentiable function that shares statistical strength across contexts. N-grams are used here as conceptual scaffolding, not as an assessed implementation.
+
+#### 3. Turning a corpus into a training objective
+
+For a token sequence \(x_1,\ldots,x_T\), the model observes a prefix and predicts the next token. Teacher forcing creates many supervised targets from one document. We derive mean negative log-likelihood and show how the same calculation becomes token-level cross-entropy in code. The loss is differentiable with respect to model parameters, so an optimiser can update those parameters by gradient descent.
+
+#### 4. Splits, perplexity, and evidence
+
+Perplexity is the exponential of average negative log-likelihood. It is useful for comparing checkpoints evaluated with a common token accounting method, but it does not directly measure coherence, originality, reasoning, or instruction following. Story- or source-level splits must be created before token windows so that near-identical windows from one story cannot appear on both sides of evaluation. Project 1 therefore combines continuation-only reference-token-normalised PPL with blind human review and qualitative failure analysis.
+
+#### Required reading
+
+- Ronen Eldan and Yuanzhi Li, [*TinyStories: How Small Can Language Models Be and Still Speak Coherent English?*](https://arxiv.org/abs/2305.07759), Sections 1–2.
+- Course note, **Project 1 Evaluation Protocol**, on the assessment page.
+
+#### Optional reading
+
+- Alec Radford et al., [*Improving Language Understanding by Generative Pre-Training*](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf), introduction and Figure 1.
+
+#### Slides and this week's action
+
+**Slides:** `week-01-language-model-objective.deck.mdx` — to be implemented from this page.  
+**Before Week 2:** run the repository data summary, confirm the document-level split, and write a two-sentence Project 1 target: what the model should continue well and which evidence will test that claim.
+
+### Week 2 — Inside a Decoder-Only Transformer
+
+**Week beginning:** Monday 1 March 2027  
+**Stage:** Build language ability · Formal Lab 1
+
+#### Summary
+
+Project 1 is small enough that every architectural choice is visible in the budget. This lecture traces one token through a decoder-only Transformer and connects the computation to learned-parameter count, memory, context length, and generation cost. Encoder and encoder–decoder systems are introduced to clarify why the course uses a causal decoder, not because other architectures are obsolete. Students then examine causal masking, multi-head self-attention, feed-forward blocks, residual paths, pre-normalisation, embeddings, and the output head. The aim is to make architecture a testable allocation of capacity: depth, width, heads, context, and vocabulary must fit together rather than being selected as independent fashionable settings.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. distinguish encoder, encoder–decoder, and causal decoder-only attention patterns;
+2. trace tensor shapes through embeddings, attention, the MLP, residual connections, normalisation, and the output head;
+3. explain how a causal mask prevents future-token leakage;
+4. identify which configuration choices dominate parameter count and activation memory; and
+5. propose two legal architectures whose differences support a controlled Project 1 comparison.
+
+#### 1. Three Transformer families
+
+Bidirectional encoders build representations using both left and right context. Encoder–decoder models combine source-side representation with autoregressive target generation. A decoder-only language model uses causal self-attention and expresses both prompts and outputs as one continuation. The course uses this form because its training objective matches Project 1 generation and because the starter is intentionally compact.
+
+#### 2. One decoder block
+
+Token and position representations enter a repeated block. Normalisation stabilises the input to attention and the feed-forward network; residual connections preserve an information and gradient path around each transformation. Attention mixes information across allowed earlier positions, while the position-wise MLP performs most of the block's feature transformation and often contains most of its learned parameters.
+
+#### 3. Causal attention and heads
+
+Queries select information from keys and combine values. The triangular causal mask makes every prediction depend only on tokens already available at that position. Multiple heads can represent different relations, but increasing head count does not create capacity for free: head dimension, model width, and implementation constraints must remain coherent. We distinguish learned parameters from sequence-dependent activations.
+
+#### 4. Architecture as a 32M allocation
+
+Students use the repository preflight rather than estimating compliance by file size. Vocabulary and embedding choices, model width, layer count, and FFN width all affect the learned-parameter total; context length mainly changes activation and attention cost. KV caching is introduced as an inference optimisation: cached past keys and values avoid recomputing unchanged states during autoregressive generation, but it does not change how Project 1 is trained.
+
+#### Required reading
+
+- Ashish Vaswani et al., [*Attention Is All You Need*](https://arxiv.org/abs/1706.03762), Sections 3.1–3.2.
+- Thomas Wang et al., [*What Language Model Architecture and Pretraining Objective Work Best for Zero-Shot Generalization?*](https://arxiv.org/abs/2204.05832), abstract and Section 2.
+
+#### Optional reading
+
+- Andrej Karpathy, [nanoGPT](https://github.com/karpathy/nanoGPT), `model.py`; focus on the mapping between configuration fields and modules.
+
+#### Slides and this week's action
+
+**Slides:** `week-02-decoder-transformer.deck.mdx` — to be implemented from this page.  
+**Practical:** Lab 1 — Spend a 32M Parameter Budget.  
+**Before Week 3:** keep one feasible baseline architecture and one justified alternative; record the preflight output for both.
+
+### Week 3 — Scale, Data, and Optimisation Under Fixed Compute
+
+**Week beginning:** Monday 8 March 2027  
+**Stage:** Build language ability · Project 1 drop-in clinic
+
+#### Summary
+
+Scaling research asks how loss changes with model parameters \(N\), training tokens \(D\), and compute \(C\). Project 1 asks a smaller but structurally similar question: with a fixed parameter boundary and compute allowance, which model, data mixture, and training schedule deserve the budget? This lecture develops power-law intuition, contrasts the conclusions of Kaplan-style and Chinchilla-style studies, and treats both as empirical evidence rather than universal recipes. It then moves from papers to controllable decisions: data quality and duplication, token budget, batch and gradient accumulation, learning rate, warm-up, decay, clipping, regularisation, checkpoint intervals, and stop rules. Short pilots are framed as measurements used to select a plan, not miniature leaderboard searches.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. distinguish model scale, data scale, and training compute and explain why improving only one produces diminishing returns;
+2. interpret a power-law relationship and identify the small-data, useful-scaling, and irreducible-error regions;
+3. compare Kaplan- and Chinchilla-style compute allocation without treating either fitted law as a guaranteed 32M recipe;
+4. translate a T4-equivalent/FLOP budget into a token, step, and pilot plan; and
+5. use loss curves, gradient signals, runtime, and sample evidence to decide whether to continue, revise, or stop a run.
+
+#### 1. The three quantities: \(N\), \(D\), and \(C\)
+
+Model parameters bound representational capacity, data tokens provide learning opportunities, and compute measures the work used to connect them. Increasing a model without enough data undertrains capacity; repeatedly cycling a small or duplicated corpus may spend compute without adding information. A one-GPU thought experiment makes the allocation problem concrete before any equations are introduced.
+
+#### 2. What scaling laws do and do not say
+
+In a power-law region, test loss often decreases predictably but with diminishing returns as scale increases. Kaplan et al. reported smooth relationships across model size, data, and compute and argued that large models can be sample efficient and need not train to convergence. Hoffmann et al. revisited compute-optimal allocation and found that model size and tokens should grow more evenly. These results were fitted at much larger scales than this course; students use their logic to form hypotheses, then validate locally.
+
+#### 3. Data quantity is not data value
+
+Source diversity, document quality, formatting noise, duplication, and domain match change what one token contributes. TinyStories and the Phi work illustrate that carefully structured data can make small models surprisingly capable, but synthetic or aggressively filtered text also imports generator bias, narrower diversity, and provenance obligations. Project 1 decisions must report both token counts and source-level evidence.
+
+#### 4. From compute ceiling to training schedule
+
+We connect tokens per step, effective batch size, gradient accumulation, sequence length, steps, and approximate FLOPs. Warm-up protects early optimisation; learning-rate decay changes how aggressively later updates move the model; clipping helps contain unstable gradients; weight decay and dropout trade fit for regularisation. The correct values are not memorised constants. A pilot should isolate one uncertainty, run long enough to expose a trend, and stop according to a rule chosen before the result is known.
+
+#### 5. Reading a pilot honestly
+
+Training loss alone cannot select a plan. Students compare training and validation curves, gradient norms, throughput, memory, sample quality, and run-to-run comparability. An unstable run, a widening validation gap, or a runtime estimate that exceeds the budget is useful evidence if it changes the plan and is recorded. Failed optimisation is not transformed into success by hiding it.
+
+#### Required reading
+
+- Jared Kaplan et al., [*Scaling Laws for Neural Language Models*](https://arxiv.org/abs/2001.08361), abstract and Sections 1–2.
+- Jordan Hoffmann et al., [*Training Compute-Optimal Large Language Models*](https://arxiv.org/abs/2203.15556), abstract and Sections 1–3.
+
+#### Optional reading
+
+- Suriya Gunasekar et al., [*Textbooks Are All You Need*](https://arxiv.org/abs/2306.11644), Sections 1–2.
+- Ronen Eldan and Yuanzhi Li, [*TinyStories*](https://arxiv.org/abs/2305.07759), Sections 3–4.
+
+#### Slides and this week's action
+
+**Slides:** `week-03-fixed-compute.deck.mdx` — complete deck specification appears below.  
+**Support:** Project 1 drop-in clinic.  
+**Before Week 4:** freeze the principal run plan with a hypothesis, control, maximum spend, stop rule, and intended checkpoint-selection evidence.
+
+### Week 4 — Evaluate, Decode, and Package a Base Model
+
+**Week beginning:** Monday 15 March 2027  
+**Stage:** Build language ability · Project 1 due
+
+#### Summary
+
+The final checkpoint is not automatically the best checkpoint, and the lowest loss does not automatically produce the best stories. This lecture treats evaluation, decoding, and packaging as parts of the training system. Students learn how document-level hold-out and contamination checks protect inference, how continuation-only PPL is calculated under the course protocol, and why tokenizer-normalised comparison is required. Temperature, top-k, top-p, repetition, EOS behaviour, and context length are examined as controlled inference choices rather than post-hoc ways to cherry-pick an attractive sample. The lecture ends with a fresh-environment loading test and a claim–evidence checklist for the report.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. select a checkpoint using pre-declared quantitative and qualitative evidence;
+2. compute and interpret continuation-only PPL without leaking prompt or evaluation data into training;
+3. explain how temperature, top-k, and top-p reshape a next-token distribution;
+4. diagnose repetition, incoherence, premature stopping, and failure to emit EOS; and
+5. package a checkpoint, tokenizer, configuration, and loading command so another person can reproduce the result.
+
+#### 1. Evaluation separation and contamination
+
+We revisit source-level splits and distinguish the five diagnostic examples from the ten official tutor prompts. Public prompts are not permission to train on them. Exact and near-duplicate checks must run before training, and any discovered overlap is removed or reported according to policy.
+
+#### 2. Checkpoints and comparable metrics
+
+Students compare validation evidence across checkpoints generated by the same declared pipeline. Continuation-only reference-token-normalised PPL supports the course threshold even when a student changes tokenizer; bits per byte is introduced as a useful additional diagnostic. Neither metric resolves open-ended narrative quality, so output review remains necessary.
+
+#### 3. Decoding is an experimental variable
+
+Greedy decoding, temperature, top-k, and nucleus sampling make different probability/variety trade-offs. A fair comparison holds prompts, seeds or seed policy, maximum length, and sampler settings constant. Students inspect how low diversity produces repetition and how excessive randomness breaks local coherence. EOS training and stopping rules are treated separately from arbitrary truncation.
+
+#### 4. Reproducible submission
+
+A valid model package includes the frozen weights, architecture/configuration, tokenizer assets, sampler assumptions, revision, checksum, and exact load/evaluate commands. The fresh-process test is compulsory engineering hygiene: success in an in-memory notebook is not evidence that the submitted artifact can be marked.
+
+#### Required reading
+
+- Course page, **Evaluation protocol and formula**.
+- Holtzman et al., [*The Curious Case of Neural Text Degeneration*](https://arxiv.org/abs/1904.09751), abstract and Sections 1–3.
+
+#### Optional reading
+
+- Hugging Face, [*Generation strategies*](https://huggingface.co/docs/transformers/generation_strategies), for terminology and reproducible generation configuration.
+
+#### Slides and this week's action
+
+**Slides:** `week-04-evaluate-decode-package.deck.mdx` — to be implemented from this page.  
+**Deadline:** Project 1, Sunday 21 March 2027 at 23:59 AET. Run the final loading command in a fresh process before submission.
+
+### Week 5 — From a Base Model to a Target Behaviour
+
+**Week beginning:** Monday 22 March 2027  
+**Stage:** Shape model behaviour · Project 2 begins
+
+#### Summary
+
+Pre-training teaches a model to continue text from its data distribution; it does not guarantee a stable voice, an instruction-following interface, or a behaviour a user can request reliably. This lecture defines post-training by its supervision signal rather than by a single algorithm. Continued pre-training changes the text distribution the model imitates. Supervised fine-tuning trains desired prompt–response or structured continuations. Preference learning compares candidate outputs when quality is difficult to express as one reference. Students map these choices to Project 2 and learn that the simplest method capable of testing the target is often stronger engineering than an expensive pipeline whose additional stages cannot be validated.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. distinguish language capability from elicited and user-facing behaviour;
+2. compare continued pre-training, SFT, and preference-based post-training by data, objective, cost, and evidence;
+3. define a narrative voice using observable output criteria rather than an impressionistic label;
+4. identify a baseline and retained capability needed to measure behavioural change; and
+5. choose a proportionate post-training route for a 32M checkpoint.
+
+#### 1. Why the pre-training objective is not a user specification
+
+A base model was asked to predict internet or story tokens, and it does exactly that. It may produce fluent text while responding unstably to an instruction or drifting between styles. Post-training supplies additional evidence about which continuations are useful in a particular interaction or domain.
+
+#### 2. Three routes through Project 2
+
+Continued pre-training is appropriate when the target is naturally represented as unlabelled target-domain prose. SFT is appropriate when the desired behaviour can be demonstrated as examples with a declared input/output schema. Preference optimisation may help when relative quality is easier to label than a single ideal output, but it requires trustworthy pairs, a reference policy, and additional validation.
+
+#### 3. Turn “voice” into a measurement plan
+
+Students decompose a target voice into dimensions such as diction, sentence rhythm, dialogue balance, narrative perspective, thematic motifs, and coherence. A target-style hold-out measures domain fit; blind human comparisons assess whether the behaviour is recognisable; a general narrative set checks retention. No one metric stands in for all three.
+
+#### 4. Baselines and method claims
+
+Every intervention is compared with the unchanged starting checkpoint under the same prompts and sampler. If two post-training routes are compared, their data and compute must be reported. Students may combine methods, but each added stage must answer a stated uncertainty rather than merely make the pipeline look more advanced.
+
+#### Required reading
+
+- Jason Wei et al., [*Finetuned Language Models Are Zero-Shot Learners*](https://arxiv.org/abs/2109.01652), abstract and Sections 1–2.
+- Long Ouyang et al., [*Training Language Models to Follow Instructions with Human Feedback*](https://arxiv.org/abs/2203.02155), abstract and Figure 2.
+
+#### Optional reading
+
+- Rohan Taori et al., [*Stanford Alpaca*](https://github.com/tatsu-lab/stanford_alpaca), project overview and data-generation description.
+
+#### Slides and this week's action
+
+**Slides:** `week-05-post-training-map.deck.mdx` — to be implemented from this page.  
+**Before Week 6:** write an operational target-voice statement, choose the unchanged checkpoint baseline, and identify the minimum data needed for one viable route.
+
+### Week 6 — Supervised Fine-Tuning and Data That Teaches Behaviour
+
+**Week beginning:** Monday 29 March 2027  
+**Stage:** Shape model behaviour · Formal Lab 2
+
+#### Summary
+
+Supervised fine-tuning uses the familiar next-token loss on deliberately formatted demonstrations, but its data meaning is different from pre-training. This lecture follows an instruction–response example from raw record to tokens, attention context, response-only target mask, loss, and updated behaviour. It then examines data diversity, special tokens, synthetic demonstrations, learning-rate choice, mixing with pre-training text, and catastrophic overwriting. Students learn why a model can appear successful on the exact training wording yet fail on a paraphrase, and why data provenance and a visible loss mask are part of the scientific result rather than implementation trivia.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. design and document a consistent instruction or structured-continuation schema;
+2. distinguish attention masking from loss masking and verify which tokens receive SFT loss;
+3. explain how task diversity, example quality, and prompt phrasing affect transfer;
+4. identify risks introduced by synthetic demonstrations and over-training; and
+5. design a small SFT pilot with a lower learning rate, retained-capability check, and unchanged-checkpoint baseline.
+
+#### 1. The SFT objective
+
+The model conditions on the prompt and preceding response tokens, then predicts the next response token. In response-only SFT, prompt tokens provide context but do not contribute target loss. We distinguish this loss mask from the causal attention mask. A rendered token table is used to catch off-by-one targets, missing separators, and accidental prompt learning.
+
+#### 2. Schemas and special tokens
+
+An instruction, optional input, and output must be serialised consistently at training and inference. Chat-role tokens are one possible schema, not a universal requirement. At small scale, every extra format consumes examples and context, so students should choose only the structure their target behaviour needs and test EOS explicitly.
+
+#### 3. What makes useful demonstration data
+
+More examples of one narrow template may yield less transfer than a smaller set with meaningful task and phrasing diversity. Generated demonstrations can expand coverage cheaply, but students must disclose the generator, prompts, filtering, quantity, and validation. Synthetic confidence is not ground truth, and a teacher model's style can dominate the intended voice.
+
+#### 4. Learning without erasing
+
+Post-training usually needs a smaller learning rate than training from random initialisation. Excessive epochs, homogeneous data, or an aggressive rate can overwrite narrative ability. Mixing a controlled amount of original-domain text, selecting an earlier checkpoint, or reducing update strength can preserve capability, but each choice must be measured rather than assumed.
+
+#### Required reading
+
+- Jason Wei et al., [*Finetuned Language Models Are Zero-Shot Learners*](https://arxiv.org/abs/2109.01652), Sections 2–3.
+- Long Ouyang et al., [*Training Language Models to Follow Instructions with Human Feedback*](https://arxiv.org/abs/2203.02155), Sections 3.1–3.2.
+
+#### Optional reading
+
+- Hyung Won Chung et al., [*Scaling Instruction-Finetuned Language Models*](https://arxiv.org/abs/2210.11416), Sections 2–3.
+
+#### Slides and this week's action
+
+**Slides:** `week-06-sft-data-and-masking.deck.mdx` — to be implemented from this page.  
+**Practical:** Lab 2 — Build and Inspect a Post-Training Batch.  
+**Mid-semester break:** Monday 5–Sunday 11 April. Preserve logs and checkpoints outside the active runtime before the break.
+
+### Week 7 — Learning from Preferences Without Hiding the Cost
+
+**Week beginning:** Monday 12 April 2027  
+**Stage:** Shape model behaviour · Project 2 drop-in clinic
+
+#### Summary
+
+Some qualities—voice, helpfulness, restraint, or overall story preference—are easier to compare between two outputs than to demonstrate with one perfect answer. This lecture follows a preference signal through reward modelling, RLHF, RLAIF, and DPO. The mathematics is kept sufficient to interpret the objective and failure modes: Bradley–Terry ranking, sequence-level policy gradients, KL control, implicit rewards, and reference policies. Full PPO-scale RLHF is not a compulsory course implementation. The engineering lesson is to distinguish what each label actually supports, recognise reward hacking and distribution shift, and ask whether a small preference stage provides evidence worth its data and compute.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. construct a pairwise preference record and explain the Bradley–Terry ranking assumption;
+2. describe the SFT, reward-model, and policy stages of classical RLHF;
+3. explain intuitively why sampled sequence rewards require a policy-gradient estimator and why KL control is used;
+4. compare human feedback, AI feedback, and DPO without mislabelling one as another; and
+5. identify reward hacking, off-policy distribution shift, label inconsistency, and reference-policy drift.
+
+#### 1. Preference data
+
+For one prompt, labelers compare candidates under published anchors. The result says one observed output was preferred under those conditions; it does not reveal a universal scalar truth. Candidate order, sampler, rater reliability, ties, and the proximity of candidates to the current policy affect the dataset.
+
+#### 2. Reward models and RLHF
+
+A reward model learns to score preferred outputs above rejected outputs. A policy then samples sequences and is updated toward higher reward. Because sampling is discrete, the reward weights gradients of the sampled sequence log-probability rather than being differentiated through the sampled words. A KL penalty discourages the policy from moving into regions the SFT reference assigns negligible probability.
+
+#### 3. RLAIF and DPO
+
+RLAIF replaces or supplements human preference labels with an AI judge and therefore inherits judge capability, prompt, order, and bias risks. DPO removes the separately trained reward model and directly increases the relative preference of chosen over rejected responses against a reference policy. It is simpler operationally, not evidence-free; pair quality and the reference remain central.
+
+#### 4. Proportionate choices at 32M
+
+The supported course exercise uses a tiny fixed preference set and an inspectable loss. Students may use a preference method in Project 2 only when the target, labels, baseline, and retained-capability evaluation justify it. Work using AI labels is described as AI feedback; work without genuine human preference labels is not called full RLHF.
+
+#### Required reading
+
+- Long Ouyang et al., [*Training Language Models to Follow Instructions with Human Feedback*](https://arxiv.org/abs/2203.02155), Sections 2 and 3.4.
+- Rafael Rafailov et al., [*Direct Preference Optimization: Your Language Model Is Secretly a Reward Model*](https://arxiv.org/abs/2305.18290), abstract and Sections 3–4.
+
+#### Optional reading
+
+- Yuntao Bai et al., [*Constitutional AI: Harmlessness from AI Feedback*](https://arxiv.org/abs/2212.08073), Sections 1–2.
+
+#### Slides and this week's action
+
+**Slides:** `week-07-preference-learning.deck.mdx` — to be implemented from this page.  
+**Support:** Project 2 drop-in clinic.  
+**Before Week 8:** freeze the final comparison set and decide whether every extra training stage produced evidence strong enough to retain in the final pipeline.
+
+### Week 8 — Did the Behaviour Change, and What Regressed?
+
+**Week beginning:** Monday 19 April 2027  
+**Stage:** Shape model behaviour · Project 2 due
+
+#### Summary
+
+Post-training creates a multi-objective evaluation problem. A checkpoint may match target vocabulary while becoming repetitive, follow an exact instruction while failing a paraphrase, or improve style ratings while losing general narrative coherence. This lecture shows how to define target-style, instruction-compliance, narrative-quality, memorisation, and retention measures without collapsing them into one opaque score. Students practise blind paired comparisons, recognise evaluator and prompt-order effects, inspect source overlap, and select checkpoints against a declared priority rather than whichever metric looks best. The resulting report should say what changed, what did not, and which evidence cannot distinguish competing explanations.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. operationalise a behavioural target using observable anchors and held-out evidence;
+2. design a blind A/B review that separates model identity from candidate quality;
+3. evaluate paraphrase robustness, copying, and retained narrative ability;
+4. select a checkpoint across competing objectives using a pre-declared rule; and
+5. write a calibrated claim that distinguishes measurement, interpretation, and uncertainty.
+
+#### 1. Separate target behaviour from surface mimicry
+
+Target-word frequency can rise without a convincing voice. Human anchors therefore cover coherence, target behaviour, and major defects, while target-domain PPL provides a complementary distributional measure. Selected examples must include failures and cannot be silently edited.
+
+#### 2. Blind comparison and rater variability
+
+Candidate order is randomised and model identities are hidden. Three raters score official story outputs independently under the published anchors; medians reduce sensitivity to one extreme score, and adjudication addresses large disagreement. Student-run formative reviews should record prompt, sampler, rater count, and order policy.
+
+#### 3. Robustness, retention, and copying
+
+The same intent is tested through paraphrased prompts or changed story openings. General narrative prompts reveal catastrophic forgetting. Exact and near-duplicate checks plus phrase-level inspection distinguish plausible genre convention from suspicious reproduction of source text.
+
+#### 4. Multi-objective checkpoint selection
+
+Students identify one primary target and minimum acceptable floors for retained behaviour and technical validity. A checkpoint that wins one metric but violates a floor is not selected. The report presents the trade-off openly instead of manufacturing a single composite score after seeing results.
+
+#### Required reading
+
+- Jeffrey Zhou et al., [*Instruction-Following Evaluation for Large Language Models*](https://arxiv.org/abs/2311.07911), abstract and Sections 1–2.
+- Course page, **Human review protocol and rating anchors**.
+
+#### Optional reading
+
+- Percy Liang et al., [*Holistic Evaluation of Language Models*](https://arxiv.org/abs/2211.09110), Sections 1–2.
+
+#### Slides and this week's action
+
+**Slides:** `week-08-behavioural-evaluation.deck.mdx` — to be implemented from this page.  
+**Deadline:** Project 2, Sunday 25 April 2027 at 23:59 AET. Preserve the unchanged-checkpoint baseline outputs alongside the final outputs.
+
+### Week 9 — Reasoning as Generated and Verifiable Behaviour
+
+**Week beginning:** Monday 26 April 2027  
+**Stage:** Build a specialist · Project 3 begins
+
+#### Summary
+
+Reasoning is introduced as generated intermediate tokens and decisions, not a hidden faculty that switches on when a model crosses a size threshold. A model may assign some probability to a correct path while greedy decoding selects a wrong one. Chain-of-thought demonstrations can reshape the output distribution; self-consistency spends additional inference compute to sample multiple paths and aggregate final answers; a verifier separates generating a candidate from checking it. These tools connect directly to Project 3B, while the same generate–compare–verify pattern helps Project 3A define and test a narrative capability. Students also confront a central limitation: a correct final answer does not prove that the written rationale is faithful or correct.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. represent a rationale as intermediate generated tokens preceding a final answer;
+2. compare direct, zero-shot CoT, few-shot CoT, and self-consistency inference;
+3. explain why sampling more paths can improve final-answer accuracy and increase cost;
+4. implement an exact final-answer and format verifier for bounded arithmetic; and
+5. distinguish answer correctness, reasoning validity, and rationale faithfulness.
+
+#### 1. The correct path may not rank first
+
+Greedy decoding returns a locally high-probability continuation, not a proof that no better reasoning path exists. Inspecting several candidates shows that both correct and incorrect answers can arise from fluent text. Longer is not automatically more correct.
+
+#### 2. Chain-of-thought as an interface
+
+Few-shot CoT supplies examples of intermediate steps; zero-shot prompts provide a weaker generic cue. The original gains were demonstrated primarily on much larger models, so Project 3 treats CoT as a hypothesis to test at 32M rather than an assumed benefit. Short, task-aligned rationales may be more learnable than verbose traces.
+
+#### 3. Self-consistency and inference-time compute
+
+Self-consistency samples diverse reasoning paths and selects the most frequent final answer. The aggregation is over final answers, not identical wording. Accuracy may improve, but sample count and rationale length consume inference budget and must be reported. Correlated errors limit the value of additional samples.
+
+#### 4. Verification
+
+For Project 3B, the parser extracts the final answer and checks it against ground truth; formatting validation prevents an unparsable output from being treated as correct. For open-ended narrative tasks, verification becomes a mixture of explicit constraints and human judgement. In both tracks, generation and evaluation remain separate pipeline components.
+
+#### Required reading
+
+- Jason Wei et al., [*Chain-of-Thought Prompting Elicits Reasoning in Large Language Models*](https://arxiv.org/abs/2201.11903), abstract and Sections 1–2.
+- Xuezhi Wang et al., [*Self-Consistency Improves Chain of Thought Reasoning in Language Models*](https://arxiv.org/abs/2203.11171), abstract and Section 2.
+
+#### Optional reading
+
+- Takeshi Kojima et al., [*Large Language Models Are Zero-Shot Reasoners*](https://arxiv.org/abs/2205.11916), Sections 1–2.
+
+#### Slides and this week's action
+
+**Slides:** `week-09-reasoning-and-verification.deck.mdx` — to be implemented from this page.  
+**Milestone:** Project 3 alternative-task proposals are due Sunday 2 May 2027 at 23:59 AET. All students should establish the unchanged-model baseline before training.
+
+### Week 10 — Train a Specialist That Can Be Tested
+
+**Week beginning:** Monday 3 May 2027  
+**Stage:** Build a specialist · Formal Lab 3
+
+#### Summary
+
+Specialisation is post-training with a narrower contract. This lecture turns that contract into data, targets, and a controlled comparison. Students choose a permitted starting checkpoint, define the task schema, create source- or template-aware splits, inspect response-only masks, and decide whether to train direct answers, short rationales, or both. Curriculum, counterexamples, data balance, full fine-tuning, and parameter-efficient adaptation are framed as engineering choices whose value depends on model size and implementation overhead. Project 3A and 3B share the same experimental logic: one primary capability, one unchanged baseline, one meaningful comparison, one regression check, and a package that can be loaded independently.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. translate a bounded task definition into a schema, metric, split, and validity gate;
+2. choose a permitted starting checkpoint and document its frozen identity;
+3. design examples, counterexamples, and curriculum without leaking evaluation templates;
+4. compare direct-answer and rationale-supervised targets for Project 3B; and
+5. justify full or parameter-efficient adaptation using total trainable parameters, memory, runtime, and reproducibility.
+
+#### 1. A task contract before a dataset
+
+The primary capability is written as an input, allowed output, success measure, and out-of-scope boundary. Track A proposals use the approved metric and human-evaluation plan; Track B follows `test_pilot`, exact answer extraction, and format validation. Data is selected only after the contract is explicit.
+
+#### 2. Starting checkpoint and split integrity
+
+The frozen revision, parameter count, tensor shapes, and checksum identify the starting model. Template families, story sources, or generated problem seeds are separated so validation measures transfer rather than repetition. Public tutor prompts remain excluded from training even when their wording is visible.
+
+#### 3. Targets, rationales, and curriculum
+
+Direct answers minimise output burden; short rationales expose intermediate structure and can make word problems easier to learn, but they also increase sequence length and can introduce plausible wrong steps. A curriculum may move from single operations to mixed operations and from direct arithmetic to short word problems. Difficulty and format should be balanced deliberately, not inferred from file order.
+
+#### 4. Adaptation method and regression
+
+Full fine-tuning updates the entire permitted model. Parameter-efficient methods may reduce trainable-state and memory costs but add adapter configuration and may not save total runtime on a tiny model. Either method must be counted correctly and load in the marker's environment. A retained narrative or general-language check runs alongside the task metric.
+
+#### Required reading
+
+- Karl Cobbe et al., [*Training Verifiers to Solve Math Word Problems*](https://arxiv.org/abs/2110.14168), abstract and Sections 1–2.
+- Eric Zelikman et al., [*STaR: Self-Taught Reasoner Bootstrapping Reasoning With Reasoning*](https://arxiv.org/abs/2203.14465), abstract and Section 2.
+
+#### Optional reading
+
+- Edward Hu et al., [*LoRA: Low-Rank Adaptation of Large Language Models*](https://arxiv.org/abs/2106.09685), abstract and Section 4.
+
+#### Slides and this week's action
+
+**Slides:** `week-10-specialist-training.deck.mdx` — to be implemented from this page.  
+**Practical:** Lab 3 — Train and Verify a Specialist.  
+**Before Week 11:** produce one loadable pilot checkpoint, one valid task metric, and one unchanged-model baseline result.
+
+### Week 11 — Generalisation, Supervision, and One Honest Ablation
+
+**Week beginning:** Monday 10 May 2027  
+**Stage:** Build a specialist · Project 3 drop-in clinic
+
+#### Summary
+
+A specialist model is useful only if its capability survives beyond examples that look like its training set. This lecture begins with template and paraphrase shift, then develops outcome versus process supervision and the role of verifiable rewards. Outcome supervision is cheap and objective when a final answer can be checked; process supervision can diagnose steps but is expensive and may inherit errors from automated annotation. GRPO and RL from verifiable rewards are presented as frontier extensions that explain current reasoning systems, not required Project 3 methods. The practical centre is a matched ablation: change one factor, measure task performance and one retained capability, classify errors, and avoid claiming a mechanism the experiment cannot identify.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. design tests for paraphrase, template, operand-range, and composition shift;
+2. compare outcome and process supervision by signal quality, annotation cost, and diagnostic value;
+3. explain how verifiable rewards differ from a learned reward model and how group-relative baselines work conceptually;
+4. run or specify a matched ablation with controlled data, compute, and evaluation; and
+5. state a supported conclusion alongside a plausible alternative explanation.
+
+#### 1. Generalisation is a family of shifts
+
+Held-out examples from the same template test interpolation, not broad reasoning. Students vary surface wording, operation combinations, story structures, and allowed numeric range while keeping the published task scope. Track A uses analogous constraint or prompt changes. Performance is reported by slice so one easy subset cannot hide a failure.
+
+#### 2. Outcome and process supervision
+
+An outcome reward checks the final answer; a process reward scores intermediate steps. Process labels can support search and error localisation, but human step annotation is expensive and automated rollouts can drift from the policy being evaluated. A correct outcome does not certify every stated step, while a flawed rationale can occasionally reach a correct answer.
+
+#### 3. Verifiable rewards and GRPO as frontier context
+
+When a task has an objective checker, RL can use rule-based rewards without a learned reward model. GRPO compares a group of responses to the same prompt and uses the group mean as a prompt-specific baseline instead of a separate value model. Students should understand the signal path and limitations, but Project 3 does not require implementing RLVR, PPO, GRPO, or a process reward model.
+
+#### 4. The ablation and the claim
+
+A useful ablation changes one factor—rationale targets, data mix, learning rate, starting checkpoint, or decoding rule—while holding evaluation constant. Results include cost and regressions. If several factors changed, the comparison can show a system difference but cannot isolate which change caused it. Postgraduate analysis is expected to examine mechanism and alternative explanations more deeply.
+
+#### Required reading
+
+- Hunter Lightman et al., [*Let's Verify Step by Step*](https://arxiv.org/abs/2305.20050), abstract and Sections 1–2.
+- Jeffrey Zhou et al., [*Instruction-Following Evaluation for Large Language Models*](https://arxiv.org/abs/2311.07911), Section 2, as an example of rule-verifiable behaviour.
+
+#### Optional reading
+
+- Zhihong Shao et al., [*DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models*](https://arxiv.org/abs/2402.03300), Sections 1 and 4.
+- Liangchen Luo et al., [*Improve Mathematical Reasoning in Language Models by Automated Process Supervision*](https://arxiv.org/abs/2406.06592), abstract and Section 3.
+
+#### Slides and this week's action
+
+**Slides:** `week-11-generalisation-and-supervision.deck.mdx` — to be implemented from this page.  
+**Support:** Project 3 drop-in clinic.  
+**Before Week 12:** freeze the candidate checkpoint and write the strongest conclusion your comparison supports plus one conclusion it does not support.
+
+### Week 12 — Audit the Training System
+
+**Week beginning:** Monday 17 May 2027  
+**Stage:** Build a specialist · Project 3 due
+
+#### Summary
+
+The course ends by treating the model as one component of an auditable training system. Students reconstruct the path from task definition through data, configuration, compute ledger, checkpoints, evaluation, and final claim. A peer or fresh process must be able to load the exact artifact and reproduce the core metric. The lecture then revisits scale transfer: large-model scaling laws, emergent-behaviour claims, long reasoning traces, RLVR, and inference-time compute can inspire a small experiment, but evidence at one scale does not automatically establish a mechanism at another. The final retrospective asks where the original plan changed, which evidence caused the change, and what uncertainty remains.
+
+#### Learning outcomes
+
+After this lecture, you should be able to:
+
+1. audit the consistency of a checkpoint, tokenizer, configuration, data revision, sampler, and evaluation command;
+2. reconcile the compute ledger with the final report and model card;
+3. distinguish reproducibility of an artifact from replicability of a scientific claim;
+4. evaluate whether a frontier result plausibly transfers to a 32M experiment; and
+5. write a concise engineering retrospective grounded in decisions and evidence.
+
+#### 1. The artifact chain
+
+Every reported result points to a frozen GitLab commit, data version, starting and final checkpoint revision, configuration, seed policy, sampler, and evaluation command. Checksums and tensor shapes catch mismatched weights; a fresh load catches hidden notebook state and missing files.
+
+#### 2. Reproduce the number and the behaviour
+
+The core metric is rerun from the packaged model. Fixed prompts and generation settings reproduce comparable outputs, while a small additional sample shows the model is not only replaying a cached artifact. Technical validity, task performance, and human judgement are recorded separately.
+
+#### 3. What transfers across scale
+
+Scaling laws describe fitted empirical regimes, not promises for every architecture and dataset. Claims of emergence depend on metrics and sampling; data quality can dominate quantity in small settings; longer reasoning and more samples trade compute for probability of success. Students identify which course results are direct evidence and which are analogies to frontier systems.
+
+#### 4. The final retrospective
+
+A strong retrospective names the original plan, the observation that challenged it, the revision made, the cost of that revision, and the remaining uncertainty. It does not need a perfect final model. It needs a traceable explanation of why the final system is the most defensible use of the available budget.
+
+#### Required reading
+
+- Jared Kaplan et al., [*Scaling Laws for Neural Language Models*](https://arxiv.org/abs/2001.08361), limitations relevant to extrapolation.
+- Rylan Schaeffer, Brando Miranda, and Sanmi Koyejo, [*Are Emergent Abilities of Large Language Models a Mirage?*](https://arxiv.org/abs/2304.15004), abstract and Sections 1–2.
+
+#### Optional reading
+
+- Xuezhi Wang et al., [*Self-Consistency Improves Chain of Thought Reasoning in Language Models*](https://arxiv.org/abs/2203.11171), discussion of inference cost and limitations.
+
+#### Slides and this week's action
+
+**Slides:** `week-12-training-system-audit.deck.mdx` — to be implemented from this page.  
+**Deadline:** Project 3, Sunday 23 May 2027 at 23:59 AET. Complete the fresh-environment audit before submission.
+
+---
+
+## Formal lab pages
+
+Formal labs occur once per project cycle, in the second week. They are intentionally deeper than a weekly sequence of small exercises. Each uses supplied toy data and a bounded run; unchanged staff demonstrations do not consume the student's assessed compute allowance.
+
+### Lab 1 — Spend a 32M Parameter Budget
+
+**Week:** 2  
+**Estimated active time:** 110 minutes  
+**Notebook:** `lab-01-parameter-budget.ipynb` — released Monday 1 March 2027 at 09:00 AET  
+**Solution release:** after the final scheduled Lab 1 class
+
+#### Learning goals
+
+- trace shapes and information flow through one causal decoder block;
+- verify a causal attention mask and shifted targets;
+- use the official preflight to calculate learned parameters; and
+- compare depth/width allocations without changing several variables accidentally.
+
+#### Preparation
+
+Complete the Week 1 lecture and the Week 2 sections on the decoder block. Clone the Project 1 repository, run the CPU environment check, and bring the generated `data_summary.json`. No GPU is required for Parts A–C; the final smoke test uses a supplied tiny batch.
+
+#### Activity
+
+1. **Read it:** annotate the starter configuration with vocabulary size, context length, layers, heads, model width, and FFN width. Predict which fields change learned parameters and which mainly change activation cost.
+2. **Run it:** execute the shape trace. Confirm input IDs, embeddings, attention scores, mask, logits, and shifted labels. Intentionally remove the causal mask on the toy example and explain why the resulting lower loss is invalid.
+3. **Inspect it:** use the parameter report to locate embeddings/output head, attention projections, FFN, and normalisation parameters. Reconcile the component counts with the reported total.
+4. **Change one thing:** construct Architecture A and Architecture B below 33.6M while keeping tokenizer, context, batch, data, and smoke-test steps fixed. Change one primary allocation—preferably depth versus width—and predict effects on memory, speed, and learning before running.
+5. **Transfer it:** select a Project 1 baseline or state what additional pilot evidence is needed. Save both legal configs and the preflight reports.
+
+#### Expected output
+
+- one annotated tensor-shape table;
+- one causal-mask screenshot or exported matrix with a two-sentence explanation;
+- two legal configuration files and parameter reports;
+- one controlled smoke-test comparison table; and
+- a 150-word architecture decision note.
+
+#### Self-check
+
+- Does every target token depend only on its prefix?
+- Are both models at or below 33.6M learned parameters, with 32M still treated as the design target?
+- Did only one primary architecture allocation change?
+- Are data, steps, seed policy, and evaluation identical?
+- Does the conclusion distinguish prediction from observed evidence?
+
+### Lab 2 — Build and Inspect a Post-Training Batch
+
+**Week:** 6  
+**Estimated active time:** 120 minutes  
+**Notebook:** `lab-02-post-training-batch.ipynb` — released Monday 29 March 2027 at 09:00 AET  
+**Solution release:** after the final scheduled Lab 2 class
+
+#### Learning goals
+
+- distinguish continued-pre-training and SFT records at data and target level;
+- render and verify a response-only loss mask;
+- run a bounded SFT update and compare it with the unchanged checkpoint; and
+- test whether an apparent behaviour survives prompt paraphrase.
+
+#### Preparation
+
+Complete Weeks 5–6 readings. Load the supplied Project 1 fallback checkpoint or a compatible personal Project 1 checkpoint. Bring three short examples of the target voice; do not use tutor-evaluation prompts or answers.
+
+#### Activity
+
+1. **Read it:** inspect one raw target-style paragraph, one instruction record, and their serialised token sequences. State what behaviour each training format can supervise.
+2. **Run it:** use the supplied formatter to create prompt, response, EOS, attention mask, and labels. Render every token with a `loss/no-loss` flag.
+3. **Inspect it:** catch three planted errors: an off-by-one target, prompt tokens receiving loss, and a missing EOS target. Explain how each could change behaviour or evaluation.
+4. **Change one thing:** run the same tiny SFT batch with response-only loss and with the supplied alternative masking choice. Hold checkpoint, examples, learning rate, steps, and seed fixed.
+5. **Transfer it:** evaluate the unchanged and tuned checkpoints on the original prompt, a paraphrase, and a retained narrative prompt. Decide whether the schema teaches the intended behaviour or mainly memorises the surface format.
+
+#### Expected output
+
+- a declared data schema and one fully rendered token/mask example;
+- corrected unit-test results for the three planted failures;
+- a compact loss/runtime table for the two masking runs;
+- unchanged-versus-tuned outputs on three prompt types; and
+- a 200-word Project 2 method note covering target, gain, regression, and next decision.
+
+#### Self-check
+
+- Can another person reconstruct the exact training string from the schema?
+- Are prompt and padding labels masked as declared?
+- Is EOS present and trained intentionally?
+- Does the comparison use the same starting checkpoint and data?
+- Is synthetic or edited material labelled honestly?
+
+### Lab 3 — Train and Verify a Specialist
+
+**Week:** 10  
+**Estimated active time:** 120 minutes  
+**Notebook:** `lab-03-specialist-verifier.ipynb` — released Monday 3 May 2027 at 09:00 AET  
+**Solution release:** after the final scheduled Lab 3 class
+
+#### Learning goals
+
+- turn a task contract into valid training and evaluation records;
+- build a parser and verifier before the main training run;
+- compare direct-answer and short-rationale targets on a bounded example; and
+- test one out-of-template slice and one retained capability.
+
+#### Preparation
+
+Choose Project 3 Track A or B and bring the approved/standard task definition. Track B students run the repository's `test_pilot` format check; Track A students bring the approved automatic metric and human-rating anchors. Load the unchanged starting checkpoint in a fresh process.
+
+#### Activity
+
+1. **Read it:** write the input contract, allowed output, validity gate, primary metric, out-of-scope conditions, and one regression metric.
+2. **Run it:** create a template/source-aware split and run the contamination validator. Implement or configure answer extraction and format checking before training.
+3. **Inspect it:** render two training examples and their target masks. For Track B, compare a direct answer with a short-rationale record; for Track A, compare a valid and deliberately invalid output under the task constraints.
+4. **Change one thing:** perform a bounded pilot comparison with one controlled difference, such as target format, data mixture, or learning rate. Do not combine several changes.
+5. **Transfer it:** evaluate unchanged and pilot checkpoints on in-template validation, one shifted slice, and one retained-capability prompt. Save a loadable pilot package.
+
+#### Expected output
+
+- one task-contract table;
+- split and contamination-validation records;
+- passing extraction/format tests including invalid edge cases;
+- a matched pilot comparison with task, shifted-slice, regression, and compute results; and
+- a loadable checkpoint plus a 200-word decision note.
+
+#### Self-check
+
+- Was the verifier working before the model was trained?
+- Are evaluation templates or prompts absent from training data?
+- Does a formatted but wrong answer fail correctness, and does a correct but unparsable answer fail the technical gate?
+- Did the comparison change one meaningful factor?
+- Can the pilot reload without notebook state?
+
+---
+
+## Drop-in clinic pages
+
+Drop-in clinics are not additional lectures or graded checkpoints. They are evidence-led troubleshooting sessions held in the third week of each project cycle. Students may attend for any portion of the hour. Staff can help interpret a failure or assess whether a comparison is controlled, but they do not select an assessed method or write a report conclusion for a student.
+
+### Week 3 — Project 1 Pilot Clinic
+
+**Time:** Monday 8 March 2027, 15:00–16:00 AET · online  
+**Bring one item:** both parameter preflight reports; a token/runtime estimate; a train/validation curve; a gradient or memory trace; or a concrete failed run.  
+**Clinic sequence:** two-minute problem statement; evidence screen-share; identify whether the fault is data, target, architecture, optimisation, runtime, or evaluation; agree on the smallest next check.  
+**Expected outcome:** a written decision to continue, revise one factor, or stop, with a reason and maximum additional spend.  
+**After the session:** de-identified common-issue notes are posted; there is no model solution.
+
+### Week 7 — Project 2 Behaviour Clinic
+
+**Time:** Monday 12 April 2027, 15:00–16:00 AET · online  
+**Bring one item:** an operational target-voice definition; a rendered SFT mask; an unchanged/tuned output pair; a target-versus-retention metric table; or a preference pair whose label is genuinely difficult.  
+**Clinic sequence:** state the target; inspect the evidence; separate format failure, weak supervision, over-training, decoding, and evaluation ambiguity; choose one diagnostic that can change the plan.  
+**Expected outcome:** a frozen evaluation comparison and a justified decision about the next or final post-training stage.  
+**After the session:** de-identified common-issue notes are posted; there is no model solution.
+
+### Week 11 — Project 3 Generalisation Clinic
+
+**Time:** Monday 10 May 2027, 15:00–16:00 AET · online  
+**Bring one item:** task-contract and verifier output; in-template versus shifted-slice results; one controlled ablation; an error taxonomy; a regression result; or a fresh-load failure.  
+**Clinic sequence:** verify technical validity; locate the generalisation boundary; test whether the comparison isolates one factor; separate supported conclusions from alternative explanations; identify the minimum remaining audit.  
+**Expected outcome:** a candidate final checkpoint, a bounded claim, and a short list of unresolved limitations that belong in the report.  
+**After the session:** de-identified common-issue notes are posted; there is no model solution.
+
+---
+
+## First complete slide deck specification
+
+### Week 3 deck — Scale, Data, and Optimisation Under Fixed Compute
+
+**Implementation filename:** `week-03-fixed-compute.deck.mdx`  
+**Target duration:** 75 minutes including two short student decisions  
+**Accessibility:** every chart must include alt text and a prose takeaway; colour cannot be the only distinction; equations require spoken/plain-language interpretations; cited figures must carry source and licence information in speaker notes.
+
+| Slide | Title | Page-ready content and teaching purpose |
+| ---: | --- | --- |
+| 1 | Scale is an allocation problem | Title, course/stage label, and opening question: “With one GPU-day, would you spend it on a larger model, more distinct tokens, or more updates over the same data?” Collect a silent initial choice. |
+| 2 | Project 1 has three coupled quantities | Define \(N\) as learned parameters, \(D\) as training tokens processed, and \(C\) as training compute. Show the 32M design target, 33.6M absolute boundary, 24 T4-equivalent hours, and \(4.0\times10^{17}\) FLOP ceiling. Takeaway: every proposed run must fit all applicable constraints. |
+| 3 | Bigger is not automatically better | Three failure sketches: too many parameters for the data; many repeated passes over a narrow corpus; a tiny model trained long after useful validation improvement. Ask which resource is the bottleneck in each case. |
+| 4 | Power-law intuition | Present \(L(x)=a x^{-\alpha}+L_\infty\). Explain diminishing returns and the approximately straight middle region on log–log axes. Label small-data, useful-scaling, and irreducible-error regions. Do not ask students to fit exponents for the assignment. |
+| 5 | Kaplan et al.: smooth scale relationships | Summarise the reported relationships between loss and \(N,D,C\), sample efficiency of larger models, weak sensitivity to shape within the studied range, and early stopping under compute-optimal allocation. Add a callout: studied regimes are far above 32M. |
+| 6 | Chinchilla changed the allocation | Contrast the earlier parameter-heavy recommendation with approximately proportional growth of parameters and training tokens under fixed compute. Show an iso-compute valley conceptually. Takeaway: an undertrained large model can lose to a smaller model trained on more tokens. |
+| 7 | What transfers to 32M? | Two columns. Transferable: identify bottlenecks, compare within a fixed budget, allocate data with model size, stop by evidence. Not guaranteed: published exponents, optimal token/parameter ratio, batch size, or exact loss at this scale and corpus. |
+| 8 | Decision 1: choose a plan | Present three legal fictional plans with the same maximum compute: 18M/more tokens, 31.8M/balanced tokens, 33.5M/fewer tokens. Students choose which uncertainty must be measured before selecting, rather than voting for a winner from insufficient information. |
+| 9 | A token is not a unit of value | Compare clean diverse stories, duplicated stories, OCR noise, and synthetic textbook-like stories. Explain quality, diversity, duplication, provenance, and domain fit. Link TinyStories/Phi as evidence that data design can change small-model outcomes, not proof that synthetic data is always superior. |
+| 10 | Count data twice | Show two ledgers: unique source/token inventory and tokens processed during optimisation. Multiple epochs increase the second without increasing the first. Explain why both are required in a report. |
+| 11 | From batch to compute | Define sequence length, sequences per micro-batch, gradient accumulation, effective tokens per update, updates, and total tokens processed. Present the course ledger relationship and note that the repository is canonical for hardware conversion and FLOP estimation. |
+| 12 | Learning rate is a schedule, not one number | Plot a simple warm-up, peak, and decay curve. Explain early instability, later refinement, and why an aggressive rate can destroy a useful checkpoint during post-training. Connect this pre-training lesson forward to Projects 2 and 3. |
+| 13 | Stability signals | Four panels: train/validation loss, gradient norm, throughput/memory, fixed-prompt samples. For each, state one warning pattern and one ambiguous pattern. A single spike or attractive sample is not a conclusion. |
+| 14 | A pilot answers one uncertainty | Use a template: hypothesis; one changed factor; controlled variables; maximum spend; measurement window; stop rule; decision the result can change. Contrast with an undirected hyperparameter sweep. |
+| 15 | Decision 2: continue, revise, or stop? | Give a fictional pilot: training loss falls, validation loss flattens, gradient norm is stable, runtime projects 30 hours, samples repeat source phrases. Students choose an action and name the evidence, then reveal that several defensible actions exist if the next check is explicit. |
+| 16 | Your Project 1 run plan | Final checklist: legal preflight; clean split; unique and processed token counts; baseline plus one comparison; compute reservation; checkpoint interval; fixed evaluation; stop rule; recovery margin. Link to the Week 3 clinic. |
+| 17 | Claims you may and may not make | Supported: “Under our fixed data and steps, A achieved lower validation loss than B.” Unsupported: “Width is generally better than depth,” “Chinchilla proves our exact configuration is optimal,” or “lower PPL guarantees better stories.” |
+| 18 | Exit ticket | Students submit: chosen baseline; largest unresolved uncertainty; pilot that can resolve it; maximum hours/FLOPs reserved; evidence that will trigger a change. End with required-reading links and Project 1 due date. |
+
+#### Deck figure/source register
+
+- Power-law and scaling claims: Kaplan et al., [*Scaling Laws for Neural Language Models*](https://arxiv.org/abs/2001.08361).
+- Compute-optimal allocation and iso-compute concept: Hoffmann et al., [*Training Compute-Optimal Large Language Models*](https://arxiv.org/abs/2203.15556).
+- Small-model/data-quality case studies: Eldan and Li, [*TinyStories*](https://arxiv.org/abs/2305.07759); Gunasekar et al., [*Textbooks Are All You Need*](https://arxiv.org/abs/2306.11644).
+- Course budget values, ledger definitions, and screenshots: generated from the Project 1 starter repository at implementation time; do not substitute invented outputs.
 
 ---
 
@@ -791,8 +1625,11 @@ Prompts and evaluation examples must not contain real personal data. Students mu
 - Project 3 student-facing summary and detailed rubric;
 - the six resource-card labels for each Project;
 - all eleven Policies sections and the course-materials licence statement;
-- People page biographies, responsibility boundaries, contact routing, and consultation times; and
-- the navigation labels and cross-page call-to-action wording.
+- People page biographies, responsibility boundaries, contact routing, and consultation times;
+- the navigation labels and cross-page call-to-action wording;
+- twelve page-ready lecture entries with summaries, outcomes, section content, readings, slide labels, and weekly actions;
+- three page-ready formal labs and three evidence-led drop-in clinics; and
+- the complete eighteen-slide Week 3 deck specification and source register.
 
 ### Remaining content and publication details
 
@@ -800,7 +1637,7 @@ Prompts and evaluation examples must not contain real personal data. Students mu
 - exact default model configurations published through the project repositories;
 - final Project 3 Track B course-checkpoint identifier and `test_pilot` numeric ranges;
 - final GitLab, Hugging Face, brief PDF, template, notebook, evaluation-pack, and submission-portal destinations;
-- twelve lecture pages and twelve lab pages;
-- the first complete lecture slide deck.
+- implementation of the twelve approved lecture pages, three formal lab pages, and three drop-in clinic pages; and
+- implementation of the approved Week 3 slide deck as a working `.deck.mdx` file.
 
 The repository, dataset, checkpoint, and submission destinations are operational publication details rather than open course-design decisions. Until a destination exists, the implemented site should display its release timing or unavailable state without inventing a URL or shipping a broken placeholder link.
