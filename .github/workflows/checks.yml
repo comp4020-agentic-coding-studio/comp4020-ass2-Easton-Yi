@@ -34,6 +34,11 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Install Playwright's Chromium
+        # spec/resource-download-browser.test.ts launches a real Chromium via
+        # playwright to click through keyboard-activated downloads; the
+        # runner image ships no browser binaries, only the npm package.
+        run: pnpm exec playwright install --with-deps chromium
       - name: Build and run the spec
         run: pnpm check
       - name: Test template tooling
