@@ -1,6 +1,6 @@
 # Assessment Brief
 
-> **Planning status:** Consolidated course-assessment plan. The assessment structure and learning intent are settled. Items marked **TBC** still require a final operational decision before publication to students.
+> **Planning status:** Consolidated course-assessment plan. The course identity, calendar, assessment structure, evaluation and human-review rules, Policies, People, and learning intent are settled. Weekly lecture, lab, and slide-deck copy remains to be authored; exact external resource identifiers and URLs are inserted when those resources are published.
 
 ## Course premise
 
@@ -18,9 +18,9 @@ The aim is not to find one universally correct architecture or training recipe. 
 
 ## Planning and content-source contract
 
-This file records the course's design intent, rationale, component relationships, constraints, and unresolved decisions. Approved wording that should be rendered to students belongs in `CONTENT_SOURCE.md`.
+This file records the course's design intent, rationale, component relationships, constraints, and remaining operational dependencies. Approved wording that should be rendered to students belongs in `CONTENT_SOURCE.md`.
 
-The implementation agent should read both files: use this brief to understand why the course is structured this way, and use `CONTENT_SOURCE.md` for page-ready headings, descriptions, tables, rubrics, and resource labels. It must not turn alternatives or `TBC` notes in this brief into invented student-facing policy. After implementation begins, `src/course-config.ts` becomes canonical for the course code, title, level, teaching period, and dates; course-specific tests protect duplicated facts and promises.
+The implementation agent should read both files: use this brief to understand why the course is structured this way, and use `CONTENT_SOURCE.md` for page-ready headings, descriptions, tables, rubrics, resource labels, Policies, and People. It must not turn planning commentary or unpublished operational details in this brief into invented student-facing policy. After implementation begins, `src/course-config.ts` becomes canonical for the course code, title, level, teaching period, and dates; course-specific tests protect duplicated facts and promises.
 
 ## Course identity
 
@@ -186,6 +186,8 @@ S_{\mathrm{PPL}} = \frac{2M}{3}
 \]
 
 Thus PPL contributes 6⅔ of 10 model marks in Projects 1 and 3, and 10 of 15 model marks in Project 2. The remaining one third is task-specific performance: narrative continuation quality in Project 1; target behaviour, story quality, and retention in Project 2; and the chosen specialist capability in Project 3. For orientation, \(P=35\) retains about 36.8% of the available PPL marks and \(P=45\) retains about 13.5%. Calculations retain full precision until the project total is recorded. No single automatic metric is treated as a complete measure of model quality.
+
+Task-specific performance now uses a common published 0–4 anchor scale. Three trained, independent raters review every story-based tutor output without student, method, or mark information. A fourth blind rater adjudicates a dimension when the original ratings span three or more points; the final item value is the median of the valid ratings. Project-specific dimension weights distinguish prompt connection, narrative quality, target behaviour, robustness, constraint satisfaction, generalisation, retention, and integrity as appropriate. Automatically verifiable Project 3 dimensions use the published evaluator rather than subjective preference: an incorrect arithmetic answer or invalid required format cannot be overridden by a human rating. The complete anchors, weights, aggregation rule, and privacy wording are canonical in `CONTENT_SOURCE.md`.
 
 ## Common submission package
 
@@ -373,6 +375,8 @@ Supported examples include:
 
 Students may propose an alternative of comparable scope. A self-designed task must be approved before substantial training begins and must have a feasible held-out evaluation.
 
+The approval mechanism is now fixed. Supported Track A examples require no extra approval. An alternative uses the one-page `proposal.md` template and is submitted by the end of Week 9. It specifies one target behaviour, starting checkpoint, data and provenance, held-out evaluation, unchanged-model baseline, controlled comparison, regression check, compute plan, and task-specific risks. The convenor responds within two teaching days with approved, revise, or out of scope. Before approval, only preparation and a pipeline dry-run of at most 0.5 T4-equivalent GPU-hours are permitted; this use still counts toward the Project 3 budget. Approval establishes assessability and comparable scope, not method correctness or likely marks. The exact student-facing date and workflow are in `CONTENT_SOURCE.md`.
+
 One well-investigated primary function is sufficient. Adding more functions does not by itself earn more credit.
 
 Pure post-processing or hard-coded decoding is not sufficient as the only specialisation method. If constrained decoding is used, the report must distinguish behaviour learned by the model from behaviour enforced at generation time.
@@ -437,7 +441,7 @@ Each lecture has three layers:
 | **LLM post-training** | Weeks 5–8 for continued pre-training, SFT, preference data, reward modelling, RLHF/RLAIF, DPO, and failure modes. | Students operate continued pre-training and SFT directly. Preference optimisation is a small supported experiment; full PPO-scale RLHF remains conceptual or optional because its cost and instability are not appropriate as a compulsory small-model task. |
 | **LLM reasoning** | Weeks 9–11 for chain-of-thought, self-consistency, verification, outcome/process supervision, and task-specific reasoning training. | CoT-style SFT and automatic verification fit Project 3B. GRPO, RLVR, process reward models, and inference-time scaling are taught so students can place current systems, but are not compulsory implementations. |
 
-This mapping is sufficient for the planning brief. A separate `content_source.md` is not needed until the actual weekly pages and slide decks are authored; at that stage, a source register can track the papers, figures, licences, and update dates used in published teaching material.
+This mapping is sufficient for the planning brief. The actual weekly lecture, lab, and slide-deck wording should be authored as student-facing sections in `CONTENT_SOURCE.md` before implementation. Each week should also carry a compact source register for the papers, figures, licences, and update dates used in the published teaching material. The implementation agent may adapt that copy into the starter's content collections, but it should not invent a parallel curriculum from the outline alone.
 
 ### Block 1 — Build basic language ability: pre-training from scratch
 
@@ -497,15 +501,15 @@ The twelve labs therefore cover more than pipeline construction: tokenization an
 
 ## People and support roles
 
-The following is a complete draft teaching-team structure for the course site. Names and institutional details may be replaced without changing the responsibilities.
+The following teaching-team structure, contact routing, and consultation schedule are approved for the course site. The complete student-facing wording is canonical in `CONTENT_SOURCE.md`.
 
 ### Dr Yiwei Easton — Course Convenor and Lecturer
 
 Yiwei teaches language-model training at the intersection of machine learning, empirical evaluation, and resource-aware systems. Their interests include how architecture, data quality, optimisation, post-training, and evaluation interact when the apparent best method cannot simply be scaled without limit.
 
-- **Teaching role:** lectures, assessment design, Project 3 task approvals, interpretation of course policy, and the weekly Frontier Note where relevant.
-- **Contact:** `llm-training@slopu.edu.au` for ordinary course questions; `Easton@gmail.com` for personal or confidential matters; the course forum for questions useful to the cohort.
-- **Consultation:** one advertised hour each teaching week, available in person and online; booking details appear on the People page.
+- **Teaching role:** lectures, assessment design, Project 3 alternative-task approvals, interpretation of course policy, and the weekly Frontier Note where relevant.
+- **Contact:** `llm-training@slopu.edu.au` for ordinary course questions; `yiwei.easton@slopu.edu.au` for personal or confidential matters; the course forum for questions useful to the cohort.
+- **Consultation:** Tuesdays, 14:00–15:00 AET, Room 4.21, Model Systems Building, with simultaneous Zoom access. No booking is required.
 
 ### Maya Rao — Teaching Fellow and Technical Tutor
 
@@ -513,8 +517,8 @@ Maya runs the practical labs and model clinics, with a focus on PyTorch, dataset
 
 - **Teaching role:** lab facilitation, technical debugging, starter-platform guidance, and formative feedback on whether an experiment is well controlled.
 - **Boundary:** technical support may help students locate and understand a fault, but will not choose an assessed architecture, training recipe, or report conclusion for them.
-- **Contact:** the `#technical-help` course forum; `maya.rao@slopu.edu.au` for individual access issues.
-- **Consultation:** a weekly technical drop-in and additional advertised model clinics before each project deadline.
+- **Contact:** the `Technical help` area of the course forum; `maya.rao@slopu.edu.au` for individual access issues.
+- **Consultation:** Thursdays, 16:00–17:00 AET, Compute Commons 2.14, plus an online model clinic on Monday, 15:00–16:00 AET, during Weeks 4, 8, and 12.
 
 ### Eli Morgan — Compute Steward
 
@@ -523,12 +527,13 @@ The Compute Steward protects the fairness and operability of the constrained-tra
 - **Operational role:** maintain the reference Colab notebook and parameter checker; publish baseline runtime estimates; clarify compute accounting; record widespread platform outages; and coordinate the approved fallback environment.
 - **Boundary:** the steward verifies resource use and platform behaviour but does not judge the scientific merit of a student's chosen experiment or provide advance grading advice.
 - **Contact:** `compute@slopu.edu.au`; urgent cohort-wide incidents are posted on the course status channel.
+- **Consultation:** Fridays, 11:00–12:00 AET, online through the course site.
 
 A separate Frontier Editor is not included because Frontier Notes are deliberately small and remain the lecturer's responsibility. The Compute Steward is retained because equitable access and budget accounting are central to the course rather than incidental infrastructure.
 
 ## Student-facing Policies page
 
-This section is written at the level required for `src/pages/policies/index.mdx`. It can later be split into short on-page sections without changing the rules.
+The final student-facing wording is now held in `CONTENT_SOURCE.md` at the level required for `src/pages/policies/index.mdx`. It may be split into short on-page sections without changing the rules. Course-authored site and teaching material uses the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International** licence unless a resource states otherwise; third-party material retains its own licence and attribution requirements.
 
 ### 1. Compute allocation
 
@@ -644,7 +649,7 @@ A verified SlopU, GitLab, submission-portal, or course-managed compute outage ma
 
 ### 8. Extensions and late submission
 
-No application form is required by the course-site template. Students request an extension by emailing `llm-training@slopu.edu.au` **before the deadline**, naming the project, requested new deadline, brief reason, and supporting evidence where appropriate. Personal or confidential circumstances may instead be sent to `Easton@gmail.com`. Approval must be received in writing; sending a request does not by itself change the deadline.
+No application form is required by the course-site template. Students request an extension by emailing `llm-training@slopu.edu.au` **before the deadline**, naming the project, requested new deadline, brief reason, and supporting evidence where appropriate. Personal or confidential circumstances may instead be sent to `yiwei.easton@slopu.edu.au`. Approval must be received in writing; sending a request does not by itself change the deadline.
 
 An approved extension carries no late penalty until its revised deadline. Without an approved extension, the submission loses **5% of the marks available for that project per commenced 24-hour period**. Work more than five days late is not accepted unless a formal accessibility or exceptional-circumstances arrangement applies. The timestamp recorded by the SlopU Submission Portal is authoritative.
 
@@ -656,7 +661,7 @@ An approved extension carries no late penalty until its revised deadline. Withou
 - Each project release produces a site announcement, and the site displays a reminder before its deadline.
 - Materials use selectable text, meaningful heading order, alt text for informative images, labelled links, keyboard-accessible controls, and colour choices that do not carry meaning alone. Code and slide downloads provide an alternative to the live presentation view.
 - Students with an approved accessibility adjustment receive materials, timing changes, or an alternative participation route according to that plan without needing to disclose personal details to the class.
-- General questions go to the course forum or `llm-training@slopu.edu.au`; technical environment problems go to `compute@slopu.edu.au`; personal matters may go to `Easton@gmail.com`.
+- General questions go to the course forum or `llm-training@slopu.edu.au`; technical environment problems go to `compute@slopu.edu.au`; personal matters may go to `yiwei.easton@slopu.edu.au`.
 
 ### 10. Unsafe or inappropriate generated content
 
@@ -687,6 +692,8 @@ The course-specific tests should verify that:
 - Project 3 Track B remains arithmetic and arithmetic word-problem answering with its scope defined by `test_pilot`;
 - Project 2 and Project 3A expose the course narrative fallback, and use of a student's earlier checkpoint requires frozen-revision and checksum verification;
 - every evaluation page states five development examples, ten tutor prompts, continuation- or answer-only scoring, \(\lambda=0.1\), and the 25/50 PPL thresholds;
+- task-specific model review retains the published 0–4 anchors, project/track dimension weights, three independent raters for story-based outputs, and adjudication rule;
+- the Project 3 page states that supported Track A tasks need no separate approval and that alternative proposals are due at the end of Week 9 before substantial training;
 - no page asks a student to submit or paste an HF token;
 - every assessment lists a Git commit SHA, HF repository revision, report PDF, and compute ledger as submission fields; and
 - Week 1–12 lecture/lab release links and the three due-week relationships remain present.
@@ -706,15 +713,17 @@ The assessments do not reward indiscriminate experimentation or the largest numb
 
 Final model quality matters, but it is not separable from the quality of the evidence used to claim success.
 
-## Decisions still to finalise
+## Remaining content and operational publication details
 
-The following details have deliberately not been invented or fully settled in this planning brief:
+No assessment-policy decision remains open in this version. The course-materials licence, task-specific review anchors and rater process, and alternative Track A proposal process are settled and written as student-facing copy in `CONTENT_SOURCE.md`.
 
-- the final course-materials licence wording;
+The following items are completed when the corresponding teaching resource is authored or provisioned:
+
 - the exact default architecture and parameter count published in each starter repository;
-- the final file names, versions, and URLs for the Project 1 basic story corpus and the two Project 2 public-domain editions;
+- the final filenames, versions, URLs, and data-card details for the Project 1 story corpus and the two Project 2 public-domain editions;
 - the final Project 3 Track B course-checkpoint identifier and `test_pilot` numeric ranges;
-- the detailed rating anchors and number of independent human raters for each task-specific model-quality criterion;
-- the short proposal/approval process for self-designed Project 3 tasks.
+- the final GitLab, Hugging Face, brief PDF, template, notebook, evaluation-pack, and submission-portal destinations;
+- twelve complete lecture pages and twelve complete lab pages; and
+- the first complete lecture slide deck.
 
-These decisions should be resolved against the now-defined twelve-week schedule, available infrastructure, dataset licences, and the final evaluation harness before the student-facing pages are published.
+These are operational dependencies or teaching-content deliverables, not invitations for the implementation agent to invent missing policy. Until a resource destination exists, the site should state when it will be released or render it as unavailable without a broken placeholder link.
