@@ -6,7 +6,7 @@
 
 Training a language model in practice is a systematic engineering problem under limited compute, data, and time.
 
-The course studies the training of real large language models: contemporary model architectures, data pipelines, pre-training and post-training practice, scaling, efficiency, published successes, and lessons from current research and industry. The 32M-parameter assessment limit does not redefine the subject as small-model training. It creates a miniature experimental setting in which students can operate the pipeline themselves and test large-model engineering ideas within student-scale resources.
+The course studies the training of real large language models: contemporary model architectures, data pipelines, pre-training and post-training practice, scaling, efficiency, published successes, and lessons from current research and industry. The 32M-parameter assessment design target does not redefine the subject as small-model training. It creates a miniature experimental setting in which students can operate the pipeline themselves and test large-model engineering ideas within student-scale resources.
 
 Across three projects, students will experience three stages of language-model development:
 
@@ -16,21 +16,40 @@ Across three projects, students will experience three stages of language-model d
 
 The aim is not to find one universally correct architecture or training recipe. Students must decide what to change, what to hold constant, what they can afford to test, and what evidence would justify the final system.
 
+## Planning and content-source contract
+
+This file records the course's design intent, rationale, component relationships, constraints, and unresolved decisions. Approved wording that should be rendered to students belongs in `CONTENT_SOURCE.md`.
+
+The implementation agent should read both files: use this brief to understand why the course is structured this way, and use `CONTENT_SOURCE.md` for page-ready headings, descriptions, tables, rubrics, and resource labels. It must not turn alternatives or `TBC` notes in this brief into invented student-facing policy. After implementation begins, `src/course-config.ts` becomes canonical for the course code, title, level, teaching period, and dates; course-specific tests protect duplicated facts and promises.
+
 ## Course identity
 
-**Working title:** *Large Language Model Training Under Budget*
+**Formal title:** *Training Language Models: A Budgeted Engineering Task*
 
-**Tagline:** *Frontier practice through 32M-parameter experiments*
+**Tagline:** *Frontier practice through budgeted 32M-scale experiments*
 
-**Primary level:** Fourth-year undergraduate (`SLOP4xxx`, retaining the repository's allocated final three digits), with a postgraduate pathway and differentiated analytical expectations.
+**Course code rule:** `SLOP4xxx`. The leading digit is fixed at 4; implementation retains the final three digits already allocated by the starter repository. This is a repository lookup, not a further course-design decision.
+
+**Primary level:** Fourth-year undergraduate, with a postgraduate pathway and differentiated analytical expectations.
 
 **Tags:** Large Language Models; Training Systems; Compute-Constrained ML.
 
+**Teaching period:** Semester 1, 2027.
+
+| Calendar item | Date |
+| --- | --- |
+| Teaching period begins / Week 1 | Monday 22 February 2027 |
+| Project 1 due / end of Week 4 | Sunday 21 March 2027, 23:59 AET |
+| Mid-semester break | Monday 5–Sunday 11 April 2027 |
+| Project 2 due / end of Week 8 | Sunday 25 April 2027, 23:59 AET |
+| Project 3 due / end of Week 12 | Sunday 23 May 2027, 23:59 AET |
+| Teaching period ends | Sunday 23 May 2027 |
+
 **Course description:**
 
-> Study how modern large language models are really trained, then rebuild the pipeline at a controllable scale: pre-train a narrative model, reshape it through post-training, and specialise it for a defined task under a 32M-parameter ceiling and a fixed compute budget.
+> Study how modern large language models are really trained, then rebuild the pipeline at a controllable scale: pre-train a narrative model, reshape it through post-training, and specialise it for a defined task under a 32M design target and fixed compute budgets.
 
-The title refers to the subject of study, not the parameter count of the submitted checkpoints. The combination of continuously updated frontier material, a fixed 32M experimental ceiling, and three hands-on training stages provides the course's niche scope.
+The title refers to the subject of study, not the parameter count of the submitted checkpoints. The combination of continuously updated frontier material, a 32M experimental design target with a transparent 5% tolerance, and three hands-on training stages provides the course's niche scope.
 
 ## Audience and prerequisites
 
@@ -71,6 +90,17 @@ Postgraduate students are expected to go further in the depth of analysis. Their
 
 The three projects are connected, but they are not a leaderboard. Marks reward deliberate engineering, controlled evidence, reproducibility, and an honest account of what did and did not work. A failed intervention can still support a strong submission when its hypothesis, comparison, evidence, and analysis are sound.
 
+The detailed student-facing rubrics are defined in `CONTENT_SOURCE.md`. Their high-level allocation is:
+
+| Project | Engineering report | Submitted model | Total |
+| --- | ---: | ---: | ---: |
+| Project 1 | 10 | 10 | 20 |
+| Project 2 | 35 | 15 | 50 |
+| Project 3 | 20 | 10 | 30 |
+| **Total** | **65** | **35** | **100** |
+
+This balance keeps checkpoint quality consequential while making planning, controlled experimentation, reproducibility, evaluation, and reflection the principal evidence of learning. There is no class-ranking component and no automatic credit for using a newer or more complex method.
+
 ## Shared platform and constraints
 
 The course provides a readable, working training platform adapted from and attributed to [Karpathy's nanoGPT](https://github.com/karpathy/nanoGPT). Each project is released through an individual private GitLab repository containing:
@@ -87,15 +117,29 @@ The defaults are a starting point, not a prescribed solution. Students may alter
 
 ### Model limit
 
-Every submitted model is limited to **32 million learned parameters**. The count includes token embeddings and output heads and is independent of storage precision. A course-supplied checker will determine compliance.
+Every project is designed around **32 million learned parameters**. The count includes token embeddings and output heads and is independent of storage precision. A published 5% implementation tolerance accepts checkpoints up to and including **33.6 million learned parameters** without penalty; 33.6M is the absolute eligibility boundary. The course-supplied preflight checker prints the learned-parameter count before training and is used again during marking.
 
-The limit exists to make the work comparable and to force meaningful choices about model capacity. Students may explore depth, model width, feed-forward width, attention heads, context length, vocabulary, and other architectural components, but must remain within the limit.
+The limit exists to make the work comparable and to force meaningful choices about model capacity. Students may explore depth, model width, feed-forward width, attention heads, context length, vocabulary, and other architectural components. They should plan to the 32M target rather than discovering an avoidable excess after a long run; models above 33.6M are not eligible for submitted-model marks.
+
+### Default models and starter configurations
+
+The exact default model and starter configuration are published in each project's assigned GitLab repository when that project opens. Each repository contains a working baseline and default training settings, but students may alter parameters, architecture components, tokenizer, data pipeline, sampler, or training configuration where the task permits. The preflight command must display the learned-parameter count and compliance status before any principal training run begins.
 
 ### Compute limit
 
-All students receive the same formal compute allowance. Each project repository contains a locked `budget.json` that states the reference GPU, maximum GPU time, estimated training-FLOP ceiling, and the course baseline-run equivalent. This manifest is published when the project opens and does not change during the submission period except to correct a cohort-wide error.
+All students receive the same formal compute allowance. Each project repository contains a locked `budget.json` stating the reference GPU, maximum T4-equivalent time, training-FLOP ceiling, hardware conversion factors, and course baseline-run equivalent.
 
-Students are expected to budget both final training and exploratory runs. Access to additional private hardware must not create an assessment advantage. Final performance is therefore assessed together with efficiency and evidence rather than as a raw score alone.
+| Project | T4-equivalent GPU-hours | Training-FLOP ceiling | Suggested internal allocation |
+| --- | ---: | ---: | --- |
+| Project 1 | 24 hours | \(4.0\times10^{17}\) | 4 h setup/debug; 8 h pilots; 10 h principal/final runs; 2 h recovery |
+| Project 2 | 18 hours | \(2.5\times10^{17}\) | 3 h transition/debug; 6 h method pilots; 7 h principal/final runs; 2 h recovery |
+| Project 3 | 12 hours | \(1.5\times10^{17}\) | 2 h pipeline debug; 4 h comparison/ablation; 5 h principal/final runs; 1 h recovery |
+
+Both ceilings apply to cumulative project-specific training, including pilots, ablations, failed runs that performed meaningful optimisation, and final runs. The suggested allocations are guidance rather than separate sub-limits. Staff demonstrations and untouched lab toy exercises do not count; project-specific modifications do. Evaluation-only inference is logged separately. The manifests do not change during a submission period except to correct a published cohort-wide error.
+
+For scale, the common approximation \(C\approx6ND\) implies that, at exactly 32M parameters, the three FLOP ceilings correspond to roughly 2.08B, 1.30B, and 0.78B cumulative training-token passes. These are totals across experiments rather than recommended single-run dataset sizes. The repository profiler records the implementation-specific estimate used for compliance.
+
+The budgets deliberately include limited setup, adaptation, and recovery time for students new to the pipeline, but not enough for indiscriminate sweeps. Access to additional private hardware must not create an assessment advantage. Final performance is therefore assessed together with efficiency and evidence rather than as a raw score alone.
 
 ### Working environment
 
@@ -103,17 +147,45 @@ Google Colab is the recommended student environment, with its free GPU allowance
 
 Because free-tier availability can vary, Colab access alone is not the formal fairness mechanism. SlopU provides every enrolled student with up to **USD 50 of course-managed RunPod credit for each project** as the guaranteed fallback. This is a fictional teaching-credit arrangement for the SlopU course and does not require students to purchase a subscription or enter a personal payment card. The credit provides access, not extra assessment compute: Colab, RunPod, paid Colab, and private hardware all remain subject to the same `budget.json` ceiling.
 
-### Data and test integrity
+### Data and evaluation integrity
 
-- Course test material is strictly excluded from training, validation, prompt construction, retrieval, and manual tuning.
+- Course evaluation material is strictly excluded from training, validation, retrieval, tokenizer construction, synthetic-data seeding, sampler tuning, checkpoint selection, and manual output editing.
 - Story data is split at the complete-story or document level, not by randomly separating token windows from the same story.
 - Any additional data must be declared with its source, licence, processing, quantity, and intended purpose.
 - Target-style literature must use material that the course is permitted to redistribute or use, such as verified public-domain editions.
 - Students must discuss filtering, duplication, contamination, and important distribution differences.
 
-### Metrics and tokenizers
+The Project 1 repository supplies a cleaned basic story corpus suitable for narrative pre-training. Project 2 supplies processed, verified public-domain editions of *Grimm's Fairy Tales* and *One Thousand and One Nights*. Versioned splits, provenance, licences, checksums, and preprocessing scripts are included. Students may supplement or replace these corpora with permitted data when they can justify the choice and accept its licensing, preprocessing, contamination, compute, and performance consequences. Extra data earns no automatic credit.
 
-Perplexity may be compared when models use the same tokenizer. If students change the tokenizer, the shared language-modelling comparison will use a tokenizer-independent normalisation such as bits per byte (BPB) on the same held-out raw text. No single automatic metric is treated as a complete measure of generated-story quality.
+### Shared evaluation protocol
+
+Every project releases two clearly separated public resources:
+
+1. **Five development examples with ground truth.** Each includes a prompt and reference continuation or answer. Students use these to run the complete evaluation pipeline, inspect samples, and support clearly labelled qualitative analysis. They do not determine the official model mark.
+2. **Ten tutor-evaluation prompts.** The prompts are public, but their ground-truth continuations or answers are withheld. Each entry is one string: a truncated story prefix for Projects 1 and 2, the relevant narrative input for Project 3 Track A, or the task input for Project 3 Track B. Tutors evaluate the frozen submission on all ten.
+
+The repository includes a pre-training validation script that checks proposed training data for exact matches and likely near-duplicate overlap with the released evaluation prompts. Students must run it before training, retain its output, and resolve or report flagged cases. The script supports due diligence; it does not replace provenance analysis or make contaminated data permissible.
+
+Official perplexity is **continuation- or answer-only**: prompt tokens condition the model but do not contribute to scored negative log-likelihood. Losses are pooled over the ten tutor items before exponentiation. To preserve the fixed thresholds when a student changes tokenizer, the official score is reference-token-normalised:
+
+\[
+P = \exp\left(\frac{\sum_i \operatorname{NLL}_i}{\sum_i N_i^{\mathrm{ref}}}\right),
+\]
+
+where \(N_i^{\mathrm{ref}}\) is the ground-truth target length under the published course reference tokenizer. For the default tokenizer this is ordinary continuation-only perplexity. Students using another tokenizer should additionally report BPB as a diagnostic.
+
+If the submitted-model component is worth \(M\) marks, its PPL portion is:
+
+\[
+S_{\mathrm{PPL}} = \frac{2M}{3}
+\begin{cases}
+1, & P \le 25,\\
+\exp[-0.1(P-25)], & 25 < P < 50,\\
+0, & P \ge 50.
+\end{cases}
+\]
+
+Thus PPL contributes 6⅔ of 10 model marks in Projects 1 and 3, and 10 of 15 model marks in Project 2. The remaining one third is task-specific performance: narrative continuation quality in Project 1; target behaviour, story quality, and retention in Project 2; and the chosen specialist capability in Project 3. For orientation, \(P=35\) retains about 36.8% of the available PPL marks and \(P=45\) retains about 13.5%. Calculations retain full precision until the project total is recorded. No single automatic metric is treated as a complete measure of model quality.
 
 ## Common submission package
 
@@ -141,7 +213,7 @@ The report must explain:
 - limitations and threats to the conclusions; and
 - how the work supports, complicates, or challenges the course premise.
 
-The required report length, exact due dates, and project-specific marking breakdowns are **TBC**. The report format is the supplied CVPR template.
+The report format is the supplied two-column CVPR LaTeX template, which can be edited in Overleaf or a local LaTeX environment. Main-paper limits are 15 pages for Project 1 and 20 pages each for Projects 2 and 3. References and appendix are excluded from these limits. Project 1 is due 21 March 2027, Project 2 is due 25 April 2027, and Project 3 is due 23 May 2027; all deadlines are 23:59 AET.
 
 ## Assessment-page resource design
 
@@ -154,35 +226,35 @@ To keep the pages focused, every Project page presents exactly **six primary res
 | Resource card | Type | Purpose |
 | --- | --- | --- |
 | **1. Full Project Brief** — `project-1-brief.pdf` | Download | Printable mirror of the complete Project 1 webpage. |
-| **2. Project 1 Starter Repository** | Private GitLab link | nanoGPT-based code, default configuration, `budget.json`, preprocessing scripts, compute ledger, submission manifest, and checkpoint packaging guide. |
-| **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | Shared LaTeX template containing the required engineering-report and AI Assistance Statement sections. |
-| **4. Narrative Dataset and Data Card** | Hugging Face link | Course story corpus, versioned split, licence/provenance record, checksums, and preprocessing description. |
+| **2. Project 1 Starter Repository** | Private GitLab link | nanoGPT-based code, default model/configuration, parameter preflight, `budget.json`, preprocessing scripts, compute ledger, submission manifest, and checkpoint packaging guide. |
+| **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | Shared two-column LaTeX template for local use or upload to Overleaf, containing the required engineering-report and AI Assistance Statement sections. |
+| **4. Narrative Dataset and Data Card** | Hugging Face link | Course basic story corpus, versioned split, licence/provenance record, checksums, and reproducible preprocessing description. |
 | **5. Pre-training Colab** — `p1-colab-starter.ipynb` | Download | Supported environment check and an executable path from tokenized data to training, checkpointing, and sampling. |
-| **6. Public Evaluation Pack** — `p1-evaluation-kit.zip` | Download | Public development prompts plus BPB/PPL, repetition, EOS/stopping, and qualitative-review utilities; no hidden tests. |
+| **6. Public Evaluation Pack** — `p1-evaluation-kit.zip` | Download | Five development examples with ground truth, ten tutor prompt strings without ground truth, the separation validator, and PPL/BPB, repetition, EOS/stopping, and qualitative-review utilities. |
 
 ### Project 2 resources
 
 | Resource card | Type | Purpose |
 | --- | --- | --- |
 | **1. Full Project Brief** — `project-2-brief.pdf` | Download | Printable mirror of the complete Project 2 webpage. |
-| **2. Project 2 Starter Repository** | Private GitLab link | Checkpoint-loading pipeline, `budget.json`, data schemas, compute ledger, submission manifest, and supported continued-pre-training/SFT/preference configuration examples. |
+| **2. Project 2 Starter Repository** | Private GitLab link | Default checkpoint/configuration, parameter preflight, checkpoint-loading pipeline, `budget.json`, data schemas, compute ledger, submission manifest, and supported continued-pre-training/SFT/preference examples. |
 | **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | The same report template used across the course; students begin a new report for Project 2. |
-| **4. Target-Style Corpus and Data Card** | Hugging Face link | Processed public-domain fairy-tale baseline, source editions, licence basis, versioned split, checksums, and preprocessing record. |
+| **4. Target-Style Corpus and Data Card** | Hugging Face link | Processed, verified public-domain editions of *Grimm's Fairy Tales* and *One Thousand and One Nights*, with versioned splits, checksums, and preprocessing records. |
 | **5. Post-training Starter Pack** — `p2-post-training-pack.zip` | Download | One Colab notebook plus compact recipes for continued pre-training, SFT, and a toy preference/DPO exercise. |
-| **6. Behaviour Evaluation Pack** — `p2-evaluation-kit.zip` | Download | Public story openings, target-style and retention checks, source-overlap checks, and the blind human-evaluation rubric; no hidden tests. |
+| **6. Behaviour Evaluation Pack** — `p2-evaluation-kit.zip` | Download | Five development examples with ground truth, ten tutor openings without ground truth, the separation validator, target-style and retention checks, and the blinded human-review rubric. |
 
 ### Project 3 resources
 
 | Resource card | Type | Purpose |
 | --- | --- | --- |
 | **1. Full Project Brief** — `project-3-brief.pdf` | Download | Printable mirror covering the common requirements and both specialisation tracks. |
-| **2. Project 3 Starter Repository** | Private GitLab link | Common fine-tuning pipeline, `budget.json`, proposal template, Track A/Track B data schemas, compute ledger, submission manifest, and packaging guide. |
+| **2. Project 3 Starter Repository** | Private GitLab link | Default configurations, parameter preflight, common fine-tuning pipeline, `budget.json`, proposal template, Track A/Track B schemas, Track B `test_pilot`, compute ledger, submission manifest, and packaging guide. |
 | **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | Shared report template containing the common Project 3 rubric structure and AI declaration. |
 | **4. Fine-tuning Starter Pack** — `p3-finetuning-pack.zip` | Download | Supported SFT Colab, response-only masking checks, example task formats, and baseline comparison commands. |
-| **5. Starting Model and Task Data** | Private Hugging Face link | Track A narrative reference checkpoint where offered; Track B general-language checkpoint; approved task data and model/data cards. Students see only resources for their selected track. |
-| **6. Track Evaluation Pack** — `p3-evaluation-kit.zip` | Download | Track A constraint metrics, Track B exact-answer/format verifier, shared regression checks, and public development cases; no hidden tests. |
+| **5. Starting Model and Task Data** | Private Hugging Face link | Course narrative fallback for Track A; general-language checkpoint and arithmetic task data for Track B; model/data cards and checkpoint identifiers. Students see only resources for their selected track. |
+| **6. Track Evaluation Pack** — `p3-evaluation-kit.zip` | Download | Five track-adapted development examples with ground truth, ten tutor inputs without ground truth, the separation validator, Track A constraint metrics, Track B exact-answer/format checks, and shared regression utilities. |
 
-The CVPR template is stored once and linked from all three pages. Large datasets and checkpoints remain in the course Hugging Face organisation rather than the public course-site repository. Hidden tests, reserve sets, marking answers, student submissions, credentials, and personal data never appear in a downloadable pack.
+The CVPR template is stored once and linked from all three pages. Large datasets and checkpoints remain in the course Hugging Face organisation rather than the public course-site repository. Withheld tutor ground truth, clean reserve sets, marking outputs, student submissions, credentials, and personal data never appear in a downloadable pack.
 
 ## Project 1 — Build a Narrative Base Model
 
@@ -196,9 +268,9 @@ This is a narrative-domain base model rather than a claim to broad, general-purp
 
 ### Test design
 
-Hidden test prompts are authentic prefixes truncated from complete held-out stories. They are not isolated sentences written only for testing. The set contains multiple prefix lengths and narrative styles, while remaining within the broad story domain.
+The five development prompts and ten tutor-evaluation prompts are authentic prefixes truncated from complete held-out stories, not isolated sentences written only for testing. They contain varied prefix lengths and narrative styles while remaining within the announced story domain. Development examples include their original continuations; tutor ground truth is withheld.
 
-The unseen original continuation is a reference text, not the only correct answer. Students are not expected to reproduce it. Evaluation considers whether the generated continuation works as a plausible continuation of the prefix.
+The original continuation is a reference text for continuation-only PPL, not the only acceptable story. Students are not expected to reproduce it. The task-specific review asks whether the generated text is a plausible continuation of the prefix.
 
 ### Design space
 
@@ -230,7 +302,7 @@ Project 1 combines:
 - qualitative review of representative and failed samples; and
 - training and inference efficiency.
 
-Exact automatic metrics and the human-review protocol are **TBC**. N-gram overlap with the original continuation will not be treated as a sufficient measure of correctness because many different continuations may be valid.
+The shared PPL rule determines two thirds of the submitted-model component. The remaining third uses blinded story-quality review. N-gram overlap with the original continuation is not treated as a sufficient measure of correctness because many different continuations may be valid.
 
 ## Project 2 — Give the Model a Voice
 
@@ -238,7 +310,7 @@ Exact automatic metrics and the human-review protocol are **TBC**. N-gram overla
 
 ### Task
 
-Starting from the Project 1 narrative checkpoint, post-train the model to produce stories with a recognisable target narrative style, such as a verified public-domain tradition associated with *Grimm's Fairy Tales* or *One Thousand and One Nights*.
+Starting from either the student's frozen Project 1 submission or the course narrative fallback checkpoint, post-train the model to produce stories with a recognisable target narrative style. The supplied target corpora are processed, verified public-domain editions of *Grimm's Fairy Tales* and *One Thousand and One Nights*. Students may use one or both, or justify a permitted supplement or replacement.
 
 The course uses **post-training** in a deliberately broad sense for this project: training performed after the Project 1 pre-training stage to change the model's domain, style, or conditioned behaviour. Students may choose target-domain continued pre-training, supervised instruction tuning, preference-based optimisation, or a justified combination. The method is open; the target behaviour and evaluation obligation are not.
 
@@ -270,7 +342,7 @@ Project 2 may combine:
 - instruction compliance, where the model is instruction-conditioned;
 - repetition, memorisation, and degeneration checks;
 - retention of the Project 1 capability; and
-- blind qualitative comparison on hidden human-written prompts.
+- blinded qualitative comparison on the ten public tutor openings, using withheld continuations and de-identified outputs.
 
 Target-domain perplexity is evidence of distributional adaptation, not by itself proof of coherent storytelling or successful style control.
 
@@ -288,7 +360,7 @@ Both tracks use the same common assessment principles, parameter limit, compute 
 
 ### Track A — Narrative Specialist
 
-Continue from either the student's Project 1 narrative base model or the student's Project 2 post-trained model and add at least one specific, testable capability. The starting checkpoint must be declared and justified. A course narrative reference checkpoint may be offered as a fallback; this policy is **TBC**.
+Continue from either the student's frozen Project 1 narrative model, the student's frozen Project 2 post-trained model, or the course narrative fallback checkpoint, and add at least one specific, testable capability. The starting checkpoint must be declared and justified. Using the course fallback carries no mark penalty.
 
 Project 3 does not require students to inherit Project 2 because a target fairy-tale style is not the principal objective of task specialisation. A student may nevertheless continue from Project 2 when retaining that style is useful. In that case, the inherited style is treated as a pre-existing characteristic to monitor, not as the new Project 3 capability.
 
@@ -305,19 +377,17 @@ One well-investigated primary function is sufficient. Adding more functions does
 
 Pure post-processing or hard-coded decoding is not sufficient as the only specialisation method. If constrained decoding is used, the report must distinguish behaviour learned by the model from behaviour enforced at generation time.
 
-### Track B — Reasoning Specialist
+### Track B — Arithmetic Reasoning Specialist
 
-Start from a course-provided checkpoint with broader general-language pre-training and specialise it for one bounded reasoning or structured question-answering task. The supplied model will remain within the shared model limit.
+Start from the course-provided checkpoint with broader general-language pre-training and specialise it for arithmetic and arithmetic word-problem answering. The supplied model satisfies the shared model-size rule.
 
-Suitable task families may include:
+The fixed task family includes:
 
-- one-step arithmetic word problems;
-- bounded two-step arithmetic problems;
-- numerical comparison;
-- simple unit conversion; or
-- answering a defined question type in a required output schema.
+- ordinary arithmetic operations;
+- direct numerical questions; and
+- short application problems that require both textual interpretation and arithmetic calculation.
 
-The course publishes the task family, input/output format, supported operations, evaluation method, and difficulty range. Concrete assessment questions and selected generalisation cases remain hidden.
+The Project 3 repository's `test_pilot` file publishes the exact prompt/answer schema, supported operations and value ranges, required output format, representative wording, and difficulty range. Formal items use different values and phrasing while remaining within that scope. The course also publishes five worked development examples and ten tutor-evaluation inputs; tutor answers and selected clean reserve cases remain private.
 
 Supervised instruction fine-tuning is the supported baseline. Students may train the model to produce a short rationale or chain-of-thought-style response, but final-answer accuracy, format validity, and generalisation remain primary evidence. Testing new instances or templates from a trained task family is described as held-out generalisation rather than strict zero-shot task performance.
 
@@ -326,6 +396,10 @@ Supervised instruction fine-tuning is the supported baseline. Students may train
 Preference-based methods, including DPO or a genuine RLHF-style pipeline, are optional extensions rather than requirements. Students choosing one must first establish an SFT baseline and make a controlled comparison. Use of a more complex method receives no automatic credit without evidence that its additional data and compute improved the stated target.
 
 Work without actual human preference labels must not be represented as full RLHF.
+
+### Starting-checkpoint declaration and verification
+
+Students declare the selected starting checkpoint in the report and submission manifest. When an earlier personal submission is used, the marker checks its frozen Hugging Face revision, learned-parameter count, tensor shapes, and checksum against the checkpoint submitted for the earlier project. A renamed or later-modified checkpoint is not treated as the same starting model merely because its file size matches. Project 3 Track B always begins from the course general-language checkpoint.
 
 ### Common Project 3 requirements
 
@@ -342,7 +416,7 @@ Regardless of track, students must:
 9. report resource use and meaningful failures; and
 10. explain what the result reveals about task-specific language-model engineering.
 
-The two tracks share a common rubric centred on task definition, data and evaluation design, implementation and reproducibility, controlled evidence, final capability, regression analysis, and reflection. Exact category weights are **TBC**.
+The two tracks share the 30-mark rubric in `CONTENT_SOURCE.md`, centred on task definition, data and evaluation design, implementation and reproducibility, controlled evidence, final capability, generalisation, regression analysis, and reflection. Scores are not compared across tracks.
 
 ## Twelve-week teaching plan
 
@@ -372,7 +446,7 @@ This mapping is sufficient for the planning brief. A separate `content_source.md
 | **1** | **What a language model learns.** Probability over text; next-token prediction; maximum likelihood and cross-entropy; n-gram intuition versus neural language models; train/validation/test roles; perplexity and its limits; the course premise of model–data–compute–time trade-offs. | **Tokens become targets.** Students compare two supplied tokenizers on the same stories, inspect compression and sequence lengths, create shifted input/target batches, calculate one small cross-entropy example, and record one tokenizer trade-off that could affect Project 1. | Establish a valid data split and write the first Project 1 target-and-budget statement. |
 | **2** | **Inside a decoder-only Transformer.** Encoder, encoder–decoder, and decoder-only distinctions; causal masking; self-attention and attention heads; feed-forward layers; residual paths and pre-normalisation; depth, model width, FFN width, head count, vocabulary, and context length; autoregressive generation and the purpose of a KV cache. | **Spend a 32M parameter budget.** Students trace one forward pass and causal mask, use the course parameter checker, then produce two legal architectures with different depth/width allocations. They predict the practical effect of each before running a short smoke test. | Freeze a feasible baseline architecture and identify one affordable architecture comparison. |
 | **3** | **Scale, data, and optimisation under fixed compute.** Parameters (N), tokens (D), and training compute (C); power-law intuition; Kaplan- and Chinchilla-style findings and their limits; data quality, diversity, filtering, duplication, and noise; batch size and gradient accumulation; Adam-style optimisation, learning-rate schedules, warm-up, weight decay, dropout, clipping, training steps, and stability signals. | **Pilot before committing.** Students estimate tokens and runtime for candidate plans, run short controlled pilots with the supplied framework, plot train/validation loss and gradient norms, diagnose one unstable or under-trained run, and choose which experiment is worth the remaining budget. | Submit an internal run plan: hypothesis, controls, stop rule, compute allocation, and expected evidence. |
-| **4** | **Evaluation is part of training.** Document-level hold-out and contamination; checkpoint selection; perplexity versus BPB when tokenizers differ; decoding with temperature, top-k, and top-p; repetition and degeneration; EOS learning and stopping; why a reference continuation is not the only correct story; combining automatic and blind human evaluation. | **Checkpoint and sampler clinic.** Students load multiple checkpoints, apply a shared evaluation script, compare generation settings on fixed prompts, label coherence/repetition/stopping failures, and verify that a fresh process can reload the final package. | **Project 1 due at the end of Week 4.** |
+| **4** | **Evaluation is part of training.** Document-level hold-out and contamination; checkpoint selection; reference-token-normalised PPL and BPB when tokenizers differ; decoding with temperature, top-k, and top-p; repetition and degeneration; EOS learning and stopping; why a reference continuation is not the only correct story; combining automatic and blind human evaluation. | **Checkpoint and sampler clinic.** Students load multiple checkpoints, apply the shared evaluation and separation scripts, compare generation settings on non-assessment prompts, label coherence/repetition/stopping failures, and verify that a fresh process can reload the final package. | **Project 1 due Sunday 21 March 2027, 23:59 AET.** |
 
 ### Block 2 — Shape model behaviour: post-training
 
@@ -381,7 +455,7 @@ This mapping is sufficient for the planning brief. A separate `content_source.md
 | **5** | **Why pre-training is not enough.** Capability versus usable behaviour; base models versus instruction-tuned assistants; target-domain continued pre-training, supervised fine-tuning, and preference-based post-training; what each method supervises; why Project 2 uses a broad definition of post-training. | **Two routes from one checkpoint.** From the same tiny checkpoint, students run a bounded continued-pre-training exercise and a bounded instruction-tuning exercise, then compare data format, loss target, output behaviour, runtime, and likely Project 2 use. | Define the target voice operationally and shortlist a justified post-training route. |
 | **6** | **Instruction data and SFT.** Instruction–response formatting; chat and special-token schemas; response-only loss masking; task count and task diversity; synthetic instruction data and its risks; sensitivity to prompt wording; learning-rate reduction, data mixing, and the risk of overwriting pre-trained behaviour. | **Build and inspect an SFT batch.** Students convert raw examples into a declared schema, visualise which tokens receive loss, train a very small SFT run, probe paraphrased instructions, and compare it with an unmodified starting checkpoint. | Produce a data card, masking check, and pilot result for the chosen Project 2 method. |
 | **7** | **Learning from preferences.** Pairwise preferences; reward models and Bradley–Terry ranking; the SFT–reward-model–policy stages of RLHF; policy-gradient intuition and KL control; RLAIF; DPO as direct preference optimisation; reward hacking, distribution shift, and the cost of added complexity. | **Preference learning without a cluster.** Students label or inspect a small set of story pairs, compute a toy ranking or DPO loss, and run a supplied miniature preference update where feasible. They must identify what evidence would justify choosing it over SFT or continued pre-training. Full PPO-scale RLHF is demonstrated conceptually, not required. | Decide whether preference optimisation is affordable and evidentially useful; method novelty alone is not a reason to use it. |
-| **8** | **Did the behaviour really change?** Operationalising narrative style; held-out target text; blind pairwise judgement; instruction compliance where applicable; memorisation and copying; regression in general narrative ability; multi-objective checkpoint selection; separating target-style perplexity from coherent storytelling. | **Behavioural evaluation clinic.** Students conduct blinded A/B comparisons, run target-style and retention evaluations, audit repeated phrases and source overlap, inspect failures, and rehearse the claim–evidence structure of the report. | **Project 2 due at the end of Week 8.** |
+| **8** | **Did the behaviour really change?** Operationalising narrative style; held-out target text; blind pairwise judgement; instruction compliance where applicable; memorisation and copying; regression in general narrative ability; multi-objective checkpoint selection; separating target-style perplexity from coherent storytelling. | **Behavioural evaluation clinic.** Students conduct blinded A/B comparisons, run target-style and retention evaluations, audit repeated phrases and source overlap, inspect failures, and rehearse the claim–evidence structure of the report. | **Project 2 due Sunday 25 April 2027, 23:59 AET.** |
 
 ### Block 3 — Adapt for a real problem: task-specific fine-tuning
 
@@ -390,7 +464,7 @@ This mapping is sufficient for the planning brief. A separate `content_source.md
 | **9** | **Reasoning as generated behaviour.** Intermediate reasoning tokens; chain-of-thought prompting; why the most likely decoding path need not be the correct path; self-consistency and inference-time compute; final-answer verification; outcome versus process supervision; small-model and benchmark caveats. | **Prompt, sample, verify.** On the supplied general checkpoint, students compare direct answers, short rationales, and multiple sampled solutions for bounded arithmetic tasks. They implement an exact-answer/format verifier and separate reasoning plausibility from final-answer correctness. | Choose Track A or B, define one primary capability, and establish the unchanged-model baseline. |
 | **10** | **Training a specialist.** Task-specific SFT; choosing a starting checkpoint; examples, counterexamples, and curriculum; full fine-tuning versus parameter-efficient adaptation as an engineering choice; structured outputs and special tokens; Track A narrative constraints and Track B bounded reasoning formats. | **Specialist pipeline studio.** Students create a small train/validation split, inspect target masking, perform a dry run, and test one unseen template or condition. Each student leaves with a loadable checkpoint and a working task metric before spending the main budget. | Project 3 proposal checkpoint: target, starting model, data, metric, regression check, comparison, and budget. |
 | **11** | **Generalisation, regressions, and explanations.** Paraphrase and template shift; catastrophic forgetting and capability retention; ablations and matched comparisons; error taxonomies; why an architecture or training change can fail at a different scale; correlation versus a supported mechanism; deeper postgraduate expectations for alternative explanations. | **One change, two consequences.** Students run or complete one controlled ablation, test target performance and one retained capability, classify errors, and write both the strongest supported conclusion and at least one plausible alternative explanation. | Freeze the candidate final checkpoint and identify any unsupported claim that must be removed or qualified. |
-| **12** | **Audit the whole training system.** Reproducibility; checkpoint, configuration, tokenizer, and sampler compatibility; training and inference cost; honest comparison with a baseline; limits of scaling small experiments to frontier systems; reviewing the course premise through public model case studies and student evidence. | **Fresh-environment model audit.** A peer follows the submitted commands, loads the package, reproduces core metrics, and checks parameter/compute declarations. Students then complete a concise engineering retrospective centred on planning, evidence, revision, and remaining uncertainty. | **Project 3 due at the end of Week 12.** |
+| **12** | **Audit the whole training system.** Reproducibility; checkpoint, configuration, tokenizer, and sampler compatibility; training and inference cost; honest comparison with a baseline; limits of scaling small experiments to frontier systems; reviewing the course premise through public model case studies and student evidence. | **Fresh-environment model audit.** A peer follows the submitted commands, loads the package, reproduces core metrics, and checks parameter/compute declarations. Students then complete a concise engineering retrospective centred on planning, evidence, revision, and remaining uncertainty. | **Project 3 due Sunday 23 May 2027, 23:59 AET.** |
 
 ## Frontier material as a lightweight teaching mechanism
 
@@ -465,8 +539,10 @@ For each project, SlopU provides every enrolled student with up to **USD 50 of c
 The monetary credit and the assessed compute allowance are different limits:
 
 - the credit determines how much fallback infrastructure SlopU will fund;
-- the `budget.json` in the project repository defines the maximum assessed computation using reference-GPU time, estimated training FLOPs, and baseline-run equivalents;
+- the `budget.json` defines the maximum assessed computation: Project 1 permits 24 T4-equivalent GPU-hours and \(4.0\times10^{17}\) training FLOPs; Project 2 permits 18 hours and \(2.5\times10^{17}\) FLOPs; Project 3 permits 12 hours and \(1.5\times10^{17}\) FLOPs;
+- both the time and FLOP ceilings apply, using the published hardware conversion factors;
 - all pilots, ablations, failed runs that consumed meaningful compute, and final training runs count;
+- staff demonstrations and unmodified lab toy exercises do not count, but project-specific modified runs do;
 - evaluation-only inference is reported separately and is not silently converted into extra training budget; and
 - paid Colab, private GPUs, or unused credit do not increase the formal allowance.
 
@@ -474,7 +550,9 @@ Students submit the automatically generated compute ledger with the report. Deli
 
 ### 2. Starter code, dataset licences, and additional data
 
-Each project is released as an individual private GitLab repository constructed from the course's attributed adaptation of [Karpathy's nanoGPT](https://github.com/karpathy/nanoGPT). The original licence and attribution remain in the repository. Students clone their assigned repository and may change parameters, the tokenizer, data pipeline, sampler, model architecture, or training framework where the project permits it.
+Each project is released as an individual private GitLab repository constructed from the course's attributed adaptation of [Karpathy's nanoGPT](https://github.com/karpathy/nanoGPT). The original licence and attribution remain in the repository. The repository is the canonical location for the default model and starter configuration. Students clone their assigned repository and may change parameters, the tokenizer, data pipeline, sampler, model architecture, or training framework where the project permits it.
+
+Before training, the supplied preflight command prints the learned-parameter count. The design target is 32M parameters, with a published 5% tolerance and an absolute maximum of 33.6M. Students must check this output before committing compute; a submitted checkpoint above 33.6M is not eligible for model marks.
 
 Every submitted dataset must be lawful to access and suitable for the intended use. The report must identify:
 
@@ -487,7 +565,7 @@ Every submitted dataset must be lawful to access and suitable for the intended u
 - any excluded material and the reason for exclusion; and
 - the role the data was expected to play in the training plan.
 
-Course-provided story and web-text data includes a data card, source record, licence statement, checksum, and reproducible preprocessing script. For the style project, the teaching team also supplies a processed baseline drawn from verified public-domain fairy-tale editions. This is both a usable starting point and an example of how to turn a permitted electronic edition into model-ready text.
+Course-provided story and web-text data includes a data card, source record, licence statement, checksum, and reproducible preprocessing script. Project 1 includes a basic story corpus. Project 2 includes processed, verified public-domain editions of *Grimm's Fairy Tales* and *One Thousand and One Nights*. These are both usable starting points and examples of how to turn permitted electronic editions into model-ready text.
 
 Students are encouraged to locate and process additional data when it supports a clear hypothesis:
 
@@ -499,13 +577,13 @@ Students are encouraged to locate and process additional data when it supports a
 
 The teaching team may reject a source whose licence, privacy risk, or provenance cannot be established. Extra data receives no automatic credit; its value must be demonstrated against its processing and compute cost.
 
-### 3. Hidden-test contamination
+### 3. Evaluation-set contamination
 
-Public development prompts are supplied for iteration. Final marking uses hidden stories, prompts, task instances, and selected generalisation cases that are separated at document or story level.
+Each project supplies five public development examples with ground truth and ten public tutor-evaluation prompts whose ground truth is withheld. All fifteen items are assessment material, separated from permitted corpora at document, story, or task-template level as appropriate. The five development examples support pipeline testing and report analysis; they are not permission to tune against the formal evaluation distribution.
 
-Hidden-test material must not be used for training, validation, retrieval, tokenizer construction, filtering, prompt-template design, sampler tuning, checkpoint selection, or manual editing. Students must not attempt to infer or obtain the hidden set from staff, peers, repository history, network requests, or the marking harness.
+Released prompts, development ground truth, withheld tutor ground truth, and clean reserve cases must not be used for training, validation, retrieval, tokenizer construction, filtering, prompt-template design, synthetic-data seeding, sampler tuning, checkpoint selection, or manual editing. Students must not reconstruct source continuations, search for the withheld answers, or attempt to obtain private material from staff, peers, repository history, network requests, or the marking harness.
 
-If a student accidentally encounters material they believe belongs to the hidden set, they must stop using it and email `llm-training@slopu.edu.au`. Prompt disclosure made promptly and in good faith will be handled as a contamination incident, not concealed misconduct. The teaching team may replace affected items or evaluate the checkpoint on a clean reserve set.
+Before training, students must run the supplied exact- and near-duplicate separation validator on their proposed data and retain its report. If a student discovers likely overlap or encounters material they believe belongs to the withheld or reserve set, they must stop using it and email `llm-training@slopu.edu.au`. Prompt disclosure made promptly and in good faith will be handled as a contamination incident, not concealed misconduct. The teaching team may remove affected items or evaluate the checkpoint on a clean reserve set.
 
 ### 4. Individual work, collaboration, and AI assistance
 
@@ -602,7 +680,13 @@ The course-specific tests should verify that:
 - all three assessment pages link to a submission panel and state that work is individual;
 - each assessment page exposes exactly six primary resource cards, including its full brief, assigned GitLab repository, and CVPR report template;
 - the three weights remain 20%, 50%, and 30%, totalling 100%;
-- the 32M-parameter ceiling and per-project `budget.json` are stated consistently;
+- the report/model allocations remain 10/10, 35/15, and 20/10;
+- the 32M design target, 33.6M hard boundary, and preflight check are stated consistently;
+- the compute limits remain 24/18/12 T4-equivalent GPU-hours with training-FLOP ceilings of \(4.0\times10^{17}\), \(2.5\times10^{17}\), and \(1.5\times10^{17}\);
+- the report limits remain 15/20/20 pages, excluding references and appendix, and the CVPR template is identified as Overleaf-compatible LaTeX;
+- Project 3 Track B remains arithmetic and arithmetic word-problem answering with its scope defined by `test_pilot`;
+- Project 2 and Project 3A expose the course narrative fallback, and use of a student's earlier checkpoint requires frozen-revision and checksum verification;
+- every evaluation page states five development examples, ten tutor prompts, continuation- or answer-only scoring, \(\lambda=0.1\), and the 25/50 PPL thresholds;
 - no page asks a student to submit or paste an HF token;
 - every assessment lists a Git commit SHA, HF repository revision, report PDF, and compute ledger as submission fields; and
 - Week 1–12 lecture/lab release links and the three due-week relationships remain present.
@@ -626,17 +710,11 @@ Final model quality matters, but it is not separable from the quality of the evi
 
 The following details have deliberately not been invented or fully settled in this planning brief:
 
-- the final `SLOP4xxx` suffix, teaching period dates, and project due dates;
 - the final course-materials licence wording;
-- the operational policy for applying differentiated undergraduate and postgraduate expectations;
-- the exact default architecture and parameter count below the 32M ceiling;
-- the numerical reference-GPU time and training-FLOP values to place in each project's `budget.json`;
-- the named Project 1 corpus and its permitted narrative mixture;
-- the Project 2 target corpus or list of approved target traditions;
-- the Project 3 Track B task family;
-- whether a course narrative checkpoint is available for Projects 2 and 3A;
-- exact automatic metrics and the human-evaluation protocol;
-- report lengths and project-specific internal rubric percentages; and
+- the exact default architecture and parameter count published in each starter repository;
+- the final file names, versions, and URLs for the Project 1 basic story corpus and the two Project 2 public-domain editions;
+- the final Project 3 Track B course-checkpoint identifier and `test_pilot` numeric ranges;
+- the detailed rating anchors and number of independent human raters for each task-specific model-quality criterion;
 - the short proposal/approval process for self-designed Project 3 tasks.
 
 These decisions should be resolved against the now-defined twelve-week schedule, available infrastructure, dataset licences, and the final evaluation harness before the student-facing pages are published.
