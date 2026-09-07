@@ -16,16 +16,19 @@ At this stage, I have designed and prepared the implementation-ready content fou
 
 > **Current status:** Course design and student-facing content are complete
 > ([`521bce9`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/521bce9)–[`a2e4cfa`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/a2e4cfa)).
-> Implementation is underway in staged commits: harness rule capture
+> All six staged implementation phases are complete: harness rule capture
 > ([`410bd40`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/410bd40)),
 > configuration/navigation/Home/People/Policies
 > ([`8368b0f`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/8368b0f)),
 > assessments/resources/submission panels
 > ([`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)),
-> and the twelve lectures and twelve sessions
-> ([`383702e`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/383702e)).
-> The deck and weekly imagery and the final responsive/accessibility pass
-> have not yet been carried out and must be appended when they occur.
+> the twelve lectures and twelve sessions
+> ([`383702e`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/383702e)),
+> the Week 3 deck, weekly banners, and downloadable resources
+> ([`bb030f1`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/bb030f1)),
+> and the responsive/accessibility/consistency refinement pass
+> ([`b53e725`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/b53e725)–[`a894303`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/a894303)).
+> `pnpm check` and the deployed CI `checks` workflow are both green.
 
 ## How I got here
 
@@ -760,6 +763,47 @@ registry would have made the deliberate registry-before-files authoring
 sequence (`ASSIGNMENT_BRIEF.md`'s documented 7-step production order) much
 harder to express — the registry is supposed to be able to describe a
 resource before its file exists yet.
+
+#### Post-Stage-6 — CI fix: missing Playwright browser on the GitHub Actions runner
+
+**Problem:** After pushing Stage 6's commits, the `checks` GitHub Actions
+workflow started failing on every push to `main`, despite `pnpm check`
+passing locally (86/86) moments before each of those commits.
+
+**Directed via:** user message "pushed. whats next" — not a specific
+diagnosis instruction; investigating CI state and fixing what's found is
+the direct implication of CLAUDE.md's "never commit a red state."
+
+**Agent's result fell short because:** the newly-added
+`spec/resource-download-browser.test.ts` (from Stage 6) launches a real
+Chromium via Playwright. My dev machine already had Playwright's browsers
+installed from earlier interactive testing, so the test passed locally
+without ever exposing that the CI runner image ships only the `playwright`
+npm package, not the browser binary — `gh run view --log-failed` showed
+`browserType.launch: Executable doesn't exist at
+.../chrome-headless-shell-linux64/chrome-headless-shell`.
+
+**Considered and rejected:** reverting or skipping the browser test in CI
+(e.g. an `if: false`/environment guard) to make the workflow green again
+without touching the runner setup. Rejected outright — CLAUDE.md's rule
+against ever skipping or weakening a test applies regardless of which
+environment exposed the gap; the runner was missing a dependency, the test
+itself was not wrong.
+
+**My decision:** add the missing dependency instead of routing around the
+test — `pnpm exec playwright install --with-deps chromium` as a workflow
+step, scoped to just Chromium since that is the only browser the suite
+launches.
+
+**Fix/iterate:** one edit to `.github/workflows/checks.yml` (one new step
+before "Build and run the spec"), one round.
+
+**Verified by:** pushed as `a894303`, then watched the resulting
+`checks` run via `gh run list --json ... --jq` until it reported
+`status: completed`; confirmed `conclusion: success` for that commit's run
+specifically (not just "the workflow ran") before reporting completion.
+
+**Evidence:** [`a894303`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/a894303).
 
 ## Before you ship
 
