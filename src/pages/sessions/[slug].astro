@@ -15,6 +15,12 @@ export async function getStaticPaths() {
 
 const { session } = Astro.props;
 const { Content } = await render(session);
+
+const sessionTypeLabels = {
+  guided: "Guided session",
+  lab: "Formal lab",
+  clinic: "Drop-in clinic",
+} as const;
 ---
 
 <ContentLayout
@@ -22,7 +28,10 @@ const { Content } = await render(session);
   description={session.data.description}
   {...siteConfig}
 >
-  <p><strong>{formatCourseDate(session.data.date)}</strong></p>
+  <p>
+    <strong>{formatCourseDate(session.data.date)}</strong> ·{" "}
+    {sessionTypeLabels[session.data.sessionType]}
+  </p>
   <Content />
   <SpecList spec={session.data.spec}>
     What you bring to the session. Written so a reader can tell whether it has

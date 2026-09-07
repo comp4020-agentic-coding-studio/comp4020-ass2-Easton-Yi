@@ -6,6 +6,12 @@ import { formatCourseDate } from "../lib/dates";
 
 const sessions = await getPublishedCollection("sessions");
 const visible = sessions.sort((a, b) => a.data.week - b.data.week);
+
+const sessionTypeLabels = {
+  guided: "Guided session",
+  lab: "Formal lab",
+  clinic: "Drop-in clinic",
+} as const;
 ---
 
 <CardGrid columns={2}>
@@ -14,7 +20,10 @@ const visible = sessions.sort((a, b) => a.data.week - b.data.week);
       <Card headingLevel="h2" title={session.data.title} href={`/sessions/${session.id}/`}>
         {session.data.description && <p>{session.data.description}</p>}
         <p>
-          <small>Week {session.data.week} · {formatCourseDate(session.data.date)}</small>
+          <small>
+            Week {session.data.week} · {formatCourseDate(session.data.date)} ·{" "}
+            {sessionTypeLabels[session.data.sessionType]}
+          </small>
         </p>
       </Card>
     ))

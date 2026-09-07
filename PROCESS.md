@@ -20,11 +20,12 @@ At this stage, I have designed and prepared the implementation-ready content fou
 > ([`410bd40`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/410bd40)),
 > configuration/navigation/Home/People/Policies
 > ([`8368b0f`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/8368b0f)),
-> and assessments/resources/submission panels
-> ([`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)).
-> Twelve lectures and sessions, the deck and weekly imagery, and the final
-> responsive/accessibility pass have not yet been carried out and must be
-> appended when they occur.
+> assessments/resources/submission panels
+> ([`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)),
+> and the twelve lectures and twelve sessions
+> ([`<stage4-sha>`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/<stage4-sha>)).
+> The deck and weekly imagery and the final responsive/accessibility pass
+> have not yet been carried out and must be appended when they occur.
 
 ## How I got here
 
@@ -480,10 +481,89 @@ same reason.
 spec files); the `.gitignore`/harness-rule groundwork for this stage is
 [`410bd40`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/410bd40).
 
-<!-- Stage 4 (twelve lectures and sessions), Stage 5 (deck, weekly imagery,
-downloadable resources), and Stage 6 (responsive/accessibility/consistency
-refinement) are not yet implemented; entries for those stages, screenshots,
-and the closing structural-alternative reflection remain to be appended. -->
+#### Stage 4 — twelve lectures and twelve sessions
+
+**Problem:** Turn all twelve weeks of `docs/CONTENT_SOURCE.md`'s approved
+lecture and practical-session copy into real content-collection entries, so
+that `spec/brief.test.ts`'s pre-existing "runs across twelve dated teaching
+weeks" assertion (disclosed as a known Stage-3 gap — only 2 of 12 sessions
+existed) can pass, and so the assignment brief's required course-contract
+test table (`docs/ASSIGNMENT_BRIEF.md` line 874) has a test file backing it.
+
+**Directed via:** "Continue into Stage 4" (direct order; full Stage 4 scope
+as listed in `CLAUDE.md`'s staged workflow, no further clarification
+requested).
+
+**Agent's result fell short because:** Two content-fidelity errors were
+self-caught, not user-reported.
+
+1. `week-05.md` was first drafted from memory — a plausible but wrong
+   framing ("behaviour taxonomy and a frozen baseline log") that did not
+   match `docs/CONTENT_SOURCE.md`'s actual Week 5 section (the real content:
+   capability vs. elicited behaviour, and three post-training routes —
+   continued pre-training, SFT, preference learning). Caught before commit by
+   re-reading the source against the draft.
+2. `week-06.md`'s lecture `teachers:` field was set to `maya-rao` by wrong
+   analogy with its accompanying Formal Lab 2 session (which Maya does
+   teach). The established pattern from weeks 1–3 is that every LECTURE is
+   taught by Yiwei Easton as Course Convenor regardless of that week's
+   session type; only the SESSION entries for labs/clinics belong to Maya.
+
+**Considered and rejected:** Leaving both as first-drafted and treating the
+mismatch as a formatting variant. Rejected because CLAUDE.md's rule against
+inventing a parallel curriculum, and the brief's rule about preserving
+approved meaning, both apply to content correctness, not just page
+structure — a plausible paraphrase that changes the taught concept is a
+worse failure than an obviously wrong page, because it would pass casual
+review.
+
+**My decision:** Re-read the exact canonical source for every remaining
+lecture and session (weeks 4, 6–12, and all 12 session files) before writing
+each one, rather than continuing to draft from memory and fix afterwards.
+This is a process change I made mid-stage, not something the agent proposed.
+
+**Fix/iterate:** `week-05.md` rewritten in full via one `Write` to match
+`docs/CONTENT_SOURCE.md` lines 1128–1176 exactly. `week-06.md`'s `teachers:`
+field corrected via one `Edit` (`maya-rao` → `yiwei-easton`). One round each;
+no further content mismatches were found on review of weeks 4, 7–12, or any
+of the 12 session files against source.
+
+**Verified by:** `pnpm typecheck` (0 errors), `pnpm build` (39 pages, course
+API regenerated at 31 nodes / 53 edges, no broken links, no accessibility
+violations), `pnpm test` (7 files, 82 tests passing, including the
+previously-failing `spec/brief.test.ts` twelve-week assertion and the new
+`spec/course-contract.test.ts`), `pnpm check` (clean), `pnpm resources:check`
+(all 12 backing files still valid — unaffected by this stage), and
+`pnpm check:evidence` (only the three pre-existing, Stage-5-scoped items
+remain flagged: `week-01.deck.mdx`'s STARTER_CONTENT comment,
+`index.astro`'s hero-artwork STARTER_CONTENT comment, and the starter
+`card.png`/`hero-home.avif` images — none introduced or touched by Stage 4).
+Direct Chromium inspection at both 1920×1080 and 390×844 of one lecture page,
+one formal-lab session, one guided session, and one drop-in-clinic session
+confirmed zero horizontal overflow at either viewport and correct rendering
+of the per-page `sessionType` label ("Formal lab" / "Drop-in clinic")
+alongside the shared "Labs" nav term.
+
+**Evidence:** [`<stage4-sha>`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/<stage4-sha>)
+(twelve lecture files, twelve session files replacing the two starter
+sessions, `spec/course-contract.test.ts`, and small session-display component
+touch-ups).
+
+**Disclosed process gap:** `PROCESS_LOG.md` (the gitignored, contemporaneous
+working log CLAUDE.md's harness calls for) was not kept turn-by-turn during
+this stage's content-authoring work — a session interruption ("API Error:
+The response stopped arriving") meant the log was not started before the
+bulk of Stage 4's lecture/session files were already drafted, and the
+account above was reconstructed from the actual file diffs and the two
+self-caught errors rather than from a live log. This is named here rather
+than backfilled with invented timestamps, per CLAUDE.md's instruction that
+"memory reconstructed after the fact is not evidence." `PROCESS_LOG.md` is
+kept from this point forward for Stage 5 and Stage 6.
+
+<!-- Stage 5 (deck, weekly imagery, downloadable resources) and Stage 6
+(responsive/accessibility/consistency refinement) are not yet implemented;
+entries for those stages, screenshots, and the closing structural-alternative
+reflection remain to be appended. -->
 
 ## Before you ship
 

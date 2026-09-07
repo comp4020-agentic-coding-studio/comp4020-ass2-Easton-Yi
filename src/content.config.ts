@@ -39,6 +39,7 @@ export const collections = {
         week: weekSchema,
         date: z.coerce.date(),
         teachers: teacherRefs.optional(),
+        sessionType: z.enum(["guided", "lab", "clinic"]),
       })
       .loose(),
   }),
