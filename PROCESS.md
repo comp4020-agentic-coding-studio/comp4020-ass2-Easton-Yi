@@ -653,9 +653,113 @@ Deferred to Stage 6 ("responsive, accessibility, and consistency
 refinement"), where generic cross-site branding work belongs thematically,
 rather than silently expanding Stage 5's scope or silently dropping it.
 
-<!-- Stage 6 (responsive/accessibility/consistency refinement) is not yet
-implemented; its entry, screenshots, and the closing structural-alternative
-reflection remain to be appended. -->
+#### Stage 6 — responsive, accessibility, and consistency refinement
+
+**Problem:** Finish the deferred Stage-5 branding gap, add the browser-level
+download smoke test `ASSIGNMENT_BRIEF.md` line 882 requires, and audit the
+whole site for horizontal overflow, keyboard reachability, and heading
+order at both marking viewports, per CLAUDE.md's Stage 6 scope.
+
+**Directed via:** "start stage 6" (direct order; full Stage 6 scope as
+documented in CLAUDE.md's staged workflow, no further clarification
+requested).
+
+**Agent's result fell short because — deferred branding:** nothing was
+wrong; the Stage 5 placeholders (`hero-home.avif`, `card.png`,
+`week-01.deck.mdx`'s STARTER_CONTENT) were replaced cleanly with original
+artwork and a complete first deck on the first pass.
+
+**Considered and rejected — building the download-smoke-test's future-dated
+preview inside the test file's own `beforeAll`:** this is how the file was
+first written. Spawning `astro build` as a child process from inside a
+running Vitest process produced ~400 spurious base-path-link violations on
+every run, reproducibly, against zero violations for the identical command
+run standalone — true across every worker-pool config, stdio mode, and
+Vitest/Tinypool env var tried. Real time was spent trying to actually
+diagnose the Vitest/Astro/Vite interaction rather than work around it,
+without reaching a real answer.
+
+**My decision:** stop chasing the diagnosis and decouple the preview build
+into its own `pnpm resources:preview-build` shell step, run before `vitest
+run spec` starts (`package.json`'s `test` script) — a correct fix exists
+regardless of the cause, and the test file's own `beforeAll` now just
+checks the build already exists, with an actionable error naming the
+script if not.
+
+**A second bug found along the way, not part of the original ask:** a
+temporary diagnostic added while investigating the above surfaced that
+`resource-manifest.ts`'s `PUBLIC_DIR` was resolved via
+`fileURLToPath(new URL("../../public/", import.meta.url))`, which Astro's
+SSG build resolves against the *bundled* module location, not the
+project's real `public/` — every local-download resource would have
+rendered "unavailable" the instant its real release date passed, currently
+invisible only because every real release date is still in the future.
+Fixed by resolving `PUBLIC_DIR` from `process.cwd()` instead (stable for
+both `astro build` and `astro dev`).
+
+**A third, unrelated defect found by the Stage 6 audit itself:** the
+Playwright heading-tag sweep found `/people/`, `/assessments/`, and
+`/lectures/` rendering with **no `<h1>` at all** (headings starting at h2
+or h3), while `/schedule/` and `/sessions/` were correctly headed.
+**Considered and rejected:** giving each page a `heroImage` so the theme's
+`<Hero>` component (which needs both `heroTitle` **and** `heroImage` to
+render) would fire — rejected as a bigger, more decision-laden content
+change than the defect warranted, and it would leave any future no-image
+overview page carrying the same landmine. **My decision:** drop the dead
+`heroTitle` frontmatter and add a real Markdown `# heading` in the page
+body instead, matching `/policies/`'s already-correct convention; also
+bumped two now-orphaned h3 sections on `/people/` to h2 so the new h1
+isn't followed by a skipped level.
+
+**Fix/iterate:** preview-build decoupling — one `package.json` edit plus a
+rewritten `beforeAll`/`afterAll` in the test file, several rounds fixing
+a base-path-stripping 404 in the test's static server and a
+`response.text()` hang specific to Chromium's JSON viewer (worked around
+with a separate `context.request.get()` call) before all three assertions
+passed reliably. `PUBLIC_DIR` fix: one line, one round. Heading fix: one
+`Edit` per page, one round each.
+
+**Verified by:** full Playwright audit script across 8 representative
+pages (home, people, policies, assessments overview + a project detail
+page, schedule, a lecture week, a session) at both 1920×1080 and 390×844 —
+zero horizontal overflow on all 16 combinations, and after the heading
+fix, every page emits exactly one `<h1>` first with no skipped levels;
+direct visual inspection (not just the grep) of the fixed pages'
+screenshots at both viewports; `pnpm check` (typecheck 0 errors/0
+warnings; `resources:check` 12/12; 86/86 tests across 8 files, including
+the new browser smoke test) and `pnpm build` (40 pages, "no accessibility
+violations", "all internal links respect base", no broken links) with no
+regressions; the real committed `dist/` build re-checked to confirm the
+`PUBLIC_DIR` fix does not leak an early "available" state onto the
+submitted site (still correctly "scheduled").
+
+**Evidence:** [`b53e725`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/b53e725)
+(deferred branding — hero/card artwork, Week 1 deck),
+[`9a6ad7a`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/9a6ad7a)
+(download smoke test, decoupled preview build, `PUBLIC_DIR` fix),
+[`8787485`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/8787485)
+(heading-order fix on People/Assessment/Lectures).
+
+**Structural alternative for the whole build:** the site's downloadable
+resources (briefs, evaluation packs, notebooks) are all static files
+served from a hand-authored typed registry (`resource-manifest.ts`)
+checked against the filesystem at render time. A different structure
+would have generated that registry from the resource files themselves —
+walking `public/resources/` at build time and inferring kind/state from
+file extension and a sidecar metadata file, rather than authoring each
+entry by hand alongside a separately-tracked release date. That would
+remove the possibility of a manifest entry drifting out of sync with what
+actually exists on disk (the exact class of bug `PUBLIC_DIR` turned out to
+belong to) and would scale better if the number of resources grew well
+past the current fixed set of three projects × five-or-so resources each.
+It was not taken because the manifest's fixed, small size makes hand
+authorship easy to review at a glance, the registry needs fields (audience-
+facing `actionLabel`, group ordering, an `unavailableReason` string) that
+don't have an obvious filesystem-derived source, and a filesystem-driven
+registry would have made the deliberate registry-before-files authoring
+sequence (`ASSIGNMENT_BRIEF.md`'s documented 7-step production order) much
+harder to express — the registry is supposed to be able to describe a
+resource before its file exists yet.
 
 ## Before you ship
 
