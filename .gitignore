@@ -8,6 +8,10 @@ dist/
 # staging dir for the CI link check
 linkcheck/
 
+# process-logging harness: append-only working log, never marked; the
+# curated distillation cited to commits lives in PROCESS.md instead
+PROCESS_LOG.md
+
 # editor and OS junk
 .DS_Store
 ._*

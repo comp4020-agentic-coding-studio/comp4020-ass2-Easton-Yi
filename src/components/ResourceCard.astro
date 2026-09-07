@@ -1,0 +1,85 @@
+---
+import { withBase } from "astro-theme-university/url";
+import { resourceState, type ResourceEntry } from "../data/resource-manifest";
+
+interface Props {
+  entry: ResourceEntry;
+}
+
+const { entry } = Astro.props;
+const state = resourceState(entry);
+
+const releaseText = new Intl.DateTimeFormat("en-AU", {
+  dateStyle: "long",
+  timeStyle: "short",
+  timeZone: "Australia/Sydney",
+}).format(entry.releaseAt);
+
+const serviceName = entry.kind === "gitlab" ? "GitLab" : "Hugging Face";
+---
+
+<li class="resource-card" data-resource-id={entry.id} data-resource-state={state} data-resource-kind={entry.kind}>
+  <p class="resource-card__title">{entry.title}</p>
+  <p class="resource-card__description">{entry.description}</p>
+  {
+    state === "available" && entry.localPath && (
+      <a class="resource-card__action" href={withBase(`/${entry.localPath}`)}>
+        {entry.actionLabel}
+      </a>
+    )
+  }
+  {
+    state === "access-controlled" && entry.externalUrl && (
+      <>
+        <p class="resource-card__status">Released {releaseText} AET</p>
+        <a class="resource-card__action" href={entry.externalUrl}>
+          Sign in to open — {serviceName}
+        </a>
+      </>
+    )
+  }
+  {
+    state === "scheduled" && <p class="resource-card__status">Will be available at {releaseText} AET</p>
+  }
+  {state === "unavailable" && <p class="resource-card__status">Not yet available — {entry.unavailableReason}.</p>}
+</li>
+
+<style>
+  .resource-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: var(--at-radius, 0.5rem);
+  }
+
+  .resource-card__title {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .resource-card__description {
+    margin: 0;
+    color: var(--at-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .resource-card__status {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--at-text-secondary);
+  }
+
+  .resource-card__action {
+    margin-block-start: 0.2rem;
+    align-self: flex-start;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .resource-card__action:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+</style>

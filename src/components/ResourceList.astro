@@ -1,0 +1,58 @@
+---
+import ResourceCard from "./ResourceCard.astro";
+import { RESOURCE_GROUP_ORDER, resourcesForProject } from "../data/resource-manifest";
+
+interface Props {
+  project: 1 | 2 | 3;
+}
+
+const { project } = Astro.props;
+const entries = resourcesForProject(project);
+---
+
+<section class="resource-list" aria-labelledby="resources-heading">
+  <h2 id="resources-heading">Resources</h2>
+  {
+    RESOURCE_GROUP_ORDER.map((group) => {
+      const groupEntries = entries.filter((entry) => entry.group === group);
+      if (groupEntries.length === 0) return null;
+      return (
+        <div class="resource-list__group">
+          <h3>{group}</h3>
+          <ul class="resource-list__cards">
+            {groupEntries.map((entry) => (
+              <ResourceCard entry={entry} />
+            ))}
+          </ul>
+        </div>
+      );
+    })
+  }
+</section>
+
+<style>
+  .resource-list__group {
+    margin-block-end: 1.5rem;
+  }
+
+  .resource-list__group h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .resource-list__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .resource-list__cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

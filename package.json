@@ -8,8 +8,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
-    "check": "pnpm typecheck && pnpm test",
+    "check": "pnpm typecheck && pnpm resources:check && pnpm test",
     "check:evidence": "node scripts/check-evidence.ts",
+    "resources:build": "node scripts/resources/build.ts",
+    "resources:build:briefs": "astro build && node scripts/resources/build-briefs.ts",
+    "resources:check": "node scripts/resources/check.ts",
     "test": "pnpm build && vitest run spec",
     "test:template": "vitest run scripts"
   },
@@ -28,6 +31,7 @@
     "@types/node": "^24.0.0",
     "lightningcss": "^1.32.0",
     "pagefind": "^1.5.2",
+    "playwright": "^1.63.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },
