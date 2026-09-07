@@ -1,6 +1,6 @@
 # Website Content Source
 
-> **Status:** Canonical student-facing copy in development. Course identity and dates, Home, assessment tasks and rubrics, evaluation rules, Policies, People, all twelve lecture pages, three formal labs, three drop-in clinics, and the first complete slide deck are approved and ready for implementation. Final repository, dataset, checkpoint, and submission URLs are inserted when the corresponding course resources are published.
+> **Status:** Canonical student-facing copy in development. Course identity and dates, Home, assessment tasks and rubrics, evaluation rules, Policies, People, all twelve lecture pages, twelve weekly session entries (three formal labs, three drop-in clinics, and six lightweight guided sessions), weekly banner briefs, submission panels, and the first complete slide deck are approved and ready for implementation. Final repository, dataset, checkpoint, image, and submission URLs are inserted when the corresponding course resources are published.
 
 ## Purpose and source-of-truth rules
 
@@ -23,12 +23,13 @@ Implementation rules:
 - Essential task requirements and rubrics must remain readable on the webpage. A PDF brief is a downloadable mirror, not the sole source.
 - If an implemented page conflicts with this file, fix the page or explicitly update this file and the associated course test in the same change.
 - Facts owned by `course-config.ts`, especially dates and the course code, should be referenced rather than manually duplicated where the template permits.
+- Read and implement the verification contract in `assignment_brief.md`; do not delete, skip, or weaken a shipped test to make the content fit.
 
 ## Home page
 
 ### Hero
 
-**Course label:** `SLOP4xxx · Semester 1, 2027`
+**Course label:** `SLOP4225 · Semester 1, 2027`
 
 **Hero heading:** Training Language Models: A Budgeted Engineering Task
 
@@ -93,6 +94,7 @@ The course provides working starter repositories, versioned data, Colab notebook
 - **Lectures** connect mechanisms, public evidence, and the decisions students must make at 32M scale.
 - **Labs** run in Weeks 2, 6, and 10. Each turns a central mechanism into a bounded, carefully supported exercise: read it, run it, inspect it, change one thing, and transfer the result into the current project.
 - **Drop-in clinics** run in Weeks 3, 7, and 11. Bring evidence from your own project: a configuration, curve, comparison, output pair, failed command, or proposed claim. Clinics help you diagnose and decide; they do not choose an assessed method for you.
+- **Guided sessions** run in the remaining six teaching weeks. These short launch, validation, evaluation, and packaging activities connect the lecture, lab, and project without creating extra graded work.
 - **Projects** assess the resulting engineering judgement through a reproducible report and a frozen submitted checkpoint.
 - **Frontier Notes** occasionally introduce a relevant new paper or model report. They are optional and are never silently added to assessed prerequisite knowledge.
 
@@ -108,9 +110,9 @@ Training begins with the target, not the training loop. In Week 1, you will turn
 | Label | Destination | Purpose |
 | --- | --- | --- |
 | Home | Course home | Course identity, value, pathway, and current starting point |
-| Schedule | Twelve-week schedule | One chronological view of lectures, three labs, three drop-in clinics, project milestones, and the break |
+| Schedule | Twelve-week schedule | One chronological view of lectures, twelve weekly sessions, project milestones, and the break |
 | Lectures | Lecture index | Weekly teaching pages, readings, slides, and Frontier Notes |
-| Labs | Practical-sessions index | The three formal labs and three drop-in clinics, with preparation, activities, expected outputs, and release information |
+| Labs | Practical-sessions index | Three formal labs, three drop-in clinics, and six lightweight guided sessions, with preparation, activities, expected outputs, and release information |
 | Assessments | Assessment index | Project briefs, rubrics, resources, due dates, and submission panels |
 | Policies | Policies page | Rules covering compute, data, evaluation, submission, support, and privacy |
 | People | People page | Teaching roles, contact routing, and consultation times |
@@ -124,7 +126,7 @@ Use the same labels in desktop and mobile navigation. The current section may be
 | Field | Approved value |
 | --- | --- |
 | Title | **Training Language Models: A Budgeted Engineering Task** |
-| Code | `SLOP4xxx`: retain the starter repository's allocated final three digits and keep the leading digit as 4 |
+| Code | `SLOP4225` |
 | Description | Study how modern language models are trained, then rebuild the pipeline at a controllable scale: pre-train a narrative model, reshape it through post-training, and specialise it for a defined task under a 32M design target and fixed compute budgets. |
 | Tags | Large Language Models; Training Systems; Compute-Constrained ML |
 | Level | Fourth-year undergraduate with a postgraduate pathway |
@@ -268,6 +270,59 @@ The teaching team evaluates the frozen Hugging Face revision submitted before th
 - Evaluation contamination, undeclared external weights, fabricated evidence, or deliberate compute-accounting circumvention is handled under academic-integrity procedures rather than as a normal performance deduction.
 - Models are not ranked against classmates. Tutor-evaluation metrics and blinded human judgements are interpreted against the published task criteria.
 
+### Submission panels
+
+The course website shows when each submission opens and links to the authenticated **SlopU Submission Portal**. The website does not upload work or collect credentials. Only the portal can display a personal submission state.
+
+| Project | Opens | Due | Report filename |
+| --- | --- | --- | --- |
+| Project 1 | Monday 1 March 2027, 00:00 AET | Sunday 21 March 2027, 23:59 AET | `ass1_report.pdf` |
+| Project 2 | Monday 22 March 2027, 00:00 AET | Sunday 25 April 2027, 23:59 AET | `ass2_report.pdf` |
+| Project 3 | Monday 26 April 2027, 00:00 AET | Sunday 23 May 2027, 23:59 AET | `ass3_report.pdf` |
+
+Each panel uses the following states:
+
+- **Before opening:** `Will be available at <opening date and time>.`
+- **Open with no recorded attempt:** `To be submitted`
+- **Successful submission:** `Submitted` together with the portal receipt time and frozen repository identifiers.
+
+The static website renders the first state and the portal link according to the calendar. The authenticated portal renders `To be submitted` and `Submitted`; the public site must not guess or simulate a student's submission status.
+
+#### Required portal fields
+
+1. Upload the correctly named report PDF. The first page must include your full name and student ID.
+2. Enter the final GitLab commit SHA.
+
+The frozen GitLab revision is the submission pointer. Its `submission-manifest.json` records the assigned private Hugging Face repository ID, exact frozen model revision, checkpoint checksum, and `compute-ledger.json` path. The model package contains the checkpoint and every component required to load it. You do not re-enter the Hugging Face repository or upload model files through the portal.
+
+> **Never paste an HF access token into the course site, portal, report, repository, or model package.** Use your own credential locally to upload. Marker access is granted through the SlopU Hugging Face organisation.
+
+**Primary action after opening:** Open SlopU Submission Portal  
+**Supporting action:** Review the submission checklist
+
+### Resource-card release states
+
+Every assessment displays exactly six primary resource entries as compact list-style cards: two columns on wide screens and one column on narrow screens. Group them as **Start here**, **Data and model**, **Evaluate**, and **Submit**. Each entry contains one title, one short description, a type/state label, and one clearly named action; do not display a raw URL.
+
+A resource entry has one clear state:
+
+- **Available:** show `Open resource` or `Download`.
+- **Scheduled:** show `Will be available at <date and time>` without a dead link.
+- **Access controlled:** show `Sign in to open` and identify GitLab or Hugging Face.
+- **Unavailable:** state which course resource is still being provisioned; do not show an invented or `#` URL.
+
+The webpage contains the full task and rubric. A downloadable brief is a printable mirror generated from the same approved content after implementation, not a separate authority. Large datasets and checkpoints stay in private GitLab or Hugging Face repositories.
+
+| Project resource release | Scheduled time |
+| --- | --- |
+| Project 1 six-card resource set | Monday 22 February 2027, 09:00 AET |
+| Project 2 six-card resource set | Monday 22 March 2027, 09:00 AET |
+| Project 3 six-card resource set | Monday 26 April 2027, 09:00 AET |
+
+Before the scheduled time, each card uses its `Scheduled` message. After release, local files use `Download`, private GitLab/Hugging Face resources use `Sign in to open`, and any genuinely unprovisioned item remains `Unavailable` with an explanation. Submission-panel opening times are separate and appear in the table above.
+
+Use the resource title as the accessible link name and keep the action text specific: `Download brief`, `Open GitLab repository`, `Open dataset`, `Download notebook`, `Download starter pack`, `Download evaluation pack`, or `Download template`. The entire visual card may be clickable only when it produces one keyboard-focusable link with a visible focus state; do not nest a second link or button inside it.
+
 ### Undergraduate and postgraduate expectations
 
 All students use the same task, infrastructure, and marking allocation. Undergraduate work can earn full marks through a valid system, appropriate controlled evidence, and careful analysis at the level taught in the course.
@@ -355,12 +410,25 @@ Blinded review considers fluency, connection to the given characters, events, an
 
 ### Six resource cards
 
-1. Full Project Brief PDF
-2. Project 1 Starter Repository
-3. CVPR Report Template
-4. Narrative Dataset and Data Card
-5. Pre-training Colab
-6. Public Evaluation Pack
+| Group | Resource | Short description | Action after release |
+| --- | --- | --- | --- |
+| Start here | **Full Project Brief** | Printable copy of the complete task, constraints, evaluation rules, and rubric. | Download brief |
+| Start here | **Project 1 Starter Repository** | Assigned code, default configuration, parameter preflight, budget ledger, and submission manifest. | Open GitLab repository |
+| Data and model | **Narrative Dataset and Data Card** | Versioned story corpus with provenance, licence, document-level splits, checksums, and preprocessing notes. | Open dataset |
+| Data and model | **Pre-training Colab** | Supported route from environment validation to tokenisation, training, checkpointing, evaluation, and sampling. | Download notebook |
+| Evaluate | **Public Evaluation Pack** | Five development examples, ten tutor prompts, separation validator, and public evaluation utilities. | Download evaluation pack |
+| Submit | **CVPR Report Template** | Shared two-column LaTeX template with the required engineering-report and AI Assistance Statement sections. | Download template |
+
+### Project 1 submission panel
+
+**Status before opening:** Will be available at Monday 1 March 2027, 00:00 AET.  
+**Status after opening, before submission:** To be submitted  
+**Status after receipt:** Submitted  
+**Due:** Sunday 21 March 2027, 23:59 AET
+
+Upload `ass1_report.pdf` and enter the final GitLab commit SHA. Your name and student ID must appear on the report's first page. The frozen commit's `submission-manifest.json` identifies the exact private Hugging Face model revision used for marking. Do not paste an HF token.
+
+**Action:** Open SlopU Submission Portal
 
 ---
 
@@ -449,12 +517,25 @@ Blinded review asks whether readers can consistently recognise the operationally
 
 ### Six resource cards
 
-1. Full Project Brief PDF
-2. Project 2 Starter Repository
-3. CVPR Report Template
-4. Target-Style Corpus and Data Card
-5. Post-training Starter Pack
-6. Behaviour Evaluation Pack
+| Group | Resource | Short description | Action after release |
+| --- | --- | --- | --- |
+| Start here | **Full Project Brief** | Printable copy of the complete task, constraints, evaluation rules, and rubric. | Download brief |
+| Start here | **Project 2 Starter Repository** | Assigned post-training code, starting-checkpoint loader, budget ledger, schemas, and submission manifest. | Open GitLab repository |
+| Data and model | **Target-Style Corpus and Data Card** | Versioned public-domain Grimm and *One Thousand and One Nights* data with provenance, splits, and checksums. | Open dataset |
+| Data and model | **Post-training Starter Pack** | Supported Colab and compact recipes for continued pre-training, SFT, masking inspection, and a toy preference exercise. | Download starter pack |
+| Evaluate | **Behaviour Evaluation Pack** | Five development examples, ten tutor prompts, separation validator, blind-review anchors, and retention checks. | Download evaluation pack |
+| Submit | **CVPR Report Template** | Shared two-column LaTeX template with the required engineering-report and AI Assistance Statement sections. | Download template |
+
+### Project 2 submission panel
+
+**Status before opening:** Will be available at Monday 22 March 2027, 00:00 AET.  
+**Status after opening, before submission:** To be submitted  
+**Status after receipt:** Submitted  
+**Due:** Sunday 25 April 2027, 23:59 AET
+
+Upload `ass2_report.pdf` and enter the final GitLab commit SHA. Your name and student ID must appear on the report's first page. The frozen commit's `submission-manifest.json` identifies the exact private Hugging Face model revision used for marking. Do not paste an HF token.
+
+**Action:** Open SlopU Submission Portal
 
 ---
 
@@ -560,12 +641,25 @@ For Track A, review combines objective constraint satisfaction with story qualit
 
 ### Six resource cards
 
-1. Full Project Brief PDF
-2. Project 3 Starter Repository
-3. CVPR Report Template
-4. Fine-tuning Starter Pack
-5. Starting Model and Task Data
-6. Track Evaluation Pack
+| Group | Resource | Short description | Action after release |
+| --- | --- | --- | --- |
+| Start here | **Full Project Brief** | Printable copy of the common task, both tracks, constraints, evaluation rules, and rubric. | Download brief |
+| Start here | **Project 3 Starter Repository** | Assigned fine-tuning code, proposal template, task schemas, `test_pilot`, budget ledger, and submission manifest. | Open GitLab repository |
+| Data and model | **Starting Model and Task Data** | Track-specific fallback checkpoint and data cards; Track B includes the general-language checkpoint and arithmetic data. | Open assigned resources |
+| Data and model | **Fine-tuning Starter Pack** | Supported SFT Colab, response-only masking checks, example task records, and baseline commands. | Download starter pack |
+| Evaluate | **Track Evaluation Pack** | Five development examples, ten tutor inputs, separation validator, task verifier, and regression utilities. | Download evaluation pack |
+| Submit | **CVPR Report Template** | Shared two-column LaTeX template with the required engineering-report and AI Assistance Statement sections. | Download template |
+
+### Project 3 submission panel
+
+**Status before opening:** Will be available at Monday 26 April 2027, 00:00 AET.  
+**Status after opening, before submission:** To be submitted  
+**Status after receipt:** Submitted  
+**Due:** Sunday 23 May 2027, 23:59 AET
+
+Upload `ass3_report.pdf` and enter the final GitLab commit SHA. Your name and student ID must appear on the report's first page. The frozen commit's `submission-manifest.json` identifies the exact private Hugging Face model revision used for marking. Do not paste an HF token.
+
+**Action:** Open SlopU Submission Portal
 
 ---
 
@@ -644,7 +738,7 @@ The monetary credit and assessed compute allowance are different limits:
 - evaluation-only inference is reported separately and is not silently converted into extra training budget; and
 - paid Colab, private GPUs, or unused credit do not increase the formal allowance.
 
-Students submit the automatically generated compute ledger with the report. Deliberately disabling or altering accounting is an academic-integrity breach. A calculation error made in good faith should be reported rather than hidden.
+Students include the automatically generated `compute-ledger.json` in the frozen GitLab and Hugging Face packages and summarise it in the report. Deliberately disabling or altering accounting is an academic-integrity breach. A calculation error made in good faith should be reported rather than hidden.
 
 ### 2. Starter code, dataset licences, and additional data
 
@@ -710,13 +804,17 @@ Students may be asked to load the submitted model, explain a code path, or discu
 
 Each assessment page contains its own submission panel showing the opening time, deadline, required files, and submission status. Because the course site is a static GitHub Pages site, the panel links to the authenticated **SlopU Submission Portal**; it does not upload files or collect credentials directly.
 
+Project 1 opens Monday 1 March 2027 at 00:00 AET; Project 2 opens Monday 22 March 2027 at 00:00 AET; and Project 3 opens Monday 26 April 2027 at 00:00 AET. Before opening, the page states when the panel will become available. Once open, the authenticated portal displays **To be submitted** until a successful receipt exists, then **Submitted** with the receipt time and frozen identifiers.
+
 Before the deadline, students must:
 
 1. push the final code, configuration, preprocessing scripts, and evaluation commands to the default branch of their assigned private GitLab repository;
 2. record the final Git commit SHA;
 3. upload the model package to the private Hugging Face model repository provisioned for that student and project inside the SlopU organisation;
 4. verify that the course marking service account can read the exact submitted Hugging Face revision; and
-5. submit one CVPR-format report PDF, the GitLab commit SHA, the Hugging Face repository URL and revision, and the compute ledger through the project submission panel.
+5. upload `ass1_report.pdf`, `ass2_report.pdf`, or `ass3_report.pdf` as appropriate and enter the final GitLab commit SHA through the project submission panel.
+
+The report's first page must include the student's full name and student ID. The frozen GitLab revision's `submission-manifest.json` records the assigned Hugging Face repository ID, exact model revision, checkpoint checksum, and compute-ledger path. `compute-ledger.json` remains inside the frozen GitLab revision and Hugging Face package rather than being uploaded as a second portal attachment.
 
 The Hugging Face package must contain:
 
@@ -775,33 +873,54 @@ Prompts and evaluation examples must not contain real personal data. Students mu
 
 ## Teaching schedule and weekly lecture pages
 
-The course is taught as three four-week engineering cycles. Each cycle begins with a model or behaviour question, gives students one deep practical lab in its second week, provides a project clinic in its third week, and ends with evaluation and submission in its fourth week.
+The course is taught as three four-week engineering cycles. Every teaching week has one session entry, but the format follows the work students need at that point: six lightweight guided sessions, three deep practical labs, and three evidence-led drop-in clinics. Each cycle begins with a launch or scoping session, gives students one deep lab in its second week, provides a project clinic in its third week, and ends with a short evaluation and submission audit.
 
 | Stage | Weeks | Central question | Formal support | Assessment milestone |
 | --- | --- | --- | --- | --- |
-| Build language ability | 1–4 | How should a small decoder-only model divide capacity, data, and compute to learn narrative continuation? | Lab 1 in Week 2; Project 1 clinic in Week 3 | Project 1 due end of Week 4 |
-| Shape model behaviour | 5–8 | Which post-training signal changes the target behaviour, and what existing ability does it risk damaging? | Lab 2 in Week 6; Project 2 clinic in Week 7 | Project 2 due end of Week 8 |
-| Build a specialist | 9–12 | How can a permitted checkpoint acquire one verifiable capability and generalise beyond its training templates? | Lab 3 in Week 10; Project 3 clinic in Week 11 | Project 3 due end of Week 12 |
+| Build language ability | 1–4 | How should a small decoder-only model divide capacity, data, and compute to learn narrative continuation? | Guided launch/audit in Weeks 1 and 4; Lab 1 in Week 2; clinic in Week 3 | Project 1 due end of Week 4 |
+| Shape model behaviour | 5–8 | Which post-training signal changes the target behaviour, and what existing ability does it risk damaging? | Guided launch/audit in Weeks 5 and 8; Lab 2 in Week 6; clinic in Week 7 | Project 2 due end of Week 8 |
+| Build a specialist | 9–12 | How can a permitted checkpoint acquire one verifiable capability and generalise beyond its training templates? | Guided launch/audit in Weeks 9 and 12; Lab 3 in Week 10; clinic in Week 11 | Project 3 due end of Week 12 |
 
-There is no formal lab in submission weeks. The time is deliberately left for evaluation, packaging, report writing, and consultation rather than a new disconnected exercise.
+There is no formal lab in submission weeks. Their guided sessions are short checklists for evaluation, packaging, and fresh-load verification rather than new disconnected exercises.
 
 ### Schedule-page table
 
 | Week | Week beginning | Lecture | Practical/support session | Milestone |
 | ---: | --- | --- | --- | --- |
-| 1 | 22 February | What a Language Model Learns | No formal session | Project 1 opens; validate data and define the target |
+| 1 | 22 February | What a Language Model Learns | **Guided:** Project 1 Launch and Data Validation | Project 1 released; validate data and define the target |
 | 2 | 1 March | Inside a Decoder-Only Transformer | **Lab 1:** Spend a 32M Parameter Budget | Freeze a feasible baseline architecture |
 | 3 | 8 March | Scale, Data, and Optimisation Under Fixed Compute | **Drop-in:** Project 1 Pilot Clinic | Freeze the principal run plan |
-| 4 | 15 March | Evaluate, Decode, and Package a Base Model | Protected evaluation/submission time | **Project 1 due 21 March, 23:59 AET** |
-| 5 | 22 March | From a Base Model to a Target Behaviour | No formal session | Project 2 opens; define the target voice and baseline |
+| 4 | 15 March | Evaluate, Decode, and Package a Base Model | **Guided:** Project 1 Evaluation and Packaging | **Project 1 due 21 March, 23:59 AET** |
+| 5 | 22 March | From a Base Model to a Target Behaviour | **Guided:** Project 2 Target and Baseline Planning | Project 2 opens; define the target voice and baseline |
 | 6 | 29 March | Supervised Fine-Tuning and Data That Teaches Behaviour | **Lab 2:** Build and Inspect a Post-Training Batch | Produce a masking check and viable pilot |
 | — | 5 April | **Mid-semester break, 5–11 April** | No teaching | Preserve logs and checkpoints outside the runtime |
 | 7 | 12 April | Learning from Preferences Without Hiding the Cost | **Drop-in:** Project 2 Behaviour Clinic | Freeze the evaluation comparison |
-| 8 | 19 April | Did the Behaviour Change, and What Regressed? | Protected evaluation/submission time | **Project 2 due 25 April, 23:59 AET** |
-| 9 | 26 April | Reasoning as Generated and Verifiable Behaviour | No formal session | Project 3 opens; proposal due 2 May for alternative Track A tasks |
+| 8 | 19 April | Did the Behaviour Change, and What Regressed? | **Guided:** Project 2 Blind Evaluation and Packaging | **Project 2 due 25 April, 23:59 AET** |
+| 9 | 26 April | Reasoning as Generated and Verifiable Behaviour | **Guided:** Project 3 Task Contract and Baseline | Project 3 opens; proposal due 2 May for alternative Track A tasks |
 | 10 | 3 May | Train a Specialist That Can Be Tested | **Lab 3:** Train and Verify a Specialist | Produce one loadable pilot and valid metric |
 | 11 | 10 May | Generalisation, Supervision, and One Honest Ablation | **Drop-in:** Project 3 Generalisation Clinic | Freeze the candidate checkpoint and bounded claim |
-| 12 | 17 May | Audit the Training System | Protected evaluation/submission time | **Project 3 due 23 May, 23:59 AET** |
+| 12 | 17 May | Audit the Training System | **Guided:** Project 3 Fresh-Load Audit and Submission | **Project 3 due 23 May, 23:59 AET** |
+
+### Weekly banner briefs
+
+Place one wide landscape banner below the week/title metadata and above the lecture summary. Keep a consistent approximately 3:1 desktop crop and a responsive crop that preserves the main subject on mobile. The image is a visual entry point to the week's most important idea, not generic “AI” decoration.
+
+| Week | Banner search brief | Alt/caption intent |
+| ---: | --- | --- |
+| 1 | next-token probability over a token sequence | Show that a prefix conditions a distribution over possible next tokens. |
+| 2 | causal self-attention or decoder-only Transformer flow | Identify the causal direction and the part of the model students inspect in Lab 1. |
+| 3 | scaling curves or iso-compute model/data allocation | Emphasise allocation under fixed compute rather than “bigger is always better.” |
+| 4 | decoding branches, checkpoint evaluation, or automatic-plus-human review | Connect a frozen model to multiple forms of evidence. |
+| 5 | base model becoming a target-behaviour model | Make the pre-training/post-training transition visible. |
+| 6 | instruction/response tokens with response-only loss masking | Distinguish context tokens from supervised response targets. |
+| 7 | pairwise preferences, DPO, or policy/reward/reference relationships | Show the comparison signal without implying that all preference learning is RLHF. |
+| 8 | target behaviour and retention as a multi-objective trade-off | Visualise improvement and regression being assessed together. |
+| 9 | chain-of-thought candidates, self-consistency, and final-answer verification | Show several generated paths feeding a verifiable answer. |
+| 10 | task-specific fine-tuning examples flowing through a verifier | Connect task contract, training records, output parser, and metric. |
+| 11 | template shift, generalisation slices, ablation, or regression testing | Show that one aggregate score can hide different failure regions. |
+| 12 | reproducibility chain from data/code revisions to a loadable checkpoint | Present the submission as an auditable system of linked artefacts. |
+
+For each chosen asset, store a local optimised copy and record original URL, title/creator, licence or reuse basis, access date, crop/edit, alt text, and visible credit. Prefer original paper/author figures or openly licensed technical illustrations. Use meaningful alt text and a visible caption when the image conveys knowledge; only a genuinely decorative photograph receives empty alt text. Do not hotlink or ship the starter's default artwork.
 
 ### Week 1 — What a Language Model Learns
 
@@ -1405,6 +1524,199 @@ A strong retrospective names the original plan, the observation that challenged 
 
 ---
 
+## Lightweight guided-session pages
+
+These six self-directed sessions make the practical collection cover Weeks 1–12 without turning every week into a second lecture. They are ungraded, take 35–60 minutes, and produce a small project artefact or completed audit. Launch sessions use an immediate self-check; deadline sessions use a submission checklist. There is no delayed model solution.
+
+### Week 1 — Project 1 Launch and Data Validation
+
+**Week:** 1  
+**Estimated active time:** 45 minutes  
+**Release:** Monday 22 February 2027 at 09:00 AET  
+**Solution release:** immediate completion checklist; no model solution
+
+#### Learning goals
+
+- locate the canonical brief, starter repository, data card, and evaluation pack;
+- verify the supported environment and data checksums;
+- distinguish document-level training, validation, development, and tutor-evaluation material; and
+- state one bounded Project 1 target before selecting an architecture.
+
+#### Preparation
+
+Read the Project 1 page and the Week 1 lecture. Accept the assigned GitLab repository and confirm that no credential, private key, or HF token is stored in the working directory.
+
+#### Activity
+
+1. Run the CPU environment check and record the installed framework/CUDA state.
+2. Read the dataset card, verify the supplied checksum, and generate `data_summary.json`.
+3. Inspect the document-level split and run the exact/near-duplicate separation validator.
+4. Run the untouched tokenizer/data smoke test without beginning a principal training run.
+5. Write a 120-word target statement naming the intended continuation behaviour, one failure to monitor, and the initial compute reservation.
+
+#### Expected output and self-check
+
+Retain the environment report, `data_summary.json`, separation-validator output, and target statement. You are ready for Lab 1 only if the split is document-level, all flagged overlap has been resolved or reported, and the target describes observable behaviour rather than “get the lowest loss.”
+
+---
+
+### Week 4 — Project 1 Evaluation and Packaging
+
+**Week:** 4  
+**Estimated active time:** 60 minutes  
+**Release:** Monday 15 March 2027 at 09:00 AET  
+**Solution release:** immediate submission checklist; no model solution
+
+#### Learning goals
+
+- run the released evaluation pipeline without tuning against evaluation items;
+- verify that the candidate checkpoint loads outside notebook state; and
+- reconcile the report, compute ledger, code revision, and model package.
+
+#### Preparation
+
+Freeze a candidate checkpoint and decoding configuration. Stop principal training before beginning this audit; the session introduces no new method.
+
+#### Activity
+
+1. Run all five development examples and retain unedited outputs with decoding settings.
+2. Run the public PPL/BPB, repetition, and stopping checks; label development evidence correctly.
+3. Load the checkpoint in a fresh process and reproduce one output from the documented command.
+4. Verify parameter count, `compute-ledger.json`, tokenizer, sampler, checksums, GitLab commit, and HF revision.
+5. Complete the rubric-evidence map and the `ass1_report.pdf`/portal checklist.
+
+#### Expected output and self-check
+
+Retain one fresh-load log, evaluation summary, final manifest, and completed checklist. Do not submit if the documented command loads different weights, the report names a different revision, or any secret appears in the package.
+
+---
+
+### Week 5 — Project 2 Target and Baseline Planning
+
+**Week:** 5  
+**Estimated active time:** 45 minutes  
+**Release:** Monday 22 March 2027 at 09:00 AET  
+**Solution release:** immediate completion checklist; no model solution
+
+#### Learning goals
+
+- define a target voice in observable dimensions;
+- verify the provenance and role of target-style data;
+- freeze the unchanged starting-checkpoint baseline; and
+- cost one viable post-training route before training.
+
+#### Preparation
+
+Read the Project 2 brief and Week 5 lecture. Choose a permitted personal Project 1 checkpoint or the course narrative fallback and record its frozen revision.
+
+#### Activity
+
+1. Translate the target voice into three to five behavioural indicators and one unacceptable failure.
+2. Inspect the supplied public-domain editions, licences, story boundaries, and source-level split.
+3. Generate unchanged-checkpoint outputs on the allowed baseline prompts and record decoding settings.
+4. Compare continued pre-training, SFT, and preference-based routes against available data and compute.
+5. Write a one-page plan containing the selected route, minimum baseline, retention measure, pilot, and stop rule.
+
+#### Expected output and self-check
+
+Retain the target contract, source record, unchanged baseline, and costed plan. The plan is ready only if another reader could decide whether the claimed style changed and whether narrative ability regressed.
+
+---
+
+### Week 8 — Project 2 Blind Evaluation and Packaging
+
+**Week:** 8  
+**Estimated active time:** 60 minutes  
+**Release:** Monday 19 April 2027 at 09:00 AET  
+**Solution release:** immediate submission checklist; no model solution
+
+#### Learning goals
+
+- compare the unchanged and tuned checkpoints under blinded, matched conditions;
+- interpret target gain together with retention, copying, and degeneration; and
+- package a reproducible Project 2 submission.
+
+#### Preparation
+
+Freeze the candidate checkpoint, unchanged baseline, generation settings, and evaluation prompts before viewing the comparison.
+
+#### Activity
+
+1. Generate matched, de-identified output pairs and run the published rating/metric procedure.
+2. Complete the target-versus-retention table and record uncertainty or rater disagreement.
+3. Run source-overlap, repetition, malformed-stopping, and prompt-paraphrase checks.
+4. Reload the final checkpoint in a clean process and verify the documented generation command.
+5. Reconcile the evidence map, `compute-ledger.json`, model card, checksums, `ass2_report.pdf`, and portal fields.
+
+#### Expected output and self-check
+
+Retain the blind comparison, retention table, integrity checks, fresh-load log, and final manifest. A style improvement does not justify selection if the output is unusable, copied, or supported only by favourable prompts.
+
+---
+
+### Week 9 — Project 3 Task Contract and Baseline
+
+**Week:** 9  
+**Estimated active time:** 45 minutes  
+**Release:** Monday 26 April 2027 at 09:00 AET  
+**Solution release:** immediate completion checklist; no model solution
+
+#### Learning goals
+
+- choose a permitted track and one bounded target behaviour;
+- write valid input, output, metric, and out-of-scope conditions;
+- establish the unchanged starting-model baseline; and
+- identify whether a Track A proposal is required.
+
+#### Preparation
+
+Read the Project 3 page. Track B students inspect `test_pilot`; Track A students select a supported capability or begin the one-page alternative proposal.
+
+#### Activity
+
+1. State the task contract, parser/validity gate, primary metric, generalisation slice, and regression metric.
+2. Record the exact permitted starting checkpoint and run its unchanged baseline.
+3. Inspect the proposed split at source/template level and run the separation validator.
+4. Allocate the 12-hour/\(1.5\times10^{17}\)-FLOP budget across dry run, comparison, final run, and recovery.
+5. If proposing an alternative Track A task, freeze and submit `proposal.md` by Sunday 2 May at 23:59 AET; do not exceed the permitted 0.5-hour pre-approval dry run.
+
+#### Expected output and self-check
+
+Retain one task-contract table, baseline report, split validation, and compute plan. The task is ready only if correctness can be distinguished from formatting and the generalisation case is not a renamed training template.
+
+---
+
+### Week 12 — Project 3 Fresh-Load Audit and Submission
+
+**Week:** 12  
+**Estimated active time:** 60 minutes  
+**Release:** Monday 17 May 2027 at 09:00 AET  
+**Solution release:** immediate submission checklist; no model solution
+
+#### Learning goals
+
+- reproduce the final specialist in a clean environment;
+- rerun task, shifted-slice, and regression evaluation from frozen revisions; and
+- submit one internally consistent evidence chain.
+
+#### Preparation
+
+Freeze the candidate checkpoint, parser/verifier, decoding settings, and evaluation configuration. This session is an audit, not permission for an unplanned final sweep.
+
+#### Activity
+
+1. Create a fresh environment and load the exact HF revision using only documented files and commands.
+2. Run valid and invalid format edge cases, the primary metric, one shifted slice, and one retained-capability check.
+3. Reconcile parameter preflight, compute ledger, data/code/model revisions, checksums, and report tables.
+4. Confirm that the SlopU marking account can read the frozen private repository without receiving a token.
+5. Complete the `ass3_report.pdf` and authenticated portal checklist; save the receipt after submission.
+
+#### Expected output and self-check
+
+Retain the clean-environment log, final metric table, regression result, manifest, and receipt. The package is ready only if the report, code, model card, portal identifiers, and reproduced outputs all refer to the same frozen system.
+
+---
+
 ## Formal lab pages
 
 Formal labs occur once per project cycle, in the second week. They are intentionally deeper than a weekly sequence of small exercises. Each uses supplied toy data and a bounded run; unchanged staff demonstrations do not consume the student's assessed compute allowance.
@@ -1623,12 +1935,15 @@ Drop-in clinics are not additional lectures or graded checkpoints. They are evid
 - Project 1 student-facing summary and detailed rubric;
 - Project 2 student-facing summary and detailed rubric;
 - Project 3 student-facing summary and detailed rubric;
-- the six resource-card labels for each Project;
+- the grouping, title, concise description, state behaviour, and action label for all six Project resources;
+- the three page-level submission panels, opening/due dates, report filenames, safe repository fields, and release/status copy;
+- the four resource-card release states and canonical webpage-to-PDF publication workflow;
 - all eleven Policies sections and the course-materials licence statement;
 - People page biographies, responsibility boundaries, contact routing, and consultation times;
 - the navigation labels and cross-page call-to-action wording;
 - twelve page-ready lecture entries with summaries, outcomes, section content, readings, slide labels, and weekly actions;
-- three page-ready formal labs and three evidence-led drop-in clinics; and
+- twelve page-ready session entries: three formal labs, three evidence-led drop-in clinics, and six lightweight guided sessions;
+- twelve weekly banner search briefs, accessibility intent, and attribution requirements; and
 - the complete eighteen-slide Week 3 deck specification and source register.
 
 ### Remaining content and publication details
@@ -1637,7 +1952,9 @@ Drop-in clinics are not additional lectures or graded checkpoints. They are evid
 - exact default model configurations published through the project repositories;
 - final Project 3 Track B course-checkpoint identifier and `test_pilot` numeric ranges;
 - final GitLab, Hugging Face, brief PDF, template, notebook, evaluation-pack, and submission-portal destinations;
-- implementation of the twelve approved lecture pages, three formal lab pages, and three drop-in clinic pages; and
+- selection, licensing, local storage, and attribution of the twelve approved banner images;
+- generation of three printable assessment PDFs from the implemented canonical pages;
+- implementation of the twelve approved lecture pages and twelve session pages; and
 - implementation of the approved Week 3 slide deck as a working `.deck.mdx` file.
 
 The repository, dataset, checkpoint, and submission destinations are operational publication details rather than open course-design decisions. Until a destination exists, the implemented site should display its release timing or unavailable state without inventing a URL or shipping a broken placeholder link.

@@ -1,6 +1,6 @@
 # Assessment Brief
 
-> **Planning status:** Consolidated course-assessment and teaching plan. The course identity, calendar, assessment structure, evaluation and human-review rules, Policies, People, twelve lecture pages, three formal labs, three drop-in clinics, and the first complete slide deck are settled. Exact external resource identifiers and URLs are inserted when those resources are published.
+> **Planning status:** Consolidated course-assessment and teaching plan. The course identity, calendar, assessment structure, evaluation and human-review rules, Policies, People, twelve lecture pages, twelve weekly session entries (three formal labs, three drop-in clinics, and six lightweight guided sessions), the weekly visual system, and the first complete slide deck are settled. Exact external resource identifiers and URLs are inserted when those resources are published.
 
 ## Course premise
 
@@ -28,7 +28,7 @@ The implementation agent should read both files: use this brief to understand wh
 
 **Tagline:** *Frontier practice through budgeted 32M-scale experiments*
 
-**Course code rule:** `SLOP4xxx`. The leading digit is fixed at 4; implementation retains the final three digits already allocated by the starter repository. This is a repository lookup, not a further course-design decision.
+**Course code:** `SLOP4225`. The course is fourth-year (`4`) and retains the starter repository's allocated suffix (`225`).
 
 **Primary level:** Fourth-year undergraduate, with a postgraduate pathway and differentiated analytical expectations.
 
@@ -202,6 +202,8 @@ Each project submission includes:
 7. training logs, evaluation outputs, and selected generated examples; and
 8. an engineering report.
 
+The model package, logs, and compute ledger are stored with the frozen GitLab/Hugging Face submission rather than uploaded as additional portal attachments. The portal remains deliberately small: one report upload and one final GitLab commit SHA. The frozen GitLab revision's `submission-manifest.json` identifies the assigned private Hugging Face repository and exact model revision. Students grant repository access through the SlopU Hugging Face organisation; they never paste an access token into the portal or course site.
+
 The report must explain:
 
 - the original analysis and plan;
@@ -257,6 +259,64 @@ To keep the pages focused, every Project page presents exactly **six primary res
 | **6. Track Evaluation Pack** — `p3-evaluation-kit.zip` | Download | Five track-adapted development examples with ground truth, ten tutor inputs without ground truth, the separation validator, Track A constraint metrics, Track B exact-answer/format checks, and shared regression utilities. |
 
 The CVPR template is stored once and linked from all three pages. Large datasets and checkpoints remain in the course Hugging Face organisation rather than the public course-site repository. Withheld tutor ground truth, clean reserve sets, marking outputs, student submissions, credentials, and personal data never appear in a downloadable pack.
+
+### Publication workflow and resource states
+
+The rendered assessment page is the canonical task statement. The three printable brief PDFs are generated only after their page content is stable, from the same approved content source, and are stored under `public/resources/project-1/`, `project-2/`, and `project-3/`; they are not maintained as a second independent version of the rules. The shared CVPR template is stored once under `public/resources/shared/`. Small notebooks and evaluation packs also live under the relevant project directory, while large datasets, checkpoints, and student-specific repositories remain access-controlled on Hugging Face or GitLab.
+
+During implementation, a resource card must use one of four explicit states:
+
+- **Available** — show a working `Open` or `Download` action;
+- **Scheduled** — show `Will be available at <date and time>` and no dead link;
+- **Access controlled** — show the release time and explain that SlopU sign-in is required; or
+- **Unavailable** — explain the dependency that is still being provisioned and do not invent a URL.
+
+Placeholder `#` links, invented external destinations, and downloadable files whose contents disagree with the webpage are not acceptable. Base-path-safe internal links and the physical existence of every downloadable file are build-time checks.
+
+This ordering lets the implementation agent build accurate page structure and release states first. The three PDF mirrors can then be exported from the completed assessment pages and committed without asking the student author to hand-maintain six copies of the same policy.
+
+### Resource registry and rendering contract
+
+Create one typed registry at `src/data/resource-manifest.ts` and render all assessment resources through one reusable compact list-card component. Do not copy six hard-coded links independently into each page. Every entry contains:
+
+- a stable ID and Project number;
+- one of the four approved groups: `Start here`, `Data and model`, `Evaluate`, or `Submit`;
+- the exact title, short description, and action label from `CONTENT_SOURCE.md`;
+- resource kind (`local-download`, `gitlab`, or `huggingface`);
+- release time and state;
+- an optional relative local path or verified external destination; and
+- file/source metadata needed by the checks.
+
+Store local paths without a leading slash, for example `resources/project-1/project-1-brief.pdf`, and resolve them through Astro's configured base path. A rendered available/access-controlled entry carries stable `data-resource-id`, `data-resource-state`, and `data-resource-kind` attributes for tests. Scheduled and unavailable entries render status text but no anchor. An actionable entry has one keyboard-focusable link, specific action text, and a visible focus state; do not nest a button inside a link or make a raw URL the label.
+
+### Files the implementation agent creates
+
+| Repository path | Required contents |
+| --- | --- |
+| `public/resources/shared/cvpr-report-template.zip` | One reusable, redistributable LaTeX report template containing `main.tex`, bibliography example, required style/class assets, `README.md`, report headings, and AI Assistance Statement heading. Record the upstream source and licence. |
+| `public/resources/project-1/project-1-brief.pdf` | Print-safe mirror of the complete implemented Project 1 page, excluding site navigation and replacing interactive controls with static submission instructions. |
+| `public/resources/project-1/p1-colab-starter.ipynb` | Valid notebook containing the environment, parameter-preflight, data, training, evaluation, checkpoint, and sampling path described on the page. |
+| `public/resources/project-1/p1-evaluation-kit.zip` | Public README, five development records with ground truth, ten tutor prompt strings without ground truth, separation validator, schemas, and public metrics. |
+| `public/resources/project-2/project-2-brief.pdf` | Print-safe mirror of the complete implemented Project 2 page. |
+| `public/resources/project-2/p2-post-training-pack.zip` | Valid Colab notebook and compact CPT/SFT/masking/preference examples described on the page. |
+| `public/resources/project-2/p2-evaluation-kit.zip` | Public development/tutor records, separation validator, blind-review anchors, retention checks, schemas, and README. |
+| `public/resources/project-3/project-3-brief.pdf` | Print-safe mirror of the complete implemented Project 3 page, including both tracks. |
+| `public/resources/project-3/p3-finetuning-pack.zip` | Valid SFT notebook, masking checks, example Track A/B records, verifier examples, and baseline commands. |
+| `public/resources/project-3/p3-evaluation-kit.zip` | Public track-adapted records, separation validator, Track A constraint checks, Track B exact-answer/format checks, regression utilities, schemas, and README. |
+
+The brief PDFs are generated last from the implemented canonical pages. The template, notebooks, and packs may be built while the pages are implemented, but they must be real, internally consistent files rather than empty demonstrations. Do not include hidden tutor answers, clean reserve cases, credentials, student data, or an HF token in any archive.
+
+Add reproducible `resources:build` and non-mutating `resources:check` package scripts. `pnpm resources:build` creates or refreshes the local template/notebook/archive files and, after the assessment routes exist, renders the three print PDFs from the built pages. `pnpm resources:check` validates the tracked outputs without rewriting them and is included in the repository's full check path. Every ZIP contains a short `README.md` and `RESOURCE_MANIFEST.json` stating its title, version, generated/source files, licence information, and intentionally excluded private material.
+
+### Resource production sequence
+
+1. Copy the approved title, short description, grouping, and action text from `CONTENT_SOURCE.md` into the typed registry.
+2. Render all entries initially as `Scheduled` or `Unavailable`; no placeholder href is permitted.
+3. Create and validate the shared template, notebooks, and public packs at the exact paths above.
+4. Change a local entry to `Available` only after its file exists and passes format checks.
+5. Add a GitLab or Hugging Face destination only when it is real and access-controlled; otherwise retain the release-state copy.
+6. Complete the assessment pages and print stylesheet, then generate the three PDF mirrors and enable their entries.
+7. Run course, resource, link, accessibility, and browser-download checks before handoff.
 
 ## Project 1 — Build a Narrative Base Model
 
@@ -441,7 +501,30 @@ Each lecture has three layers:
 | **LLM post-training** | Week 5 maps base behaviour to continued pre-training, SFT, and preferences; Week 6 covers schemas, response-only SFT, synthetic data, scaling and phrasing sensitivity; Week 7 covers Bradley–Terry reward modelling, RLHF, policy-gradient/KL intuition, RLAIF, DPO, and reward hacking; Week 8 evaluates behaviour and regression. | Students directly operate continued pre-training and SFT. A small DPO-style exercise is supported. Full PPO-scale RLHF remains conceptual because compulsory reproduction would be costly, unstable, and easy to misrepresent without real human labels. |
 | **LLM reasoning** | Week 9 covers intermediate tokens, candidate sampling, CoT, self-consistency and final-answer verification; Week 10 covers rationale/task SFT, curriculum, starting checkpoints and verifier-first design; Week 11 covers outcome/process supervision, automated process labels, verifiable rewards, GRPO/RLVR context, generalisation and ablation; Week 12 covers inference cost and open transfer limits. | Direct-answer/rationale SFT, sampling and rule verification fit Project 3B. STaR, reward models, OmegaPRM, GRPO, RLVR and inference-time scaling explain the modern method family, but are optional frontier context rather than required implementations. |
 
-The full student-facing lecture summaries, learning outcomes, section copy, readings, weekly actions, three lab specifications, three clinic specifications, and the first complete deck are canonical in `CONTENT_SOURCE.md`. The implementation agent may adapt that copy into the starter's content collections, but it must not invent a parallel curriculum from the outline alone. Each implemented deck also carries a compact source register for papers, figures, licences, and update dates.
+The full student-facing lecture summaries, learning outcomes, section copy, readings, weekly actions, three lab specifications, three clinic specifications, six guided-session specifications, and the first complete deck are canonical in `CONTENT_SOURCE.md`. The implementation agent may adapt that copy into the starter's content collections, but it must not invent a parallel curriculum from the outline alone. Each implemented deck also carries a compact source register for papers, figures, licences, and update dates.
+
+### Weekly visual system
+
+Every lecture page begins with one consistent wide banner below its week/title metadata and above the summary. The reference is the supplied Canvas-style example: a restrained, landscape image creates a recognisable start to the week without competing with the teaching text. Use an approximately 3:1 crop on desktop, a consistent visual height with `object-fit: cover`, and a responsive crop that preserves the subject on narrow screens. The implementation must remain complete if an image fails to load.
+
+The implementation agent searches for an image around the single most representative concept for that week. Preference order is: an original figure from a cited paper or author project page; an openly licensed technical illustration; then an openly licensed photograph or abstract computational image. Do not use an attractive image merely because it contains robots, brains, or glowing code. A concept diagram that communicates content is informative and requires descriptive alt text and a visible caption; a genuinely decorative photograph may use empty alt text but still requires a source credit.
+
+| Week | Search concept and intended visual signal |
+| ---: | --- |
+| 1 | next-token probability over a token sequence; text becoming a probability distribution |
+| 2 | causal self-attention or decoder-only Transformer information flow |
+| 3 | scaling curves or an iso-compute model/data allocation landscape |
+| 4 | checkpoint evaluation, decoding branches, or automatic-plus-human review |
+| 5 | transition from a base model to post-trained target behaviour |
+| 6 | instruction/response tokens with response-only loss masking |
+| 7 | pairwise preferences, DPO, or the policy–reward–reference relationship |
+| 8 | multi-objective evaluation, retention, and target-behaviour trade-offs |
+| 9 | chain-of-thought candidates, self-consistency, and answer verification |
+| 10 | task-specific fine-tuning data flowing through a verifier |
+| 11 | template shift, generalisation slices, ablation, and regression testing |
+| 12 | reproducibility chain from data and code revisions to a loadable checkpoint |
+
+For every selected image, record the original URL, title/creator, licence or reuse basis, access date, required attribution, crop or edit, alt text, and caption in a compact asset register committed with the site. Download the selected asset into the repository rather than hotlinking it. Images must be compressed to an appropriate web format and checked at both 1920×1080 and 390×844. The default starter artwork and social preview are replaced with a course-specific asset or a deliberate typography-only alternative; unfinished template artwork must not ship.
 
 ### Knowledge allocation check
 
@@ -493,28 +576,28 @@ This ledger records the disposition of every substantive source-deck segment. Re
 
 | Week | Lecture focus | Scheduled learning support | Project connection |
 | ---: | --- | --- | --- |
-| **1** | **What a language model learns.** Probability over text; next-token prediction; maximum likelihood and cross-entropy; n-gram intuition versus neural language models; train/validation/test roles; perplexity and its limits; the course premise of model–data–compute–time trade-offs. | **No formal practical.** Repository/data orientation and a short target statement are completed independently so the first lab begins from a valid split. | Establish a valid data split and write the first Project 1 target-and-budget statement. |
+| **1** | **What a language model learns.** Probability over text; next-token prediction; maximum likelihood and cross-entropy; n-gram intuition versus neural language models; train/validation/test roles; perplexity and its limits; the course premise of model–data–compute–time trade-offs. | **Guided session — Project 1 launch and data validation.** Establish the repository, environment, lawful corpus, document-level split, contamination check, and target statement before Lab 1. | Establish a valid data split and write the first Project 1 target-and-budget statement. |
 | **2** | **Inside a decoder-only Transformer.** Encoder, encoder–decoder, and decoder-only distinctions; causal masking; self-attention and attention heads; feed-forward layers; residual paths and pre-normalisation; depth, model width, FFN width, head count, vocabulary, and context length; autoregressive generation and the purpose of a KV cache. | **Spend a 32M parameter budget.** Students trace one forward pass and causal mask, use the course parameter checker, then produce two legal architectures with different depth/width allocations. They predict the practical effect of each before running a short smoke test. | Freeze a feasible baseline architecture and identify one affordable architecture comparison. |
 | **3** | **Scale, data, and optimisation under fixed compute.** Parameters (N), tokens (D), and training compute (C); power-law intuition; Kaplan- and Chinchilla-style findings and their limits; data quality, diversity, filtering, duplication, and noise; batch size and gradient accumulation; Adam-style optimisation, learning-rate schedules, warm-up, weight decay, dropout, clipping, training steps, and stability signals. | **Project 1 drop-in clinic.** Students bring a legal configuration, token/runtime estimate, curve, trace, or concrete failure; staff help identify the smallest informative next check. | Freeze an internal run plan: hypothesis, controls, stop rule, compute allocation, and expected evidence. |
-| **4** | **Evaluation is part of training.** Document-level hold-out and contamination; checkpoint selection; reference-token-normalised PPL and BPB when tokenizers differ; decoding with temperature, top-k, and top-p; repetition and degeneration; EOS learning and stopping; why a reference continuation is not the only correct story; combining automatic and blind human evaluation. | **No formal practical.** Protected time is used for evaluation, fresh-process packaging, report writing, and consultation. | **Project 1 due Sunday 21 March 2027, 23:59 AET.** |
+| **4** | **Evaluation is part of training.** Document-level hold-out and contamination; checkpoint selection; reference-token-normalised PPL and BPB when tokenizers differ; decoding with temperature, top-k, and top-p; repetition and degeneration; EOS learning and stopping; why a reference continuation is not the only correct story; combining automatic and blind human evaluation. | **Guided session — Project 1 evaluation and packaging.** Validate the five development examples, fresh-process checkpoint loading, report evidence, exact revisions, and portal fields. | **Project 1 due Sunday 21 March 2027, 23:59 AET.** |
 
 ### Block 2 — Shape model behaviour: post-training
 
 | Week | Lecture focus | Scheduled learning support | Project connection |
 | ---: | --- | --- | --- |
-| **5** | **Why pre-training is not enough.** Capability versus usable behaviour; base models versus instruction-tuned assistants; target-domain continued pre-training, supervised fine-tuning, and preference-based post-training; what each method supervises; why Project 2 uses a broad definition of post-training. | **No formal practical.** Students define the target voice, unchanged-checkpoint baseline, and minimum data needed for one viable route. | Define the target voice operationally and shortlist a justified post-training route. |
+| **5** | **Why pre-training is not enough.** Capability versus usable behaviour; base models versus instruction-tuned assistants; target-domain continued pre-training, supervised fine-tuning, and preference-based post-training; what each method supervises; why Project 2 uses a broad definition of post-training. | **Guided session — Project 2 target and baseline planning.** Operationalise the target voice, verify permitted source editions, freeze the unchanged baseline, and cost one viable post-training route. | Define the target voice operationally and shortlist a justified post-training route. |
 | **6** | **Instruction data and SFT.** Instruction–response formatting; chat and special-token schemas; response-only loss masking; task count and task diversity; synthetic instruction data and its risks; sensitivity to prompt wording; learning-rate reduction, data mixing, and the risk of overwriting pre-trained behaviour. | **Build and inspect an SFT batch.** Students convert raw examples into a declared schema, visualise which tokens receive loss, train a very small SFT run, probe paraphrased instructions, and compare it with an unmodified starting checkpoint. | Produce a data card, masking check, and pilot result for the chosen Project 2 method. |
 | **7** | **Learning from preferences.** Pairwise preferences; reward models and Bradley–Terry ranking; the SFT–reward-model–policy stages of RLHF; policy-gradient intuition and KL control; RLAIF; DPO as direct preference optimisation; reward hacking, distribution shift, and the cost of added complexity. | **Project 2 drop-in clinic.** Students bring an operational target, rendered mask, unchanged/tuned pair, target-versus-retention table, or difficult preference label for evidence-led diagnosis. | Decide whether another post-training stage is affordable and evidentially useful; novelty alone is not a reason to use it. |
-| **8** | **Did the behaviour really change?** Operationalising narrative style; held-out target text; blind pairwise judgement; instruction compliance where applicable; memorisation and copying; regression in general narrative ability; multi-objective checkpoint selection; separating target-style perplexity from coherent storytelling. | **No formal practical.** Protected time is used for blinded comparison, regression testing, packaging, and report writing. | **Project 2 due Sunday 25 April 2027, 23:59 AET.** |
+| **8** | **Did the behaviour really change?** Operationalising narrative style; held-out target text; blind pairwise judgement; instruction compliance where applicable; memorisation and copying; regression in general narrative ability; multi-objective checkpoint selection; separating target-style perplexity from coherent storytelling. | **Guided session — Project 2 blind evaluation and packaging.** Run the frozen comparison, retention check, source-overlap check, fresh-load audit, and final evidence checklist. | **Project 2 due Sunday 25 April 2027, 23:59 AET.** |
 
 ### Block 3 — Adapt for a real problem: task-specific fine-tuning
 
 | Week | Lecture focus | Scheduled learning support | Project connection |
 | ---: | --- | --- | --- |
-| **9** | **Reasoning as generated behaviour.** Intermediate reasoning tokens; chain-of-thought prompting; why the most likely decoding path need not be the correct path; self-consistency and inference-time compute; final-answer verification; outcome versus process supervision; small-model and benchmark caveats. | **No formal practical.** Students choose a track, define the task contract, and establish the unchanged-model baseline before training. | Choose Track A or B, define one primary capability, and establish the unchanged-model baseline. |
+| **9** | **Reasoning as generated behaviour.** Intermediate reasoning tokens; chain-of-thought prompting; why the most likely decoding path need not be the correct path; self-consistency and inference-time compute; final-answer verification; outcome versus process supervision; small-model and benchmark caveats. | **Guided session — Project 3 task contract and baseline.** Choose a track, state the valid input/output contract, configure the verifier, establish the unchanged baseline, and submit an alternative Track A proposal when required. | Choose Track A or B, define one primary capability, and establish the unchanged-model baseline. |
 | **10** | **Training a specialist.** Task-specific SFT; choosing a starting checkpoint; examples, counterexamples, and curriculum; full fine-tuning versus parameter-efficient adaptation as an engineering choice; structured outputs and special tokens; Track A narrative constraints and Track B bounded reasoning formats. | **Specialist pipeline studio.** Students create a small train/validation split, inspect target masking, perform a dry run, and test one unseen template or condition. Each student leaves with a loadable checkpoint and a working task metric before spending the main budget. | Project 3 proposal checkpoint: target, starting model, data, metric, regression check, comparison, and budget. |
 | **11** | **Generalisation, regressions, and explanations.** Paraphrase and template shift; catastrophic forgetting and capability retention; ablations and matched comparisons; error taxonomies; outcome/process supervision and verifiable-reward context; why a change can fail at another scale; deeper postgraduate expectations for alternative explanations. | **Project 3 drop-in clinic.** Students bring verifier output, a shifted-slice result, controlled ablation, error taxonomy, regression result, or fresh-load failure. | Freeze the candidate final checkpoint and identify any unsupported claim that must be removed or qualified. |
-| **12** | **Audit the whole training system.** Reproducibility; checkpoint, configuration, tokenizer, and sampler compatibility; training and inference cost; honest comparison with a baseline; limits of scaling small experiments to frontier systems; reviewing the course premise through public model case studies and student evidence. | **No formal practical.** Students complete a fresh-environment audit and engineering retrospective during protected submission time. | **Project 3 due Sunday 23 May 2027, 23:59 AET.** |
+| **12** | **Audit the whole training system.** Reproducibility; checkpoint, configuration, tokenizer, and sampler compatibility; training and inference cost; honest comparison with a baseline; limits of scaling small experiments to frontier systems; reviewing the course premise through public model case studies and student evidence. | **Guided session — Project 3 fresh-load audit and submission.** Reproduce the checkpoint in a clean process, rerun the verifier and regression slice, reconcile revisions and checksums, and complete the portal checklist. | **Project 3 due Sunday 23 May 2027, 23:59 AET.** |
 
 ## Frontier material as a lightweight teaching mechanism
 
@@ -531,7 +614,9 @@ The lecturer owns this small curation task; a separate Frontier Editor role is u
 
 ## Formative labs and learning support
 
-The course uses **three formal labs**, in Weeks 2, 6 and 10, plus **three evidence-led drop-in clinics**, in Weeks 3, 7 and 11. This cadence matches the three project cycles: students first learn the mechanism, operate its central pipeline in a deep lab, bring project evidence to a clinic, and then use the fourth week for evaluation and submission. It avoids twelve thin exercises and protects deadline weeks from new disconnected work.
+The starter requires one session entry for every teaching week. The course therefore uses **twelve session entries** without pretending that all twelve should be full practical classes: **three formal labs** in Weeks 2, 6 and 10; **three evidence-led drop-in clinics** in Weeks 3, 7 and 11; and **six lightweight guided sessions** in Weeks 1, 4, 5, 8, 9 and 12. Each guided session is a 35–60 minute self-directed launch, validation, evaluation, or packaging activity tied directly to the current project.
+
+This cadence preserves the intended three project cycles. Students launch and scope the project, operate its central pipeline in a deep lab, bring project evidence to a clinic, and then complete a bounded evaluation/submission audit. The six lightweight sessions satisfy the site's week-by-week structure while smoothing transitions; they do not create six extra graded exercises or introduce new techniques during deadline weeks.
 
 Labs are ungraded and exist to make the lecture mechanisms operable before students depend on them in an assessment. They do not ask students to train another full model. Each lab uses a bounded supplied notebook, small data, and a short run suitable for the supported Colab environment.
 
@@ -599,7 +684,7 @@ The monetary credit and the assessed compute allowance are different limits:
 - evaluation-only inference is reported separately and is not silently converted into extra training budget; and
 - paid Colab, private GPUs, or unused credit do not increase the formal allowance.
 
-Students submit the automatically generated compute ledger with the report. Deliberately disabling or altering accounting is an academic-integrity breach. A calculation error made in good faith should be reported rather than hidden.
+Students include the automatically generated `compute-ledger.json` in the frozen GitLab and Hugging Face packages and summarise it in the report. Deliberately disabling or altering accounting is an academic-integrity breach. A calculation error made in good faith should be reported rather than hidden.
 
 ### 2. Starter code, dataset licences, and additional data
 
@@ -665,13 +750,28 @@ Students may be asked to load the submitted model, explain a code path, or discu
 
 Each assessment page contains its own submission panel showing the opening time, deadline, required files, and submission status. Because the course site is a static GitHub Pages site, the panel links to the authenticated **SlopU Submission Portal**; it does not upload files or collect credentials directly.
 
+| Project | Panel opens | Due | Required report filename |
+| --- | --- | --- | --- |
+| Project 1 | Monday 1 March 2027, 00:00 AET — start of Week 2 | Sunday 21 March 2027, 23:59 AET | `ass1_report.pdf` |
+| Project 2 | Monday 22 March 2027, 00:00 AET — start of Week 5 | Sunday 25 April 2027, 23:59 AET | `ass2_report.pdf` |
+| Project 3 | Monday 26 April 2027, 00:00 AET — start of Week 9 | Sunday 23 May 2027, 23:59 AET | `ass3_report.pdf` |
+
+Before its opening time, a panel displays **Will be available at `<opening time>`** and no active submission control. Once open, an authenticated portal with no recorded attempt displays **To be submitted**. After a successful submission it displays **Submitted**, the receipt timestamp, and the frozen identifiers recorded for marking. The static course site can display schedule-driven availability and the portal link, but only the authenticated portal can display a student's personal `To be submitted` or `Submitted` state.
+
+The portal collects only:
+
+1. the named PDF report upload, whose first page includes the student's name and student ID; and
+2. the final GitLab commit SHA.
+
+The GitLab revision is the canonical submission pointer. Its `submission-manifest.json` records the assigned private Hugging Face repository ID, exact frozen model revision, checkpoint checksum, and `compute-ledger.json` path. The ledger must be present in the frozen GitLab revision and final Hugging Face model package, and its summary must appear in the report.
+
 Before the deadline, students must:
 
 1. push the final code, configuration, preprocessing scripts, and evaluation commands to the default branch of their assigned private GitLab repository;
 2. record the final Git commit SHA;
 3. upload the model package to the private Hugging Face model repository provisioned for that student and project inside the SlopU organisation;
 4. verify that the course marking service account can read the exact submitted Hugging Face revision; and
-5. submit one CVPR-format report PDF, the GitLab commit SHA, the Hugging Face repository URL and revision, and the compute ledger through the project submission panel.
+5. submit the correctly named CVPR-format report PDF and final GitLab commit SHA through the project submission panel.
 
 The Hugging Face package must contain:
 
@@ -706,6 +806,7 @@ An approved extension carries no late penalty until its revised deadline. Withou
 - Lecture slides are available on the course site by the end of the day before the lecture and can be viewed online or downloaded.
 - Formal lab notebooks are published on Monday of Weeks 2, 6, and 10. Lab attendance is optional, although strongly recommended before changing the relevant project pipeline.
 - Formal lab solutions are released after the final scheduled class for that lab. Drop-in clinics in Weeks 3, 7, and 11 have no model solution; de-identified common-issue notes are posted after the session.
+- Lightweight guided sessions in Weeks 1, 4, 5, 8, 9, and 12 release with the corresponding weekly page. They use immediate self-checks or packaging checklists rather than delayed model solutions.
 - Each project release produces a site announcement, and the site displays a reminder before its deadline.
 - Materials use selectable text, meaningful heading order, alt text for informative images, labelled links, keyboard-accessible controls, and colour choices that do not carry meaning alone. Code and slide downloads provide an alternative to the live presentation view.
 - Students with an approved accessibility adjustment receive materials, timing changes, or an alternative participation route according to that plan without needing to disclose personal details to the class.
@@ -743,8 +844,53 @@ The course-specific tests should verify that:
 - task-specific model review retains the published 0–4 anchors, project/track dimension weights, three independent raters for story-based outputs, and adjudication rule;
 - the Project 3 page states that supported Track A tasks need no separate approval and that alternative proposals are due at the end of Week 9 before substantial training;
 - no page asks a student to submit or paste an HF token;
-- every assessment lists a Git commit SHA, HF repository revision, report PDF, and compute ledger as submission fields; and
-- Week 1–12 lecture links, the three formal lab links, the three clinic links, and the three due-week relationships remain present.
+- each assessment panel uses the correct opening time, deadline, and `ass1_report.pdf`/`ass2_report.pdf`/`ass3_report.pdf` filename;
+- every assessment lists only a report upload and GitLab commit SHA as portal fields, while `submission-manifest.json` carries the assigned HF repository ID, frozen model revision, checksum, and compute-ledger path;
+- personal submission status is never faked on the static site: the authenticated portal owns `To be submitted` and `Submitted`;
+- Week 1–12 lecture links, all twelve week-numbered session entries, and the three due-week relationships remain present; and
+- the session collection contains exactly three formal labs, three drop-in clinics, and six lightweight guided sessions.
+
+## Implementation and verification contract
+
+This section turns the design into a checkable implementation contract. It supplements the starter repository's `README.md`, assignment specification, shipped tests, and `CLAUDE.md`; it does not authorise an implementation agent to weaken any of them.
+
+### Source precedence and implementation sequence
+
+When two sources address the same point, use this order:
+
+1. the assignment specification and immutable starter tests for deliverable shape;
+2. this brief for course-design intent, constraints, relationships, and validation rules;
+3. `CONTENT_SOURCE.md` for exact student-facing copy and page content; and
+4. the starter's component examples for rendering technique only.
+
+If a genuine contradiction remains, stop and record it rather than silently changing the course design. The agent should implement one coherent slice at a time—configuration and navigation, Home/People/Policies, assessments, lectures/sessions, deck/resources—then run the relevant checks before proceeding. It may adjust prose only for grammar, component fit, or accessibility without changing meaning, numbers, dates, names, or obligations.
+
+### Executable test suite to add
+
+The implementation agent must add real course-specific tests under `spec/` in addition to retaining all shipped tests. Tests should inspect the canonical data/API or rendered semantic HTML and stable attributes. They should not rely on entire-paragraph string snapshots, CSS pixel positions, or component internals that make harmless copy and styling changes fail.
+
+| Test file | Required assertions |
+| --- | --- |
+| `spec/course-contract.test.ts` | `SLOP4225`; Semester 1, 2027 dates; weights 20/50/30; exactly 12 lectures; exactly 12 session entries covering Weeks 1–12; session-type counts 3/3/6; Project due weeks 4/8/12; at least one linked and compiled `.deck.mdx`. |
+| `spec/assessment-contract.test.ts` | Three assessment pages; brief, rubric, constraints, submission panel, individual-work statement, and exactly six primary resource entries on each; report/model allocations 10/10, 35/15, 20/10; correct open/due dates and report filenames; only report upload and GitLab SHA portal fields; no token or secret input. |
+| `spec/policy-contract.test.ts` | Eleven numbered policy sections; 32M design target and 33.6M boundary; compute and FLOP limits; 15/20/20 report limits; five development examples and ten tutor prompts; continuation/answer-only PPL, 25/50 thresholds and `0.1`; Project 3B and proposal rules; no HF-token submission. |
+| `spec/resource-contract.test.ts` | Exactly six registry entries per Project with unique IDs and approved groups; no `#`, fabricated, empty, root-absolute, or raw-URL-labelled actions; state/href invariants; shared CVPR template referenced by all three Projects but stored once; weekly banner metadata contains local asset, source, licence/reuse basis, and alt-text decision. |
+| `spec/resource-download.test.ts` | Every `Available` local path exists in both `public/` and the built `dist/` output, is non-empty, has the expected extension/signature, and is reachable through the rendered base-path-safe href; ZIP archives open and contain their required manifest entries; notebooks parse as valid `nbformat` JSON; all three brief PDFs begin with a valid PDF signature. |
+
+The implementation must continue to satisfy the starter's existing checks, including its allocated code suffix, twelve week-numbered session nodes, date-range integrity, assessment weights, deck compilation, internal-link/base-path validation, accessibility scan, and dangling-reference checks. A failing shipped test is evidence of a design-to-schema mapping problem, not permission to delete, skip, or relax the test.
+
+For download behaviour, add one browser-level smoke test or equivalent local-server check that opens an assessment page, activates one PDF, one ZIP, and one notebook action, and confirms a successful response with the expected file rather than an HTML 404 page. Check one action at each marking viewport and exercise it by keyboard. A PDF may open in the browser instead of forcing a save; the requirement is a correct accessible file response, not a particular browser download preference.
+
+### Validation layers and evidence
+
+Use four complementary layers:
+
+- **Schema/content tests:** validate structured facts, required sections, collection counts, and cross-page consistency.
+- **Build checks:** compile all pages and decks; validate internal links, asset paths, base paths, generated API data, and referenced downloads.
+- **Accessibility checks:** retain automated axe checks and verify heading order, labelled controls, meaningful link text, image alternatives, colour independence, keyboard access, focus visibility, and reduced motion.
+- **Browser verification:** inspect Home, one assessment, Policies, People, one lecture, one formal lab, one guided session, and the deck at 1920×1080 and 390×844. Confirm banner crops, tables, equations, submission states, navigation, and deck fit without horizontal overflow.
+
+The agent records the commands run and material design-to-code decisions in `PROCESS.md`. Before handoff it must run the repository's canonical full check command and build, then report any remaining placeholder caused by a genuinely unpublished external resource. A placeholder release state is allowed; a broken action or invented destination is not.
 
 ## Assessment philosophy
 
@@ -771,7 +917,9 @@ The following items are completed when the corresponding teaching resource is au
 - the final filenames, versions, URLs, and data-card details for the Project 1 story corpus and the two Project 2 public-domain editions;
 - the final Project 3 Track B course-checkpoint identifier and `test_pilot` numeric ranges;
 - the final GitLab, Hugging Face, brief PDF, template, notebook, evaluation-pack, and submission-portal destinations;
-- implementation of the twelve approved lecture pages, three formal lab pages, and three drop-in clinic pages; and
+- selection, licensing, local storage, and attribution of the twelve approved weekly banner concepts;
+- generation of the three printable assessment PDFs from the implemented canonical pages;
+- implementation of the twelve approved lecture pages and twelve session pages (three formal labs, three drop-in clinics, and six lightweight guided sessions); and
 - implementation of the approved Week 3 deck as a working `.deck.mdx` file.
 
 These are operational dependencies or teaching-content deliverables, not invitations for the implementation agent to invent missing policy. Until a resource destination exists, the site should state when it will be released or render it as unavailable without a broken placeholder link.

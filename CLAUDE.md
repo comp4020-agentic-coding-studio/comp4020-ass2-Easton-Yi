@@ -53,6 +53,78 @@ from `comp4020-crit4-Easton-Yi`), not specific to any one prototype's content:
   handles this in `.md`/`.astro` links, but a hand-written root-absolute
   `href` in an `.astro` file skips it silently (see `README.md`).
 
+## Course-site implementation rules
+
+This repository implements the approved course described in:
+
+- `docs/assignment_brief.md` — design intent, constraints, relationships,
+  resource workflow, and verification contract;
+- `docs/CONTENT_SOURCE.md` — canonical student-facing copy.
+
+The assignment specification and shipped tests define the fixed platform.
+Preserve the SlopU theme, four existing content collections, generated API,
+GitHub Pages base-path behaviour, and all shipped checks.
+
+### Source priority
+
+When sources overlap, use this order:
+
+1. assignment specification and immutable starter tests;
+2. `docs/assignment_brief.md` for design and implementation constraints;
+3. `docs/CONTENT_SOURCE.md` for page wording;
+4. starter content only as an implementation example.
+
+Do not invent policy or resolve a real contradiction silently. Report the
+conflict before continuing.
+
+### Staged workflow
+
+Implement in reviewable stages:
+
+1. course configuration and navigation;
+2. Home, People, and Policies;
+3. assessments, rubrics, resources, and submission panels;
+4. twelve lectures and twelve weekly sessions;
+5. slide deck, weekly images, and downloadable resources;
+6. responsive, accessibility, and consistency refinement.
+
+Before each stage, read the complete corresponding sections in both design
+documents. After implementation, compare every affected page with the source,
+run targeted tests and the production build, and fix failures before moving on.
+
+Preserve approved meaning, numbers, dates, names, qualifications, and marking
+allocations. Formatting changes are allowed; silent shortening of rubrics,
+policies, constraints, or submission instructions is not.
+
+### Resources and submission
+
+Render resources from one typed registry, not duplicated page-level links.
+Never invent a URL or use `#`. Scheduled and unavailable resources have no
+active link. Mark a local file `Available` only after it exists and passes
+format and download checks.
+
+Generate assessment PDFs only after their canonical pages are complete.
+Submission panels collect only the named report PDF and final GitLab commit
+SHA. HF repository and revision information comes from the frozen GitLab
+`submission-manifest.json`. Never request or expose an HF token.
+
+### Verification
+
+Add tests for stable course promises and cross-page relationships, not complete
+prose snapshots, component internals, or pixel-perfect layouts. Never delete,
+skip, or weaken a shipped test.
+
+After each stage, run the relevant targeted tests. Before handoff, run:
+
+- `pnpm check`;
+- `pnpm resources:check`;
+- `pnpm check:evidence`;
+- the production build;
+- keyboard and responsive checks at 1920×1080 and 390×844.
+
+Record only material workflow decisions and verification evidence in
+`PROCESS.md`; do not turn it into a command transcript.
+
 ## Process-logging harness (Ass1 feedback: process 72/100, D-band)
 
 Marker's comment: "I would've liked to know more about the process that you
