@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-preview-resources/
 *.log
 
 # Astro's generated types and build cache

@@ -13,7 +13,8 @@
     "resources:build": "node scripts/resources/build.ts",
     "resources:build:briefs": "astro build && node scripts/resources/build-briefs.ts",
     "resources:check": "node scripts/resources/check.ts",
-    "test": "pnpm build && vitest run spec",
+    "resources:preview-build": "RESOURCE_PREVIEW_NOW=2027-06-01T00:00:00+10:00 astro build --outDir dist-preview-resources",
+    "test": "pnpm build && pnpm resources:preview-build && vitest run spec",
     "test:template": "vitest run scripts"
   },
   "dependencies": {

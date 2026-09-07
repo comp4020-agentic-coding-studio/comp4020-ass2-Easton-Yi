@@ -3,9 +3,16 @@
 // page — see docs/ASSIGNMENT_BRIEF.md "Resource registry and rendering
 // contract" for the field contract this module implements.
 import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
-const PUBLIC_DIR = fileURLToPath(new URL("../../public/", import.meta.url));
+// Resolved from the working directory, not `import.meta.url`: Astro's SSG
+// build bundles this module into the build output before rendering pages, so
+// a `new URL("../../public/", import.meta.url)`-style path resolves against
+// the *bundled* location (e.g. `<outDir>/public/`) rather than the project's
+// real `public/` — silently returning "unavailable" for every local resource
+// once its release date has passed. `astro build`/`astro dev` always run
+// with the project root as cwd, so that is the stable anchor.
+const PUBLIC_DIR = join(process.cwd(), "public") + "/";
 
 export type ResourceGroup = "Start here" | "Data and model" | "Evaluate" | "Submit";
 export type ResourceKind = "local-download" | "gitlab" | "huggingface";
@@ -31,10 +38,20 @@ export interface ResourceEntry {
   unavailableReason: string;
 }
 
+// A build-time-only override for the download smoke test: it needs a build
+// where release dates have already passed, so it can exercise a real action
+// link and a real file response, without ever making the submitted site
+// itself claim an early release. Unset in every normal build, dev server, and
+// deploy — only the smoke test's own throwaway build sets it.
+function previewNow(): Date | undefined {
+  const raw = process.env.RESOURCE_PREVIEW_NOW;
+  return raw ? new Date(raw) : undefined;
+}
+
 /** Computes the four-state rendering contract from release time and whether
  *  a real destination exists yet — never a value stored directly on the
  *  entry, so a card can't drift out of sync with its own release date. */
-export function resourceState(entry: ResourceEntry, now: Date = new Date()): ResourceState {
+export function resourceState(entry: ResourceEntry, now: Date = previewNow() ?? new Date()): ResourceState {
   if (now < entry.releaseAt) return "scheduled";
   if (entry.kind === "local-download") {
     return entry.localPath && existsSync(`${PUBLIC_DIR}${entry.localPath}`) ? "available" : "unavailable";
