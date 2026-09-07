@@ -141,7 +141,48 @@ The report must explain:
 - limitations and threats to the conclusions; and
 - how the work supports, complicates, or challenges the course premise.
 
-The required length, format, due dates, and project-specific marking breakdowns are **TBC**.
+The required report length, exact due dates, and project-specific marking breakdowns are **TBC**. The report format is the supplied CVPR template.
+
+## Assessment-page resource design
+
+The full task, constraints, deliverables, evaluation summary, rubric, and submission instructions are rendered directly on each assessment page. Downloadable files are supporting resources rather than the only place where essential requirements appear.
+
+To keep the pages focused, every Project page presents exactly **six primary resource cards** under four labels: **Start here**, **Data and model**, **Evaluate**, and **Submit**. Small configuration files, schemas, examples, ledger templates, packaging instructions, and the AI Assistance Statement example live inside the assigned GitLab repository or a single bundled pack instead of appearing as separate downloads.
+
+### Project 1 resources
+
+| Resource card | Type | Purpose |
+| --- | --- | --- |
+| **1. Full Project Brief** — `project-1-brief.pdf` | Download | Printable mirror of the complete Project 1 webpage. |
+| **2. Project 1 Starter Repository** | Private GitLab link | nanoGPT-based code, default configuration, `budget.json`, preprocessing scripts, compute ledger, submission manifest, and checkpoint packaging guide. |
+| **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | Shared LaTeX template containing the required engineering-report and AI Assistance Statement sections. |
+| **4. Narrative Dataset and Data Card** | Hugging Face link | Course story corpus, versioned split, licence/provenance record, checksums, and preprocessing description. |
+| **5. Pre-training Colab** — `p1-colab-starter.ipynb` | Download | Supported environment check and an executable path from tokenized data to training, checkpointing, and sampling. |
+| **6. Public Evaluation Pack** — `p1-evaluation-kit.zip` | Download | Public development prompts plus BPB/PPL, repetition, EOS/stopping, and qualitative-review utilities; no hidden tests. |
+
+### Project 2 resources
+
+| Resource card | Type | Purpose |
+| --- | --- | --- |
+| **1. Full Project Brief** — `project-2-brief.pdf` | Download | Printable mirror of the complete Project 2 webpage. |
+| **2. Project 2 Starter Repository** | Private GitLab link | Checkpoint-loading pipeline, `budget.json`, data schemas, compute ledger, submission manifest, and supported continued-pre-training/SFT/preference configuration examples. |
+| **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | The same report template used across the course; students begin a new report for Project 2. |
+| **4. Target-Style Corpus and Data Card** | Hugging Face link | Processed public-domain fairy-tale baseline, source editions, licence basis, versioned split, checksums, and preprocessing record. |
+| **5. Post-training Starter Pack** — `p2-post-training-pack.zip` | Download | One Colab notebook plus compact recipes for continued pre-training, SFT, and a toy preference/DPO exercise. |
+| **6. Behaviour Evaluation Pack** — `p2-evaluation-kit.zip` | Download | Public story openings, target-style and retention checks, source-overlap checks, and the blind human-evaluation rubric; no hidden tests. |
+
+### Project 3 resources
+
+| Resource card | Type | Purpose |
+| --- | --- | --- |
+| **1. Full Project Brief** — `project-3-brief.pdf` | Download | Printable mirror covering the common requirements and both specialisation tracks. |
+| **2. Project 3 Starter Repository** | Private GitLab link | Common fine-tuning pipeline, `budget.json`, proposal template, Track A/Track B data schemas, compute ledger, submission manifest, and packaging guide. |
+| **3. CVPR Report Template** — `cvpr-report-template.zip` | Download | Shared report template containing the common Project 3 rubric structure and AI declaration. |
+| **4. Fine-tuning Starter Pack** — `p3-finetuning-pack.zip` | Download | Supported SFT Colab, response-only masking checks, example task formats, and baseline comparison commands. |
+| **5. Starting Model and Task Data** | Private Hugging Face link | Track A narrative reference checkpoint where offered; Track B general-language checkpoint; approved task data and model/data cards. Students see only resources for their selected track. |
+| **6. Track Evaluation Pack** — `p3-evaluation-kit.zip` | Download | Track A constraint metrics, Track B exact-answer/format verifier, shared regression checks, and public development cases; no hidden tests. |
+
+The CVPR template is stored once and linked from all three pages. Large datasets and checkpoints remain in the course Hugging Face organisation rather than the public course-site repository. Hidden tests, reserve sets, marking answers, student submissions, credentials, and personal data never appear in a downloadable pack.
 
 ## Project 1 — Build a Narrative Base Model
 
@@ -559,6 +600,7 @@ The course-specific tests should verify that:
 
 - the Policies page contains all eleven policy headings;
 - all three assessment pages link to a submission panel and state that work is individual;
+- each assessment page exposes exactly six primary resource cards, including its full brief, assigned GitLab repository, and CVPR report template;
 - the three weights remain 20%, 50%, and 30%, totalling 100%;
 - the 32M-parameter ceiling and per-project `budget.json` are stated consistently;
 - no page asks a student to submit or paste an HF token;
