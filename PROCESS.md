@@ -560,9 +560,101 @@ than backfilled with invented timestamps, per CLAUDE.md's instruction that
 "memory reconstructed after the fact is not evidence." `PROCESS_LOG.md` is
 kept from this point forward for Stage 5 and Stage 6.
 
-<!-- Stage 5 (deck, weekly imagery, downloadable resources) and Stage 6
-(responsive/accessibility/consistency refinement) are not yet implemented;
-entries for those stages, screenshots, and the closing structural-alternative
+#### Stage 5 — slide deck, weekly banners, downloadable resources
+
+**Problem:** Build the one complete slide deck the spec names explicitly
+(`docs/CONTENT_SOURCE.md`'s "First complete slide deck specification," Week
+3), give all twelve lectures the weekly banner image the brief's "Weekly
+visual system" requires, and confirm downloadable resources — already
+verified in Stage 3.
+
+**Directed via:** "start stage 5" (direct order, no further scope given
+beyond CLAUDE.md's staged-workflow line item), followed mid-stage by "fan
+out subagents" (direct order to parallelise the remaining banner-sourcing
+work).
+
+**Agent's result fell short because:**
+
+1. The Week 3 deck's Chinchilla-comparison table shipped with an empty
+   leading `<th>`, which `pnpm build`'s axe scan caught as
+   `empty-table-header`.
+2. I (not a subagent) introduced a YAML bug into `week-03.md`: a `bannerAlt`
+   value's first line contained an unquoted `word: word` inside a plain
+   multi-line scalar, which YAML parses as an implicit mapping key. This
+   broke content sync for the entire site build. Two of the four subagents
+   fanned out for the remaining eleven weeks independently hit this same
+   build failure, correctly identified it as outside their assigned scope,
+   and reported it back rather than editing a file they weren't told to
+   touch.
+3. The first banner CSS pass (`aspect-ratio: 4/3` + `object-fit: cover` on
+   phone widths) cropped the *sides* off every banner at 390×844, since
+   each SVG's labelled content spans its full 1200-wide canvas edge to
+   edge — invisible to `pnpm build`/axe/tests, only visible on direct
+   Chromium inspection at the phone viewport.
+
+**Considered and rejected:**
+
+- For the banner-image sub-task as a whole: sourcing real external
+  photographs/figures per the brief's per-week search briefs, with a full
+  asset register (original URL, licence basis, access date). Rejected
+  because verifying that a subagent's claimed "openly licensed" source URL
+  actually resolves and is correctly licensed, at the volume of twelve
+  images, is not something I can do reliably without a live fetch-and-check
+  per image — and CLAUDE.md's rule against ever inventing an external URL
+  or licence is unconditional. Original SVG schematics (the same pattern
+  already verified in the Week 3 deck's diagrams) carry the strongest
+  possible licence basis — none needed — and the brief itself names
+  "openly licensed technical illustrations" as an acceptable category.
+- For the mobile-crop defect: redesigning all twelve already-built SVGs to
+  keep their content inside a narrower center-safe zone. Rejected because
+  it would mean re-touching eleven already-verified files for a
+  presentation-layer problem that any future banner would reintroduce
+  anyway; the CSS crop behaviour was the actual defect, not the artwork.
+
+**My decision:** Use original SVG illustrations for all twelve banners
+(mine to make, not a subagent's) rather than asking multiple parallel
+agents to each independently source and license-check real images with no
+way for me to verify their claims before they landed in the repo. For the
+mobile crop, changed the phone breakpoint to `aspect-ratio: 3/2` with
+`object-fit: contain` and a matching dark fill, so the full diagram is
+always visible (letterboxed, not cropped) rather than redesigning content.
+
+**Fix/iterate:** Deck table: one `Edit` giving every header cell real text
+("Question"/"Earlier view (Kaplan-era)"/"Chinchilla-era view"), one round.
+`week-03.md` YAML: one `Edit` rephrasing the colon to an em-dash and
+switching to a `>-` block scalar, one round. Banner CSS: one `Edit` to the
+phone media query in `src/pages/lectures/[slug].astro`, one round,
+confirmed by re-screenshotting after the change.
+
+**Verified by:** `pnpm build` (40 pages; "no accessibility violations";
+"all internal links respect base"; "No broken links detected"; both decks —
+`week-01` and `week-03-fixed-compute` — pass astromotion's structural
+check), `pnpm check` (typecheck 0 errors; `resources:check` 12/12 valid;
+`vitest` 83/83 passing across 7 files, including the new
+`spec/resource-contract.test.ts` banner-metadata assertion), and direct
+Chromium inspection (Playwright) of lecture weeks 1, 3, 8, and 12 at both
+1920×1080 and 390×844 confirming zero horizontal overflow at either
+viewport and, after the CSS fix, a complete (not cropped) banner at the
+phone width.
+
+**Evidence:** [`bb030f1`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/bb030f1)
+(Week 3 deck, banner schema/template change in `src/content.config.ts` and
+`src/pages/lectures/[slug].astro`, twelve `src/content/lectures/images/week-*.svg`
+files, twelve updated `week-*.md` frontmatter blocks, and
+`spec/resource-contract.test.ts`'s new banner test).
+
+**Disclosed, deferred gap:** `pnpm check:evidence` still flags
+`src/assets/images/card.png`, `src/assets/images/hero-home.avif` (generic
+starter site artwork), and `src/decks/week-01.deck.mdx`'s STARTER_CONTENT
+placeholder. None of these are named by CLAUDE.md's Stage 5 line item
+("slide deck, weekly images, downloadable resources") or the spec's own
+"First complete slide deck specification," which names only Week 3.
+Deferred to Stage 6 ("responsive, accessibility, and consistency
+refinement"), where generic cross-site branding work belongs thematically,
+rather than silently expanding Stage 5's scope or silently dropping it.
+
+<!-- Stage 6 (responsive/accessibility/consistency refinement) is not yet
+implemented; its entry, screenshots, and the closing structural-alternative
 reflection remain to be appended. -->
 
 ## Before you ship
