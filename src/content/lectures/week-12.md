@@ -7,6 +7,15 @@ week: 12
 date: 2027-05-17
 teachers:
   - yiwei-easton
+banner: ./images/week-12-banner.svg
+bannerAlt:
+  A linked chain of four boxes running left to right—data revision, code
+  revision, training run, and loadable checkpoint—each joined by a hash-link
+  icon, presenting the submission as an auditable system of artefacts.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/12-project-3-fresh-load-audit
   - assessments/project-3

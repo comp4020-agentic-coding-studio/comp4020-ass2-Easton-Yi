@@ -1,0 +1,339 @@
+---
+title: "Week 3 — Scale, Data, and Optimisation Under Fixed Compute"
+description: Power-law intuition, Kaplan/Chinchilla allocation, data value, and reading a Project 1 pilot honestly
+---
+
+{/* _class: impact */}
+
+# Scale is an allocation problem
+
+With one GPU-day, would you spend it on a **larger model**, **more distinct
+tokens**, or **more updates over the same data**?
+
+```notes
+Open by collecting a silent initial choice — a show of hands or a poll, not a
+discussion yet. The rest of the deck returns to this question at the exit
+ticket.
+```
+
+---
+
+## Project 1 has three coupled quantities
+
+- **N** — learned parameters
+- **D** — training tokens processed
+- **C** — training compute
+
+| Constraint | Value |
+| --- | --- |
+| Design target | 32M learned parameters |
+| Absolute eligibility boundary | 33.6M learned parameters (5% tolerance) |
+| Compute allowance | 24 T4-equivalent hours |
+| Training FLOP ceiling | 4.0×10¹⁷ |
+
+**Takeaway:** every proposed run must fit *all* of these at once — a plan that
+saves parameters but blows the FLOP ceiling is not a legal plan.
+
+```notes
+Source: docs/CONTENT_SOURCE.md's approved Project 1 key facts, restated from
+course-config.ts values — not a screenshot, since no starter-repo run exists
+yet to screenshot.
+```
+
+---
+
+## Bigger is not automatically better
+
+Three ways a plan can fail without touching the parameter boundary:
+
+1. too many parameters for the data on hand — capacity the corpus can't fill
+2. many repeated passes over a narrow corpus — compute spent, little new
+   information gained
+3. a tiny model trained long after useful validation improvement stopped —
+   time spent past the point of return
+
+**Discuss:** for each sketch, which resource — model, data, or compute — is
+actually the bottleneck?
+
+---
+
+## Power-law intuition
+
+<svg viewBox="0 0 480 260" role="img" aria-label="A power-law curve on log-log axes: loss falls steeply at small scale, then flattens into a long, gently diminishing tail toward an irreducible-error floor.">
+  <line x1="40" y1="20" x2="40" y2="220" stroke="currentColor" stroke-width="2" />
+  <line x1="40" y1="220" x2="460" y2="220" stroke="currentColor" stroke-width="2" />
+  <path d="M 50 40 C 120 130, 220 190, 450 205" fill="none" stroke="currentColor" stroke-width="3" />
+  <line x1="40" y1="205" x2="460" y2="205" stroke="currentColor" stroke-width="1" stroke-dasharray="6 6" opacity="0.6" />
+  <text x="465" y="209" font-size="14">L∞</text>
+  <text x="55" y="35" font-size="14">small-data region</text>
+  <text x="230" y="185" font-size="14">useful-scaling region</text>
+  <text x="330" y="230" font-size="14">irreducible-error region</text>
+  <text x="10" y="130" font-size="14" transform="rotate(-90 10 130)">loss (log)</text>
+  <text x="230" y="250" font-size="14">scale (log)</text>
+</svg>
+
+**L(x) = a·x⁻ᵅ + L∞** — diminishing returns, and an approximately straight
+middle region on log–log axes.
+
+```notes
+This is an original schematic drawn for this deck, not a reproduction of
+Kaplan et al.'s figures — it illustrates the qualitative shape their reported
+relationships describe. Do not ask students to fit exponents for the
+assignment; the diagram is for reading a curve's regions, not for regression.
+```
+
+---
+
+## Kaplan et al.: smooth scale relationships
+
+- reported smooth relationships between loss and N, D, C across many orders
+  of magnitude
+- larger models are more *sample-efficient* — they reach a given loss with
+  fewer tokens
+- weak sensitivity to architectural shape within the studied range
+- early stopping is compute-optimal: stop before full convergence on a fixed
+  budget
+
+**Callout:** the studied regimes are far above 32M. Read this as evidence of
+a shape, not a recipe for this course's model.
+
+```notes
+Cite: Kaplan et al., "Scaling Laws for Neural Language Models"
+(arxiv.org/abs/2001.08361). No figure from the paper is reproduced here —
+see the deck's figure/source register slide for the full citation.
+```
+
+---
+
+## Chinchilla changed the allocation
+
+| Question | Earlier view (Kaplan-era) | Chinchilla-era view |
+| --- | --- | --- |
+| Under fixed compute, favour... | more parameters | parameters and tokens roughly together |
+| Main risk | — | undertrained large models |
+
+<svg viewBox="0 0 480 220" role="img" aria-label="An iso-compute valley: for a fixed compute budget, loss traces a curve against model size with a minimum at a balanced parameter/token allocation, rising on both sides.">
+  <line x1="40" y1="20" x2="40" y2="190" stroke="currentColor" stroke-width="2" />
+  <line x1="40" y1="190" x2="460" y2="190" stroke="currentColor" stroke-width="2" />
+  <path d="M 60 150 C 160 40, 340 40, 440 150" fill="none" stroke="currentColor" stroke-width="3" />
+  <circle cx="250" cy="52" r="5" fill="currentColor" />
+  <text x="255" y="45" font-size="14">balanced allocation</text>
+  <text x="60" y="170" font-size="14">too small, too many tokens</text>
+  <text x="300" y="170" font-size="14">too large, too few tokens</text>
+  <text x="230" y="215" font-size="14">model size at fixed compute</text>
+</svg>
+
+**Takeaway:** an undertrained large model can lose to a smaller model trained
+on more tokens, under the same compute.
+
+```notes
+Cite: Hoffmann et al., "Training Compute-Optimal Large Language Models"
+(arxiv.org/abs/2203.15556). The valley diagram is an original schematic
+illustrating the reported qualitative relationship, not a reproduction of the
+paper's own figure.
+```
+
+---
+
+## What transfers to 32M?
+
+| Transferable | Not guaranteed at this scale |
+| --- | --- |
+| Identify which resource is the bottleneck | The published exponents |
+| Compare configurations within a fixed budget | An optimal token/parameter ratio |
+| Allocate data with model size | A specific batch size |
+| Stop by evidence, not by habit | An exact loss value for this corpus |
+
+---
+
+## Decision 1: choose a plan
+
+Three legal fictional plans, same maximum compute:
+
+| Plan | Parameters | Tokens |
+| --- | ---: | --- |
+| A | 18M | more tokens |
+| B | 31.8M | balanced tokens |
+| C | 33.5M | fewer tokens |
+
+**Choose:** not a winner — which uncertainty would you need to measure
+*before* picking one, given only this table?
+
+```notes
+There is no correct plan to reveal here; the point is naming the missing
+measurement (e.g. how loss responds to width at this data volume) rather than
+voting from insufficient information.
+```
+
+---
+
+## A token is not a unit of value
+
+| Source | Quality signal |
+| --- | --- |
+| Clean, diverse stories | high value per token |
+| Duplicated stories | diminishing value with repetition |
+| OCR noise | actively harmful |
+| Synthetic textbook-like stories | can raise value per token, not guaranteed |
+
+Quality, diversity, duplication, provenance, and domain fit all change what a
+token is worth.
+
+```notes
+TinyStories/Phi are evidence that data design can change small-model
+outcomes — not proof that synthetic data is always superior. Cite: Eldan and
+Li, "TinyStories" (arxiv.org/abs/2305.07759); Gunasekar et al., "Textbooks Are
+All You Need" (arxiv.org/abs/2306.11644).
+```
+
+---
+
+## Count data twice
+
+Two ledgers, not one:
+
+1. **unique source/token inventory** — how much distinct material exists
+2. **tokens processed during optimisation** — how much the optimiser actually
+   saw, including repeats
+
+Multiple epochs increase the second without increasing the first — a report
+needs both numbers, or a duplication claim can't be checked.
+
+---
+
+## From batch to compute
+
+- **sequence length** × **sequences per micro-batch** × **gradient
+  accumulation** → effective tokens per update
+- **updates** × **effective tokens per update** → total tokens processed
+
+The repository is canonical for hardware conversion and FLOP estimation — the
+ledger relationship above is for reasoning about a plan, not for computing a
+number to report without running the tool.
+
+---
+
+## Learning rate is a schedule, not one number
+
+<svg viewBox="0 0 480 220" role="img" aria-label="A learning-rate schedule: a short linear warm-up rises to a peak, holds briefly, then decays gradually toward a low floor." style="color: var(--r-heading-color, currentColor)">
+  <line x1="40" y1="20" x2="40" y2="190" stroke="currentColor" stroke-width="2" />
+  <line x1="40" y1="190" x2="460" y2="190" stroke="currentColor" stroke-width="2" />
+  <path d="M 50 180 L 130 50 L 200 50 C 300 55, 380 100, 450 170" fill="none" stroke="currentColor" stroke-width="3" />
+  <text x="55" y="200" font-size="14">warm-up</text>
+  <text x="150" y="40" font-size="14">peak</text>
+  <text x="330" y="200" font-size="14">decay</text>
+</svg>
+
+Early instability calls for a short warm-up; later refinement calls for
+decay. An aggressive rate late in training can destroy a useful checkpoint —
+a lesson that carries forward directly into Projects 2 and 3's post-training
+stages.
+
+---
+
+## Stability signals
+
+| Signal | Warning pattern | Ambiguous pattern |
+| --- | --- | --- |
+| Train/validation loss | validation rises while train falls | validation flattens early |
+| Gradient norm | sudden spike or divergence | one isolated spike |
+| Throughput/memory | steadily degrading throughput | one slow step |
+| Fixed-prompt samples | repeated or degenerate text | one attractive sample |
+
+A single spike, or one attractive sample, is not a conclusion on its own.
+
+---
+
+## A pilot answers one uncertainty
+
+**Template:** hypothesis → one changed factor → controlled variables →
+maximum spend → measurement window → stop rule → decision the result can
+change.
+
+Contrast this with an undirected hyperparameter sweep, which spends budget
+without naming what it will decide.
+
+---
+
+## Decision 2: continue, revise, or stop?
+
+A fictional pilot: training loss falls, validation loss flattens, gradient
+norm is stable, projected runtime is 30 hours, samples repeat source phrases.
+
+**Choose an action, and name the evidence for it.**
+
+```notes
+Reveal after discussion: several defensible actions exist here (continue
+briefly to confirm the flattening, revise the data mixture to address
+repetition, or stop and reallocate) — provided the next check is made
+explicit before acting.
+```
+
+---
+
+## Your Project 1 run plan
+
+Final checklist before spending the principal run:
+
+- legal preflight passed
+- clean, source-level split
+- unique **and** processed token counts recorded
+- baseline plus one controlled comparison
+- compute reservation held back
+- checkpoint interval set
+- fixed evaluation prompts ready
+- a stop rule and recovery margin
+
+**Next:** bring this checklist to the Week 3 drop-in clinic.
+
+---
+
+## Claims you may and may not make
+
+| Supported | Unsupported |
+| --- | --- |
+| "Under our fixed data and steps, A achieved lower validation loss than B." | "Width is generally better than depth." |
+| | "Chinchilla proves our exact configuration is optimal." |
+| | "Lower PPL guarantees better stories." |
+
+---
+
+{/* _class: impact */}
+
+## Exit ticket
+
+Submit: your chosen baseline · the largest unresolved uncertainty · the pilot
+that can resolve it · maximum hours/FLOPs reserved · the evidence that would
+trigger a change.
+
+**Project 1 due 21 March 2027, 23:59 AET.**
+
+[Required reading: TinyStories, Sections 1–2](https://arxiv.org/abs/2305.07759)
+
+```notes
+Close the loop with the opening question — most students will now answer it
+differently, and should be able to say why.
+```
+
+---
+
+## Figure and source register
+
+- Power-law and scaling claims: Kaplan et al., [*Scaling Laws for Neural
+  Language Models*](https://arxiv.org/abs/2001.08361).
+- Compute-optimal allocation and iso-compute concept: Hoffmann et al.,
+  [*Training Compute-Optimal Large Language Models*](https://arxiv.org/abs/2203.15556).
+- Small-model/data-quality case studies: Eldan and Li, [*TinyStories*](https://arxiv.org/abs/2305.07759);
+  Gunasekar et al., [*Textbooks Are All You Need*](https://arxiv.org/abs/2306.11644).
+- Course budget values and ledger definitions: `src/course-config.ts` and the
+  Project 1 assessment page, restated here rather than screenshotted, since
+  no starter-repository run exists yet to capture.
+- The power-law, iso-compute-valley, and learning-rate-schedule diagrams in
+  this deck are original schematics drawn for this course, illustrating the
+  qualitative shape of the cited papers' reported relationships — not
+  reproductions of those papers' own figures.
+
+```notes
+This slide is the deck's compact asset register, per docs/ASSIGNMENT_BRIEF.md
+"Weekly visual system" — every implemented deck carries one.
+```

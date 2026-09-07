@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -10,6 +10,18 @@ import {
 } from "../src/data/resource-manifest";
 
 const bannedActionPatterns = [/^#$/, /^https?:\/\//i, /^\/[^/]/];
+
+interface ApiNode {
+  id: string;
+  type: string;
+  meta?: Record<string, unknown>;
+}
+
+interface CourseApi {
+  nodes: ApiNode[];
+}
+
+const api = JSON.parse(readFileSync(resolve("dist/api/index.json"), "utf8")) as CourseApi;
 
 describe("resource contract", () => {
   it("has exactly six entries per project, each with a unique ID and an approved group", () => {
@@ -72,6 +84,41 @@ describe("resource contract", () => {
       const project = Number(slug.split("-")[1]) as 1 | 2 | 3;
       const expected = resourcesForProject(project).map((e) => e.id);
       expect(ids.sort()).toEqual([...expected].sort());
+    }
+  });
+
+  it("gives every lecture banner a local asset, source, and alt-text decision", () => {
+    const lectures = api.nodes.filter((node) => node.type === "lectures");
+    const withBanner = lectures.filter(
+      (lecture) => typeof lecture.meta?.banner === "string" && lecture.meta.banner.length > 0,
+    );
+    expect(withBanner.length, "no lecture's meta.banner points at an image").toBeGreaterThan(0);
+
+    // meta.banner carries the raw frontmatter path (e.g. "./images/week-01-banner.svg"),
+    // not Astro's post-optimisation ImageMetadata object, so the built file has to be
+    // located by its hashed filename in dist/_astro rather than read back directly.
+    const builtAssets = readdirSync(resolve("dist/_astro"));
+
+    for (const lecture of withBanner) {
+      expect(
+        typeof lecture.meta?.bannerAlt === "string" && (lecture.meta.bannerAlt as string).trim().length > 0,
+        `${lecture.id} banner has no alt-text decision`,
+      ).toBe(true);
+      expect(
+        typeof lecture.meta?.bannerSource === "string" && (lecture.meta.bannerSource as string).trim().length > 0,
+        `${lecture.id} banner has no source/licence-reuse basis`,
+      ).toBe(true);
+
+      const bannerPath = String(lecture.meta?.banner);
+      const filename = bannerPath.split("/").pop() ?? "";
+      const extension = filename.split(".").pop();
+      const basename = filename.replace(/\.[^.]+$/, "");
+      const builtMatch = builtAssets.some(
+        (asset) => asset.startsWith(`${basename}.`) && asset.endsWith(`.${extension}`),
+      );
+      expect(builtMatch, `${lecture.id}'s banner (${bannerPath}) did not produce a built asset in dist/_astro`).toBe(
+        true,
+      );
     }
   });
 });

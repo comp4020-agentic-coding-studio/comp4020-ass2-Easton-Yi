@@ -1,0 +1,45 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="w4title">
+  <title id="w4title">One frozen checkpoint branching into decoded candidates and review</title>
+  <rect width="1200" height="400" fill="#101322" />
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <rect x="70" y="160" width="180" height="80" rx="10" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="160" y="196" font-size="22" text-anchor="middle">frozen</text>
+    <text x="160" y="222" font-size="22" text-anchor="middle">checkpoint</text>
+  </g>
+  <defs>
+    <marker id="w4arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#7fa8ff" />
+    </marker>
+  </defs>
+  <g stroke="#7fa8ff" stroke-width="2.5" fill="none" marker-end="url(#w4arrow)" opacity="0.85">
+    <path d="M250,175 C340,120 400,90 470,80" />
+    <path d="M250,195 C340,190 400,190 470,192" />
+    <path d="M250,215 C340,270 400,300 470,308" />
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <rect x="480" y="55" width="200" height="50" rx="8" fill="#1a2036" stroke="#2a3358" stroke-width="2" />
+    <text x="580" y="86" font-size="18" text-anchor="middle">candidate A (T=0.7)</text>
+    <rect x="480" y="167" width="200" height="50" rx="8" fill="#1a2036" stroke="#2a3358" stroke-width="2" />
+    <text x="580" y="198" font-size="18" text-anchor="middle">candidate B (top-p)</text>
+    <rect x="480" y="283" width="200" height="50" rx="8" fill="#1a2036" stroke="#2a3358" stroke-width="2" />
+    <text x="580" y="314" font-size="18" text-anchor="middle">candidate C (greedy)</text>
+  </g>
+  <g stroke="#7fa8ff" stroke-width="2.5" fill="none" marker-end="url(#w4arrow)" opacity="0.85">
+    <path d="M680,80 C780,80 800,140 860,155" />
+    <path d="M680,192 C760,192 800,175 860,168" />
+    <path d="M680,308 C780,290 800,230 860,205" />
+
+    <path d="M680,80 C780,110 800,250 860,265" />
+    <path d="M680,192 C760,220 800,240 860,278" />
+    <path d="M680,308 C780,320 800,300 860,290" />
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <rect x="870" y="120" width="250" height="70" rx="10" fill="none" stroke="#9fb2e8" stroke-width="3" />
+    <text x="995" y="149" font-size="20" text-anchor="middle">automatic</text>
+    <text x="995" y="173" font-size="20" text-anchor="middle">metric (PPL)</text>
+
+    <rect x="870" y="240" width="250" height="70" rx="10" fill="none" stroke="#9fb2e8" stroke-width="3" />
+    <text x="995" y="269" font-size="20" text-anchor="middle">blind human</text>
+    <text x="995" y="293" font-size="20" text-anchor="middle">review</text>
+  </g>
+</svg>

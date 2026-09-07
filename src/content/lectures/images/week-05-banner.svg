@@ -1,0 +1,30 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="w5title">
+  <title id="w5title">A base model transitioning into a target-behaviour model</title>
+  <rect width="1200" height="400" fill="#101322" />
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <rect x="90" y="150" width="300" height="110" rx="10" fill="none" stroke="#9fb2e8" stroke-width="3" />
+    <text x="240" y="200" font-size="24" text-anchor="middle">base model</text>
+    <text x="240" y="230" font-size="17" fill="#9fb2e8" text-anchor="middle">continues text distribution</text>
+  </g>
+  <defs>
+    <marker id="w5arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#7fa8ff" />
+    </marker>
+  </defs>
+  <g stroke="#7fa8ff" stroke-width="3" fill="none" marker-end="url(#w5arrow)">
+    <path d="M400,205 L800,205" />
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#c8d3ff">
+    <text x="600" y="150" font-size="18" text-anchor="middle">+ instruction tuning</text>
+    <text x="600" y="175" font-size="18" text-anchor="middle">+ preference learning</text>
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <rect x="810" y="140" width="300" height="130" rx="10" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="960" y="195" font-size="24" text-anchor="middle" fill="#7fa8ff">target-behaviour</text>
+    <text x="960" y="222" font-size="24" text-anchor="middle" fill="#7fa8ff">model</text>
+    <text x="960" y="250" font-size="17" fill="#9fb2e8" text-anchor="middle">reliable, requestable voice</text>
+  </g>
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#9fb2e8" font-size="18">
+    <text x="90" y="320">supervision signal changes, not just data volume</text>
+  </g>
+</svg>

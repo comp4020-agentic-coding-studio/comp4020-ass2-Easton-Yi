@@ -1,0 +1,40 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="w12title">
+  <title id="w12title">A linked chain from data revision to a loadable checkpoint</title>
+  <rect width="1200" height="400" fill="#101322" />
+  <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
+    <!-- data revision -->
+    <rect x="60" y="170" width="200" height="90" rx="10" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="85" y="205" font-size="18">data</text>
+    <text x="85" y="230" font-size="18">revision</text>
+    <text x="85" y="252" font-size="13" fill="#9fb2e8">hash a1c3f9</text>
+
+    <circle cx="300" cy="215" r="18" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="292" y="221" font-size="18" fill="#7fa8ff">&#128279;</text>
+
+    <!-- code revision -->
+    <rect x="340" y="170" width="200" height="90" rx="10" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="365" y="205" font-size="18">code</text>
+    <text x="365" y="230" font-size="18">revision</text>
+    <text x="365" y="252" font-size="13" fill="#9fb2e8">commit 7e2b04</text>
+
+    <circle cx="580" cy="215" r="18" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="572" y="221" font-size="18" fill="#7fa8ff">&#128279;</text>
+
+    <!-- training run -->
+    <rect x="620" y="170" width="200" height="90" rx="10" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="645" y="205" font-size="18">training</text>
+    <text x="645" y="230" font-size="18">run</text>
+    <text x="645" y="252" font-size="13" fill="#9fb2e8">run id + seed</text>
+
+    <circle cx="860" cy="215" r="18" fill="none" stroke="#7fa8ff" stroke-width="3" />
+    <text x="852" y="221" font-size="18" fill="#7fa8ff">&#128279;</text>
+
+    <!-- loadable checkpoint -->
+    <rect x="900" y="150" width="240" height="130" rx="10" fill="#7fa8ff" opacity="0.15" stroke="#7fa8ff" stroke-width="3" />
+    <text x="925" y="200" font-size="20" fill="#e8ecff">loadable</text>
+    <text x="925" y="228" font-size="20" fill="#e8ecff">checkpoint</text>
+    <text x="925" y="252" font-size="13" fill="#9fb2e8">reproduces metric</text>
+
+    <text x="60" y="130" font-size="20" fill="#9fb2e8">auditable artefact chain</text>
+  </g>
+</svg>

@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { render } from "astro:content";
 import { getPublishedCollection } from "astro-course-university/content";
 import RelatedContent from "astro-course-university/components/RelatedContent.astro";
@@ -20,8 +21,44 @@ const title = `Week ${lecture.data.week}: ${lecture.data.title}`;
 
 <ContentLayout title={title} description={lecture.data.description} {...siteConfig}>
   <p><strong>{formatCourseDate(lecture.data.date)}</strong></p>
+  {
+    lecture.data.banner && (
+      <figure class="at-lecture-banner">
+        <Image src={lecture.data.banner} alt={lecture.data.bannerAlt ?? ""} widths={[480, 960, 1440]} sizes="(min-width: 768px) 720px, 100vw" />
+        {lecture.data.bannerCredit && <figcaption>{lecture.data.bannerCredit}</figcaption>}
+      </figure>
+    )
+  }
   {lecture.data.slides && <p><a href={withBase(lecture.data.slides)}>Open the slides</a></p>}
   <Content />
   <TeachingTeam teachers={lecture.data.teachers} />
   <RelatedContent entry={lecture} collections={graphCollections} />
 </ContentLayout>
+
+<style>
+  .at-lecture-banner {
+    margin: 1.5rem 0;
+  }
+
+  .at-lecture-banner img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+
+  .at-lecture-banner figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--at-text-muted, #667);
+  }
+
+  @media (max-width: 480px) {
+    .at-lecture-banner img {
+      aspect-ratio: 3 / 2;
+      object-fit: contain;
+      background: #101322;
+    }
+  }
+</style>

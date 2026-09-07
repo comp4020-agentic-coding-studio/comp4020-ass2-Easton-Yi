@@ -7,6 +7,15 @@ week: 5
 date: 2027-03-22
 teachers:
   - yiwei-easton
+banner: ./images/week-05-banner.svg
+bannerAlt:
+  A "base model" box with an arrow, annotated "+ instruction tuning" and
+  "+ preference learning," transitioning into a "target-behaviour model" box
+  labelled with a reliable, requestable voice.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/05-project-2-target-and-baseline
   - assessments/project-2

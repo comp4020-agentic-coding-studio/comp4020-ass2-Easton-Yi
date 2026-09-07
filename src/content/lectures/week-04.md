@@ -7,6 +7,15 @@ week: 4
 date: 2027-03-15
 teachers:
   - yiwei-easton
+banner: ./images/week-04-banner.svg
+bannerAlt:
+  One frozen checkpoint branching into three decoded candidate outputs at
+  different decoding settings, each candidate feeding into both an automatic
+  metric box and a blind human review box.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/04-project-1-evaluation-and-packaging
   - assessments/project-1

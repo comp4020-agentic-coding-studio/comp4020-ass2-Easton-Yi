@@ -7,6 +7,15 @@ week: 7
 date: 2027-04-12
 teachers:
   - yiwei-easton
+banner: ./images/week-07-banner.svg
+bannerAlt:
+  Two candidate responses to the same prompt with an arrow marking the
+  preferred one, feeding a policy model that is updated and a fixed reference
+  model held at a bounded divergence, without depicting a full RLHF pipeline.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/07-project-2-behaviour-clinic
   - assessments/project-2

@@ -7,6 +7,15 @@ week: 9
 date: 2027-04-26
 teachers:
   - yiwei-easton
+banner: ./images/week-09-banner.svg
+bannerAlt:
+  Three generated reasoning chains running left to right, two consistent
+  chains converging on a majority-vote check that feeds a verified final
+  answer, while a third, minority chain is shown muted and excluded.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/09-project-3-task-contract
   - assessments/project-3

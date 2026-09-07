@@ -9,6 +9,14 @@ date: 2027-02-22
 teachers:
   - yiwei-easton
 slides: /decks/week-01/
+banner: ./images/week-01-banner.svg
+bannerAlt:
+  A five-token prefix, "The cat sat on the", feeding a highlighted next-token
+  slot with a bar chart of candidate probabilities such as "mat" and "floor."
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/01-project-1-launch
   - assessments/project-1

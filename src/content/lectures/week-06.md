@@ -7,6 +7,15 @@ week: 6
 date: 2027-03-29
 teachers:
   - yiwei-easton
+banner: ./images/week-06-banner.svg
+bannerAlt:
+  A token sequence split into a greyed instruction span with no loss applied
+  and a highlighted response span where each token carries a loss arrow,
+  showing response-only masking.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/06-lab-2-post-training-batch
   - assessments/project-2

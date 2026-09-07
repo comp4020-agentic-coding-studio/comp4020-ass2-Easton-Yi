@@ -7,6 +7,15 @@ week: 10
 date: 2027-05-03
 teachers:
   - yiwei-easton
+banner: ./images/week-10-banner.svg
+bannerAlt:
+  A task contract shaping a set of task-specific training records that flow
+  through a model box, into an output parser, and finally into a verifier or
+  metric box, showing the full fine-tuning-to-evaluation pipeline.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/10-lab-3-specialist-verifier
   - assessments/project-3

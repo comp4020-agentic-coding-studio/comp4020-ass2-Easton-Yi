@@ -7,6 +7,17 @@ week: 3
 date: 2027-03-08
 teachers:
   - yiwei-easton
+slides: /decks/week-03-fixed-compute/
+banner: ./images/week-03-banner.svg
+bannerAlt: >-
+  An iso-compute valley chart — for a fixed compute budget, loss traces a
+  curve against model size with a minimum at a balanced parameter/token
+  allocation, rising sharply on both sides toward "too small, too many
+  tokens" and "too large, too few tokens."
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/03-project-1-pilot-clinic
   - assessments/project-1

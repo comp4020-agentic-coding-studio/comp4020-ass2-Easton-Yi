@@ -1,0 +1,30 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="w8title">
+  <title id="w8title">Target-behaviour improvement plotted against retention as a trade-off</title>
+  <rect width="1200" height="400" fill="#101322" />
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <line x1="140" y1="60" x2="140" y2="340" stroke="#e8ecff" stroke-width="2" />
+    <line x1="140" y1="340" x2="1080" y2="340" stroke="#e8ecff" stroke-width="2" />
+    <polygon points="136,52 144,52 140,36" fill="#e8ecff" />
+    <polygon points="1088,336 1088,344 1104,340" fill="#e8ecff" />
+
+    <text x="150" y="45" font-size="20" fill="#9fb2e8">target-behaviour improvement</text>
+    <text x="700" y="380" font-size="20" fill="#9fb2e8">retention (lower = more regression)</text>
+
+    <line x1="140" y1="340" x2="1080" y2="90" stroke="#2a3358" stroke-width="2" stroke-dasharray="6,5" />
+    <text x="760" y="150" font-size="16" fill="#6a7597">naive frontier (idealised)</text>
+
+    <circle cx="330" cy="300" r="12" fill="#6a7597" />
+    <text x="350" y="295" font-size="16" fill="#9fb2e8">base model</text>
+
+    <circle cx="760" cy="150" r="14" fill="#7fa8ff" />
+    <text x="780" y="145" font-size="18" fill="#e8ecff">candidate checkpoint</text>
+
+    <circle cx="920" cy="260" r="12" fill="#c8d3ff" opacity="0.8" />
+    <text x="800" y="270" font-size="16" fill="#9fb2e8">over-tuned (regresses)</text>
+
+    <line x1="760" y1="150" x2="920" y2="260" stroke="#9fb2e8" stroke-width="1.5" stroke-dasharray="4,4" />
+
+    <rect x="600" y="60" width="300" height="50" rx="8" fill="none" stroke="#7fa8ff" stroke-width="2" />
+    <text x="618" y="92" font-size="18" fill="#c8d3ff">both axes assessed together</text>
+  </g>
+</svg>

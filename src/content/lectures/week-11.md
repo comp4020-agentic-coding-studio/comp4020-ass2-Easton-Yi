@@ -7,6 +7,15 @@ week: 11
 date: 2027-05-10
 teachers:
   - yiwei-easton
+banner: ./images/week-11-banner.svg
+bannerAlt:
+  One tall aggregate-score bar next to five disaggregated per-slice bars of
+  uneven height, with a template-shift slice and a held-out slice sitting
+  much lower than the in-domain and base slices, showing hidden variance.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/11-project-3-generalisation-clinic
   - assessments/project-3

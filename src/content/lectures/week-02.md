@@ -7,6 +7,15 @@ week: 2
 date: 2027-03-01
 teachers:
   - yiwei-easton
+banner: ./images/week-02-banner.svg
+bannerAlt:
+  A row of five token positions where each token's attention arrows point
+  only backward to itself and earlier positions, illustrating the causal
+  mask that blocks any forward-looking attention.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/02-lab-1-parameter-budget
   - assessments/project-1

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="w6title">
+  <title id="w6title">Instruction tokens masked, response tokens carrying the loss</title>
+  <rect width="1200" height="400" fill="#101322" />
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <text x="80" y="120" font-size="20" fill="#9fb2e8">instruction (context, no loss)</text>
+    <g fill="#2a3358" stroke="#3a4470" stroke-width="1.5">
+      <rect x="80" y="150" width="90" height="52" rx="8" />
+      <rect x="185" y="150" width="90" height="52" rx="8" />
+      <rect x="290" y="150" width="90" height="52" rx="8" />
+      <rect x="395" y="150" width="90" height="52" rx="8" />
+    </g>
+    <g fill="#6a7597" font-size="20">
+      <text x="105" y="183">Write</text>
+      <text x="215" y="183">a</text>
+      <text x="305" y="183">story</text>
+      <text x="415" y="183">:</text>
+    </g>
+
+    <text x="560" y="120" font-size="20" fill="#7fa8ff">response (supervised, loss applied)</text>
+    <g fill="none" stroke="#7fa8ff" stroke-width="3">
+      <rect x="560" y="150" width="90" height="52" rx="8" />
+      <rect x="665" y="150" width="90" height="52" rx="8" />
+      <rect x="770" y="150" width="90" height="52" rx="8" />
+      <rect x="875" y="150" width="90" height="52" rx="8" />
+      <rect x="980" y="150" width="90" height="52" rx="8" />
+    </g>
+    <g fill="#e8ecff" font-size="20">
+      <text x="580" y="183">Once</text>
+      <text x="685" y="183">a</text>
+      <text x="775" y="183">fox</text>
+      <text x="885" y="183">found</text>
+      <text x="1000" y="183">a</text>
+    </g>
+
+    <g stroke="#7fa8ff" stroke-width="2">
+      <line x1="605" y1="230" x2="605" y2="270" />
+      <line x1="710" y1="230" x2="710" y2="270" />
+      <line x1="815" y1="230" x2="815" y2="270" />
+      <line x1="920" y1="230" x2="920" y2="270" />
+      <line x1="1025" y1="230" x2="1025" y2="270" />
+    </g>
+    <g fill="none" stroke="#7fa8ff" stroke-width="2">
+      <polygon points="601,268 609,268 605,278" fill="#7fa8ff" stroke="none" />
+      <polygon points="706,268 714,268 710,278" fill="#7fa8ff" stroke="none" />
+      <polygon points="811,268 819,268 815,278" fill="#7fa8ff" stroke="none" />
+      <polygon points="916,268 924,268 920,278" fill="#7fa8ff" stroke="none" />
+      <polygon points="1021,268 1029,268 1025,278" fill="#7fa8ff" stroke="none" />
+    </g>
+    <text x="700" y="320" font-size="22" fill="#c8d3ff">token-level loss, response span only</text>
+    <line x1="80" y1="340" x2="475" y2="340" stroke="#3a4470" stroke-width="4" />
+    <line x1="560" y1="340" x2="1070" y2="340" stroke="#7fa8ff" stroke-width="4" />
+    <text x="80" y="365" font-size="16" fill="#6a7597">mask = 0</text>
+    <text x="560" y="365" font-size="16" fill="#9fb2e8">mask = 1</text>
+  </g>
+</svg>

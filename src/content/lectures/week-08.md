@@ -7,6 +7,16 @@ week: 8
 date: 2027-04-19
 teachers:
   - yiwei-easton
+banner: ./images/week-08-banner.svg
+bannerAlt:
+  A two-axis plot of target-behaviour improvement against retention, with a
+  base model, an over-tuned checkpoint that regresses, and a candidate
+  checkpoint plotted to show the trade-off assessed jointly rather than as
+  one score.
+bannerSource: >-
+  Original schematic illustration created for this course; not a reproduction
+  of any external figure or dataset.
+bannerCredit: Original illustration for SLOP4225.
 related:
   - sessions/08-project-2-blind-evaluation
   - assessments/project-2
