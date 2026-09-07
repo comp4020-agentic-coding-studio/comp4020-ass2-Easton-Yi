@@ -23,7 +23,7 @@ At this stage, I have designed and prepared the implementation-ready content fou
 > assessments/resources/submission panels
 > ([`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)),
 > and the twelve lectures and twelve sessions
-> ([`<stage4-sha>`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/<stage4-sha>)).
+> ([`383702e`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/383702e)).
 > The deck and weekly imagery and the final responsive/accessibility pass
 > have not yet been carried out and must be appended when they occur.
 
@@ -544,7 +544,7 @@ confirmed zero horizontal overflow at either viewport and correct rendering
 of the per-page `sessionType` label ("Formal lab" / "Drop-in clinic")
 alongside the shared "Labs" nav term.
 
-**Evidence:** [`<stage4-sha>`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/<stage4-sha>)
+**Evidence:** [`383702e`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/383702e)
 (twelve lecture files, twelve session files replacing the two starter
 sessions, `spec/course-contract.test.ts`, and small session-display component
 touch-ups).
