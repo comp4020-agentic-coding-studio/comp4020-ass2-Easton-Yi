@@ -1,9 +1,5 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
 Written by you, for a reader: how you got from the brief to the harness and
 agentic workflow behind this submission. Markers read this file and follow its
 citations; they don't trawl the repo for evidence you didn't point at.
@@ -18,7 +14,17 @@ cover every deliverable.
 
 At this stage, I have designed and prepared the implementation-ready content foundation for **Training Language Models: A Budgeted Engineering Task**, a twelve-week, project-led course in which students build, post-train, and specialise a small language model under explicit parameter, data, and compute constraints. The idea is to teach language-model development as evidence-led engineering rather than unconstrained model chasing: three linked projects make students justify what they train, measure behaviour as well as loss, work reproducibly within a budget, and carry lessons from pre-training into post-training and specialist reasoning. The two planning documents now separate the rationale and constraints that guide implementation from the approved student-facing copy that the website can use directly.
 
-> **Current status:** The course-design and student-facing content phases are complete. Website implementation, automated testing, build verification, commit-linked evidence, screenshots, and the final retrospective have not yet been carried out and must be appended when they occur.
+> **Current status:** Course design and student-facing content are complete
+> ([`521bce9`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/521bce9)–[`a2e4cfa`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/a2e4cfa)).
+> Implementation is underway in staged commits: harness rule capture
+> ([`410bd40`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/410bd40)),
+> configuration/navigation/Home/People/Policies
+> ([`8368b0f`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/8368b0f)),
+> and assessments/resources/submission panels
+> ([`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)).
+> Twelve lectures and sessions, the deck and weekly imagery, and the final
+> responsive/accessibility pass have not yet been carried out and must be
+> appended when they occur.
 
 ## How I got here
 
@@ -468,6 +474,11 @@ asserting today's (`Scheduled`) HTML contains download links it should not
 yet show; `assessment-contract.test.ts` checks the submission panel's
 upload/GitLab-SHA copy directly in `SubmissionPanel.astro`'s source for the
 same reason.
+
+**Evidence:** [`14a03d5`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/14a03d5)
+(pages, components, resource manifest, generated backing files, four new
+spec files); the `.gitignore`/harness-rule groundwork for this stage is
+[`410bd40`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-Easton-Yi/commit/410bd40).
 
 <!-- Stage 4 (twelve lectures and sessions), Stage 5 (deck, weekly imagery,
 downloadable resources), and Stage 6 (responsive/accessibility/consistency
