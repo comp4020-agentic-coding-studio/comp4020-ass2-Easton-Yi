@@ -1,41 +1,12 @@
 ---
-import { getPublishedCollection } from "astro-course-university/content";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import { withBase } from "astro-theme-university/url";
 import { formatCourseDateTime, formatWeekBeginning } from "../../lib/dates";
 import { courseMeta } from "../../course-config";
 import { sessionLabels, siteConfig } from "../../site-config";
+import { getWeeklySchedule } from "../../data/weekly-schedule";
 
-const lectures = await getPublishedCollection("lectures");
-const sessions = await getPublishedCollection("sessions");
-const assessments = await getPublishedCollection("assessments");
-
-const lecturesByWeek = new Map(lectures.map((lecture) => [lecture.data.week, lecture]));
-const sessionsByWeek = new Map(sessions.map((session) => [session.data.week, session]));
-const assessmentsByWeek = new Map(assessments.map((assessment) => [assessment.data.week, assessment]));
-
-const sessionTypeLabels = {
-  guided: "Guided session",
-  lab: "Formal lab",
-  clinic: "Drop-in clinic",
-} as const;
-
-// Short milestone copy per week, approved wording from the Schedule-page
-// table in CONTENT_SOURCE.md. Weeks with a project due read their date
-// straight from the assessments collection rather than repeating it here.
-const milestoneText: Record<number, string> = {
-  1: "Project 1 released; validate data and define the target",
-  2: "Freeze a feasible baseline architecture",
-  3: "Freeze the principal run plan",
-  5: "Project 2 opens; define the target voice and baseline",
-  6: "Produce a masking check and viable pilot",
-  7: "Freeze the evaluation comparison",
-  9: "Project 3 opens; proposal due 2 May for alternative Track A tasks",
-  10: "Produce one loadable pilot and valid metric",
-  11: "Freeze the candidate checkpoint and bounded claim",
-};
-
-const weeks = Array.from({ length: 12 }, (_, i) => i + 1);
+const { weeks } = await getWeeklySchedule();
 ---
 
 <ContentLayout
@@ -64,43 +35,40 @@ const weeks = Array.from({ length: 12 }, (_, i) => i + 1);
       </thead>
       <tbody>
         {
-          weeks.map((week) => {
-            const lecture = lecturesByWeek.get(week);
-            const session = sessionsByWeek.get(week);
-            const assessment = assessmentsByWeek.get(week);
+          weeks.map((entry) => {
             return (
               <>
                 <tr>
-                  <td>{week}</td>
-                  <td>{lecture && formatWeekBeginning(lecture.data.date)}</td>
+                  <td>{entry.week}</td>
+                  <td>{formatWeekBeginning(entry.weekBeginning)}</td>
                   <td>
-                    {lecture && (
-                      <a href={withBase(`/lectures/${lecture.id}/`)}>{lecture.data.title}</a>
+                    {entry.lecture && (
+                      <a href={withBase(entry.lecture.href)}>{entry.lecture.title}</a>
                     )}
                   </td>
                   <td>
-                    {session && (
+                    {entry.session && (
                       <>
-                        <a href={withBase(`/sessions/${session.id}/`)}>{session.data.title}</a>
+                        <a href={withBase(entry.session.href)}>{entry.session.title}</a>
                         {" "}
-                        <small>({sessionTypeLabels[session.data.sessionType]})</small>
+                        <small>({entry.session.typeLabel})</small>
                       </>
                     )}
                   </td>
                   <td>
-                    {assessment ? (
-                      <a href={withBase(`/assessments/${assessment.id}/`)}>
+                    {entry.milestone ? (
+                      <a href={withBase(entry.milestone.href)}>
                         <strong>
-                          Project {assessment.data.project} due{" "}
-                          {formatCourseDateTime(assessment.data.due)}
+                          Project {entry.milestone.project} due{" "}
+                          {formatCourseDateTime(entry.milestone.due)}
                         </strong>
                       </a>
                     ) : (
-                      milestoneText[week]
+                      entry.actionText
                     )}
                   </td>
                 </tr>
-                {week === 6 && (
+                {entry.week === 6 && (
                   <tr>
                     <td>&mdash;</td>
                     <td>5 April</td>

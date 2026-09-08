@@ -73,7 +73,7 @@ const CVPR_MAIN_TEX = `\\documentclass[10pt,twocolumn]{article}
 \\usepackage{hyperref}
 
 \\title{SLOP4225 Engineering Report}
-\\author{Student Name (Student ID) \\\\ Training Language Models: A Budgeted Engineering Task}
+\\author{Student Name (Student ID) \\\\ SLOP4225: Budgeted Language Model Training}
 \\date{}
 
 \\begin{document}

@@ -216,3 +216,51 @@ Use the shortest combination that proves the point:
 When a bug leads to a new permanent rule, identify the failure mode that the rule now prevents. This makes the systemic improvement visible rather than allowing it to disappear inside the implementation commit.
 
 Before handoff, verify mechanically that `PROCESS.md` is between 400 and 600 words, contains real commit or compare links, retains the required two main sections, and ends with the project-level structural alternative.
+
+## Deck-authoring constraints (learned from an overflow bug)
+
+`astromotion` decks (`src/decks/*.deck.mdx`) render onto a **fixed 1280×720
+canvas** that is CSS-`transform: scale()`-fitted to the viewport, not a
+responsive page. Content that fits in the browser's normal scrolled view in
+`pnpm dev` can still overflow the canvas once presented full-screen —
+`pnpm build`'s own checks do not catch this, and it is invisible until you
+either present the deck or measure `scrollHeight`/`clientHeight` on
+`.slides section.present` directly. A real instance of this shipped two
+overflowing decks before it was caught (see `PROCESS_LOG.md`, "Deck overflow
+bug").
+
+When authoring or editing a slide, budget for the fixed canvas, not the
+window:
+
+- **One idea-unit per slide.** A slide with a heading + a paragraph pair + a
+  4+ row table + a takeaway + notes is already over budget at 1280×720. If a
+  slide accumulates a second table, a second multi-line paragraph, or an
+  8-item list, split it at a new `---` break before adding more — do not
+  wait for an overflow scan to tell you. Splitting must never reword or drop
+  approved content; only relocate it across the new slide boundary.
+- **Bare `<svg>` diagrams must not go uncapped.** A hand-drawn `<svg>` with
+  only a `viewBox` (no width/height) stretches to the slide's full
+  content-box width by default (CSS Grid item-stretch), and a tall
+  `viewBox` at that width can overflow the canvas on its own, independent of
+  any other slide content. `src/decks/theme.css` already caps every deck
+  SVG at `max-width: 720px; max-height: 440px` (with `width/height: auto`
+  so the browser picks whichever bound the diagram's own aspect ratio
+  needs) — do not add a per-slide inline size override; if a diagram still
+  looks cramped or overflows at that cap, adjust the shared rule, not the
+  instance, so every diagram stays protected.
+- **Checklists and bullet lists: cap at ~4-5 items per slide** when each
+  item is a full clause rather than a single word — long enough lists have
+  pushed a slide's `scrollHeight` past 720px even with no table or diagram
+  present.
+- **Verify by measuring the canvas, not by reading the source.** Before
+  calling deck work done, drive the deck with a browser/Playwright and read
+  `scrollHeight` vs `clientHeight` on the active slide section across every
+  slide (`ArrowRight`-stepping through Reveal fragments too, since each
+  fragment reveal is its own present-state) — a source file that "looks
+  short enough" is not evidence. `astromotion` ships a purpose-built checker
+  for exactly this (`astromotion-check`, backed by
+  `node_modules/astromotion/scripts/deck-check.mjs`), but it needs the
+  optional peer dependency `puppeteer-core`, not installed in this project
+  as of this writing — install it and wire `astromotion-check` into
+  `pnpm check` before the next deck-heavy stage, rather than re-deriving an
+  equivalent Playwright scan by hand again.

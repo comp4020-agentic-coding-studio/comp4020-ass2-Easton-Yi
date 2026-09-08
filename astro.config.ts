@@ -22,7 +22,10 @@ export default defineConfig({
       defaultLayout: "src/layouts/PageLayout.astro",
       // The whole brand choice: three colour tokens and a set of lockups. Keep
       // institutional brand packages and assets out of this fictional site.
-      brandCss: "astro-theme-slop/slop.css",
+      // Re-exported (then extended with site-specific overrides) from
+      // src/styles/site.css --- see that file for why this, not a layout
+      // <style>, is where a truly site-wide CSS override belongs.
+      brandCss: "/src/styles/site.css",
       imageFormat: "avif",
       llmsTxt: true,
       // The theme owns the markdown plugin chain, so astromotion's slide

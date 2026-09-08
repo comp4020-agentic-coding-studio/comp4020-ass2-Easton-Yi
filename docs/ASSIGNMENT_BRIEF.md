@@ -24,7 +24,9 @@ The implementation agent should read both files: use this brief to understand wh
 
 ## Course identity
 
-**Formal title:** *Training Language Models: A Budgeted Engineering Task*
+**Formal title and public course name:** *SLOP4225: Budgeted Language Model Training*
+
+The Home document title, browser-history label, navigation identity, and visible Hero heading use this same concise name. The previous longer working title must not remain as a competing public identity.
 
 **Tagline:** *Frontier practice through budgeted 32M-scale experiments*
 
@@ -49,7 +51,7 @@ The implementation agent should read both files: use this brief to understand wh
 
 > Study how modern large language models are really trained, then rebuild the pipeline at a controllable scale: pre-train a narrative model, reshape it through post-training, and specialise it for a defined task under a 32M design target and fixed compute budgets.
 
-The title refers to the subject of study, not the parameter count of the submitted checkpoints. The combination of continuously updated frontier material, a 32M experimental design target with a transparent 5% tolerance, and three hands-on training stages provides the course's niche scope.
+The title names both the subject and its organising constraint; it does not redefine language-model training as only small-model work. The combination of continuously updated frontier material, a 32M experimental design target with a transparent 5% tolerance, and three hands-on training stages provides the course's niche scope.
 
 ## Audience and prerequisites
 
@@ -484,6 +486,14 @@ The two tracks share the 30-mark rubric in `CONTENT_SOURCE.md`, centred on task 
 
 ## Twelve-week teaching plan
 
+### Home-page information architecture and wayfinding
+
+The Home page uses progressive disclosure. After the Hero, the approved **What you will do** and **Who this is for** sections first establish the activity and expected background. They appear side by side at wide viewports and stack in that order on mobile. The three linked Project cards then explain the four-week engineering stages, weights and deadlines. A twelve-week learning path beneath them answers the more immediate question, “What do I need to do this week?” without duplicating the detailed syllabus.
+
+Each Project card has one assessment destination and may act as one large link. Each Week card has distinct lecture and session destinations, and Weeks 4, 8 and 12 also link their due milestone; therefore Week cards must use separately labelled links rather than a nested or ambiguous whole-card link. Group the cards into Weeks 1–4, 5–8 and 9–12, insert the 5–11 April break as a full-width separator, use two chronological columns at wide viewports, and collapse to one column on mobile.
+
+Every teaching week has a real session entry. Home must preserve the approved mapping: guided sessions in Weeks 1/4/5/8/9/12, formal labs in Weeks 2/6/10, and drop-in clinics in Weeks 3/7/11. Render Home and the Schedule page from the same typed week metadata or content-collection-derived registry, with dates and deadlines sourced from `course-config.ts`. Do not maintain a second hand-written Home schedule array. The Home cards omit full summaries, preparation, readings and activity steps; those remain on the linked pages.
+
 The semester is organised as three four-week blocks. Each block builds the knowledge and tools needed for its project, with the project due at the end of the fourth week. The supplied lecture materials on LLM foundations, scaling, post-training, and reasoning provide the knowledge base, but the teaching sequence below reorganises that material around student decisions and project deadlines.
 
 Each lecture has three layers:
@@ -848,7 +858,10 @@ The course-specific tests should verify that:
 - every assessment lists only a report upload and GitLab commit SHA as portal fields, while `submission-manifest.json` carries the assigned HF repository ID, frozen model revision, checksum, and compute-ledger path;
 - personal submission status is never faked on the static site: the authenticated portal owns `To be submitted` and `Submitted`;
 - Week 1–12 lecture links, all twelve week-numbered session entries, and the three due-week relationships remain present; and
-- the session collection contains exactly three formal labs, three drop-in clinics, and six lightweight guided sessions.
+- the session collection contains exactly three formal labs, three drop-in clinics, and six lightweight guided sessions;
+- the Home document title, navigation identity, and visible Hero heading are exactly `SLOP4225: Budgeted Language Model Training`;
+- `What you will do` and `Who this is for` appear after the Hero and before the three linked Project cards; and
+- the Home learning path contains exactly twelve chronological Week cards, the break separator, correct lecture/session/assessment links, and values shared with Schedule rather than duplicated literals.
 
 ## Implementation and verification contract
 
@@ -872,6 +885,7 @@ The implementation agent must add real course-specific tests under `spec/` in ad
 | Test file | Required assertions |
 | --- | --- |
 | `spec/course-contract.test.ts` | `SLOP4225`; Semester 1, 2027 dates; weights 20/50/30; exactly 12 lectures; exactly 12 session entries covering Weeks 1–12; session-type counts 3/3/6; Project due weeks 4/8/12; at least one linked and compiled `.deck.mdx`. |
+| `spec/home-contract.test.ts` | Exact course/document title; Hero–What–Who–Projects section order; three linked Project cards with week ranges, weights and deadlines; exactly twelve chronological Week cards grouped by Project stage; the 5–11 April break; all lecture and session mappings; due-week assessment links; shared schedule data and base-path-safe hrefs. |
 | `spec/assessment-contract.test.ts` | Three assessment pages; brief, rubric, constraints, submission panel, individual-work statement, and exactly six primary resource entries on each; report/model allocations 10/10, 35/15, 20/10; correct open/due dates and report filenames; only report upload and GitLab SHA portal fields; no token or secret input. |
 | `spec/policy-contract.test.ts` | Eleven numbered policy sections; 32M design target and 33.6M boundary; compute and FLOP limits; 15/20/20 report limits; five development examples and ten tutor prompts; continuation/answer-only PPL, 25/50 thresholds and `0.1`; Project 3B and proposal rules; no HF-token submission. |
 | `spec/resource-contract.test.ts` | Exactly six registry entries per Project with unique IDs and approved groups; no `#`, fabricated, empty, root-absolute, or raw-URL-labelled actions; state/href invariants; shared CVPR template referenced by all three Projects but stored once; weekly banner metadata contains local asset, source, licence/reuse basis, and alt-text decision. |

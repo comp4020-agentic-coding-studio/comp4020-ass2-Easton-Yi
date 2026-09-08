@@ -11,3 +11,21 @@
  * slide class you reach for (`_class: quote`), a code-heavy layout, a
  * background. */
 @import url("astro-theme-university/styles/deck.css");
+
+/* A bare <svg> hand-drawn diagram in slide markdown has no intrinsic-size cap
+ * from the theme, so it stretches to the section's full content width (grid
+ * item default). A tall viewBox at that width can push a slide's content
+ * past the fixed 1280x720 canvas --- caught by
+ * scripts/deck-check.mjs-style overflow scans, not by `astro build`. Cap both
+ * axes in canvas px (the reveal canvas is a fixed coordinate system, so px
+ * here means the same thing on every device) and let the browser's
+ * replaced-element sizing pick whichever bound the diagram's aspect ratio
+ * actually needs. */
+.reveal .slides section > svg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 720px;
+  max-height: 440px;
+  margin-inline: auto;
+}

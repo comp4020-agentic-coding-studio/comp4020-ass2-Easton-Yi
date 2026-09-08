@@ -24,6 +24,16 @@ ticket.
 - **D** — training tokens processed
 - **C** — training compute
 
+```notes
+Source: docs/CONTENT_SOURCE.md's approved Project 1 key facts, restated from
+course-config.ts values — not a screenshot, since no starter-repo run exists
+yet to screenshot.
+```
+
+---
+
+## Project 1's constraints, in one table
+
 | Constraint | Value |
 | --- | --- |
 | Design target | 32M learned parameters |
@@ -72,15 +82,19 @@ actually the bottleneck?
   <text x="230" y="250" font-size="14">scale (log)</text>
 </svg>
 
-**L(x) = a·x⁻ᵅ + L∞** — diminishing returns, and an approximately straight
-middle region on log–log axes.
-
 ```notes
 This is an original schematic drawn for this deck, not a reproduction of
 Kaplan et al.'s figures — it illustrates the qualitative shape their reported
 relationships describe. Do not ask students to fit exponents for the
 assignment; the diagram is for reading a curve's regions, not for regression.
 ```
+
+---
+
+## The power law, written out
+
+**L(x) = a·x⁻ᵅ + L∞** — diminishing returns, and an approximately straight
+middle region on log–log axes.
 
 ---
 
@@ -111,6 +125,10 @@ see the deck's figure/source register slide for the full citation.
 | --- | --- | --- |
 | Under fixed compute, favour... | more parameters | parameters and tokens roughly together |
 | Main risk | — | undertrained large models |
+
+---
+
+## The iso-compute valley
 
 <svg viewBox="0 0 480 220" role="img" aria-label="An iso-compute valley: for a fixed compute budget, loss traces a curve against model size with a minimum at a balanced parameter/token allocation, rising on both sides.">
   <line x1="40" y1="20" x2="40" y2="190" stroke="currentColor" stroke-width="2" />
@@ -279,6 +297,11 @@ Final checklist before spending the principal run:
 - clean, source-level split
 - unique **and** processed token counts recorded
 - baseline plus one controlled comparison
+
+---
+
+## Your Project 1 run plan, continued
+
 - compute reservation held back
 - checkpoint interval set
 - fixed evaluation prompts ready
@@ -325,6 +348,11 @@ differently, and should be able to say why.
   [*Training Compute-Optimal Large Language Models*](https://arxiv.org/abs/2203.15556).
 - Small-model/data-quality case studies: Eldan and Li, [*TinyStories*](https://arxiv.org/abs/2305.07759);
   Gunasekar et al., [*Textbooks Are All You Need*](https://arxiv.org/abs/2306.11644).
+
+---
+
+## Figure and source register, continued
+
 - Course budget values and ledger definitions: `src/course-config.ts` and the
   Project 1 assessment page, restated here rather than screenshotted, since
   no starter-repository run exists yet to capture.

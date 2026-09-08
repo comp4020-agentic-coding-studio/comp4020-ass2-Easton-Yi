@@ -6,6 +6,45 @@ import { withBase } from "astro-theme-university/url";
 import heroImage from "../assets/images/hero-home.avif";
 import { courseMeta } from "../course-config";
 import { siteConfig } from "../site-config";
+import { getWeeklySchedule } from "../data/weekly-schedule";
+import { formatCourseDeadline, formatWeekBeginning } from "../lib/dates";
+
+const { weeks, projects } = await getWeeklySchedule();
+
+// Home-only editorial framing for each project stage, approved verbatim from
+// the "The course in three stages" section of docs/CONTENT_SOURCE.md. Weekly
+// facts (lecture/session/deadline) come from the shared weekly-schedule
+// registry above; this is prose that has no equivalent in a content
+// collection, so it stays local to the page that renders it.
+const stageCopy: Record<1 | 2 | 3, { heading: string; purpose: string }> = {
+  1: {
+    heading: "1. Build language ability",
+    purpose:
+      "Pre-train a decoder-only Transformer on a supplied narrative corpus. Decide how model " +
+      "capacity, tokenization, data, optimisation, and runtime fit together under a " +
+      "32M-parameter design target.",
+  },
+  2: {
+    heading: "2. Shape model behaviour",
+    purpose:
+      "Start from a narrative checkpoint and give the model a recognisable voice. Compare " +
+      "continued pre-training, supervised instruction tuning, preference-based methods, or a " +
+      "justified combination without hiding regressions behind one improved metric.",
+  },
+  3: {
+    heading: "3. Build a specialist",
+    purpose:
+      "Adapt a permitted checkpoint for one measurable function. Choose a bounded narrative " +
+      "capability or arithmetic reasoning, test generalisation, and determine what the " +
+      "intervention changed as well as what it damaged.",
+  },
+};
+
+const weekGroups = [
+  { stage: 1 as const, label: "Weeks 1–4", weeks: weeks.slice(0, 4) },
+  { stage: 2 as const, label: "Weeks 5–8", weeks: weeks.slice(4, 8) },
+  { stage: 3 as const, label: "Weeks 9–12", weeks: weeks.slice(8, 12) },
+];
 ---
 
 <ContentLayout
@@ -34,40 +73,120 @@ import { siteConfig } from "../site-config";
     limited data, limited compute, and evidence you must be able to defend.
   </p>
 
+  <div class="intro-grid">
+    <section>
+      <h2>What you will do</h2>
+      <p>
+        Work through three connected projects that follow the life of a language model. You will
+        pre-train a narrative model from scratch, reshape its behaviour through post-training, and
+        adapt a permitted checkpoint for one specialist capability. At every stage, you will make
+        choices about the model, data, training budget, and evaluation—and use evidence to decide
+        whether those choices worked.
+      </p>
+    </section>
+    <section>
+      <h2>Who this is for</h2>
+      <p>
+        This course is for senior undergraduate and postgraduate students who have ever wondered
+        what actually happens inside the training run behind a language model, and want to stop
+        taking that on faith. It suits anyone who enjoys turning a vague claim about scale, data,
+        or alignment into an experiment they can run and defend with evidence, and who would
+        rather make one deliberate training decision than run a large search and hope.
+      </p>
+      <p>
+        By the end, you will have trained a real language model of your own from scratch, reshaped
+        its behaviour on purpose, and specialised it for a task you chose — and be able to explain,
+        with evidence, why each of those choices worked or didn't.
+      </p>
+      <p>
+        You should have completed introductory machine learning and be comfortable with basic
+        Python, linear algebra, and probability. Prior experience with PyTorch, GPUs, or training a
+        language model is not required — the supported sessions and starter repositories introduce
+        the working pipeline before you depend on it in an assessment.
+      </p>
+    </section>
+  </div>
+
+  <h2>The course in three stages</h2>
+  <CardGrid columns={3}>
+    {
+      projects.map((project) => (
+        <Card title={stageCopy[project.project].heading} href={project.href} headingLevel="h3">
+          <p>{stageCopy[project.project].purpose}</p>
+          <p>
+            <strong>Project {project.project}:</strong> {project.title.replace(/^Project \d+ — /, "")}
+            {" "}· Weeks {project.weeks[0]}–{project.weeks[1]} · {project.weight}% · due{" "}
+            {formatCourseDeadline(project.due)}
+          </p>
+        </Card>
+      ))
+    }
+  </CardGrid>
+
   <p class="hero-ctas">
     <a class="at-button" href={withBase("/lectures/week-01/")}>Start with Week 1</a>
     <a class="at-button at-button--outline" href={withBase("/assessments/")}>View the three projects</a>
   </p>
 
-  <h2>The course in three stages</h2>
-  <CardGrid columns={3}>
-    <Card title="1. Build language ability" headingLevel="h3">
-      <p>
-        Pre-train a decoder-only Transformer on a supplied narrative corpus.
-        Decide how model capacity, tokenization, data, optimisation, and
-        runtime fit together under a 32M-parameter design target.
-      </p>
-      <p><strong>Project 1:</strong> Build a Narrative Base Model · 20% · due end of Week 4</p>
-    </Card>
-    <Card title="2. Shape model behaviour" headingLevel="h3">
-      <p>
-        Start from a narrative checkpoint and give the model a recognisable
-        voice. Compare continued pre-training, supervised instruction
-        tuning, preference-based methods, or a justified combination
-        without hiding regressions behind one improved metric.
-      </p>
-      <p><strong>Project 2:</strong> Give the Model a Voice · 50% · due end of Week 8</p>
-    </Card>
-    <Card title="3. Build a specialist" headingLevel="h3">
-      <p>
-        Adapt a permitted checkpoint for one measurable function. Choose a
-        bounded narrative capability or arithmetic reasoning, test
-        generalisation, and determine what the intervention changed as well
-        as what it damaged.
-      </p>
-      <p><strong>Project 3:</strong> Build a Specialist · 30% · due end of Week 12</p>
-    </Card>
-  </CardGrid>
+  <h2>Your twelve-week path</h2>
+  <p>
+    Each week connects one lecture, one practical or support session, and the next decision in the
+    current project. Open either activity directly and use <strong>this week</strong> as the
+    minimum project checkpoint to reach before moving on.
+  </p>
+
+  {
+    weekGroups.map((group) => (
+      <>
+        <h3>{group.label}</h3>
+        <div class="week-grid">
+          {group.weeks.map((entry) => (
+            <>
+              <article class="week-card">
+                <h4>
+                  Week {entry.week} · {formatWeekBeginning(entry.weekBeginning)}
+                </h4>
+                {entry.lecture && (
+                  <p>
+                    <span class="week-card__label">Lecture:</span>{" "}
+                    <a href={withBase(entry.lecture.href)}>{entry.lecture.title}</a>
+                  </p>
+                )}
+                {entry.session && (
+                  <p>
+                    <span class="week-card__label">{entry.session.typeLabel}:</span>{" "}
+                    <a href={withBase(entry.session.href)}>{entry.session.title}</a>
+                  </p>
+                )}
+                {entry.milestone ? (
+                  <p>
+                    <span class="week-card__label">This week:</span>{" "}
+                    <a href={withBase(entry.milestone.href)}>
+                      <strong>{entry.actionText}</strong>
+                    </a>
+                  </p>
+                ) : (
+                  <p>
+                    <span class="week-card__label">This week:</span> {entry.actionText}
+                  </p>
+                )}
+              </article>
+              {entry.week === 6 && (
+                <p class="mid-break">
+                  <strong>Mid-semester break, Monday 5–Sunday 11 April 2027</strong> — no teaching.
+                  Preserve logs and checkpoints outside the runtime.
+                </p>
+              )}
+            </>
+          ))}
+        </div>
+      </>
+    ))
+  }
+
+  <p class="hero-ctas">
+    <a class="at-button at-button--outline" href={withBase("/schedule/")}>Open the full schedule</a>
+  </p>
 
   <h2>What you will learn to do</h2>
   <p>By the end of the course, you should be able to:</p>
@@ -239,5 +358,75 @@ import { siteConfig } from "../site-config";
 
   .table-wrap {
     overflow-x: auto;
+  }
+
+  .intro-grid {
+    display: grid;
+    gap: 2rem;
+    margin-block: 2rem;
+  }
+
+  @media (min-width: 60rem) {
+    .intro-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .week-grid {
+    display: grid;
+    gap: 1rem;
+    margin-block: 1rem 2rem;
+  }
+
+  @media (min-width: 60rem) {
+    .week-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .week-card {
+    border: 1px solid var(--at-border, currentColor);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .week-card h4 {
+    margin-block-start: 0;
+  }
+
+  .week-card p {
+    margin-block: 0.5rem;
+  }
+
+  .week-card__label {
+    font-weight: 600;
+  }
+
+  .mid-break {
+    grid-column: 1 / -1;
+    padding: 1rem 1.25rem;
+    border: 1px dashed var(--at-border, currentColor);
+    border-radius: 0.5rem;
+  }
+
+  /* hero-home.avif bakes in a retired working subtitle ("Training Language
+     Models: A Budgeted Engineering Task") as part of the illustration itself
+     (not DOM text; the "SLOP4225" caption above it has been erased from the
+     asset). The theme's hero band is very wide and short relative to the
+     16:9 source, so object-fit: cover's default centred position crops that
+     region out of view. object-position: 20% 43% clears the vertical crop
+     window across widths from 390px to 1920px (checked in 20px steps
+     through the 1400-1920px band, where the hero's height itself jumps
+     partway through --- the <h1> box nearly fills the hero there, leaving
+     almost no clearance) without ever letting the subtitle's bottom edge
+     collide with the title's first glyph row, and with a comfortable margin
+     above the single razor-thin point (39%) that a strict never-collide scan
+     found for that band. Narrower breakpoints have much wider tolerance;
+     this value is only load-bearing in the 1400-1920px range. Matched by the
+     resolved image src rather than the theme's shared .at-hero-image class,
+     so this doesn't shift the People-page or 404 hero photos, which reuse
+     that class too. */
+  :global(img[src*="hero-home"].at-hero-image) {
+    object-position: 20% 43%;
   }
 </style>

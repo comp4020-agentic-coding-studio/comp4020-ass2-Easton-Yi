@@ -1,0 +1,40 @@
+/* Loaded via astro.config.ts's `brandCss` option, which injects it as a
+   plain SSR import on every page (astro-theme-university/index.ts calls
+   injectScript("page-ssr", ...) for whatever brandCss names) --- unlike a
+   layout-scoped <style>, this reaches every route regardless of which
+   layout (ContentLayout, MdxPageLayout, SidebarLayout) a given page uses,
+   since all three sit on the same BaseLayout that renders <Nav>. Re-export
+   the theme's own brand palette first, then layer site-specific overrides
+   after it so they win the cascade. */
+@import url("astro-theme-slop/slop.css");
+
+/* Nav.astro's own desktop rule (>=640px) never sets flex-wrap: nowrap on
+   .at-nav-inner, so when the six nav links + the "Slop / University"
+   wordmark don't fit the fixed content-column width (~864px, independent of
+   viewport --- confirmed identical at 1280px and 1920px via Playwright), the
+   flex line-breaking algorithm bumps the whole search button to a second row
+   instead of letting .at-nav-links (which already ships overflow-x:auto and
+   a scroll-fade mask for exactly this squeeze) shrink and scroll.
+   flex-wrap: nowrap + min-width: 0 restores that intended shrink/scroll
+   behaviour so the search button stays inline, beside "People". The
+   tightened gap and link padding claw back just enough width that all six
+   links plus the search button fit with no scrolling at all from
+   1024px-1920px (verified: .at-nav-links's scrollWidth <= its clientWidth at
+   those widths) --- the theme's own scroll/fade affordance only kicks in
+   below that, where it was already relied on for the links list itself, and
+   a focused link fully out of view there still receives the browser's
+   native scroll-into-view. Untouched below 640px, where Nav.astro's own
+   media query switches to the toggle-driven vertical dropdown instead of
+   this row. */
+@media (width >= 640px) {
+  .at-nav-inner {
+    flex-wrap: nowrap;
+    gap: 0 0.875rem;
+  }
+  .at-nav-links {
+    min-width: 0;
+  }
+  .at-nav-links a {
+    padding-inline: 0.3rem;
+  }
+}

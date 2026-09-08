@@ -29,9 +29,11 @@ Implementation rules:
 
 ### Hero
 
-**Course label:** `SLOP4225 · Semester 1, 2027`
+**Browser-tab title:** `SLOP4225: Budgeted Language Model Training`
 
-**Hero heading:** Training Language Models: A Budgeted Engineering Task
+**Course label:** `Semester 1, 2027`
+
+**Hero heading:** SLOP4225: Budgeted Language Model Training
 
 **Frontier practice through budgeted 32M-scale experiments.**
 
@@ -45,25 +47,42 @@ The objective is not to imitate a frontier model at miniature scale. It is to le
 **Secondary call to action:** View the three projects  
 **Destination:** Assessments index
 
+Render these two buttons once, immediately after `The course in three stages` cards and before `Your twelve-week path` — not directly under the Hero copy.
+
+### What you will do
+
+Work through three connected projects that follow the life of a language model. You will pre-train a narrative model from scratch, reshape its behaviour through post-training, and adapt a permitted checkpoint for one specialist capability. At every stage, you will make choices about the model, data, training budget, and evaluation—and use evidence to decide whether those choices worked.
+
+### Who this is for
+
+This course is for senior undergraduate and postgraduate students who have ever wondered what actually happens inside the training run behind a language model, and want to stop taking that on faith. It suits anyone who enjoys turning a vague claim about scale, data, or alignment into an experiment they can run and defend with evidence, and who would rather make one deliberate training decision than run a large search and hope.
+
+By the end, you will have trained a real language model of your own from scratch, reshaped its behaviour on purpose, and specialised it for a task you chose — and be able to explain, with evidence, why each of those choices worked or didn't.
+
+You should have completed introductory machine learning and be comfortable with basic Python, linear algebra, and probability. Prior experience with PyTorch, GPUs, or training a language model is not required — the supported sessions and starter repositories introduce the working pipeline before you depend on it in an assessment.
+
 ### The course in three stages
 
 #### 1. Build language ability
 
 Pre-train a decoder-only Transformer on a supplied narrative corpus. Decide how model capacity, tokenization, data, optimisation, and runtime fit together under a 32M-parameter design target.
 
-**Project 1:** Build a Narrative Base Model · 20% · due end of Week 4
+**Project 1:** Build a Narrative Base Model · Weeks 1–4 · 20% · due Sunday 21 March 2027, 23:59 AET  
+**Destination:** Project 1 assessment page
 
 #### 2. Shape model behaviour
 
 Start from a narrative checkpoint and give the model a recognisable voice. Compare continued pre-training, supervised instruction tuning, preference-based methods, or a justified combination without hiding regressions behind one improved metric.
 
-**Project 2:** Give the Model a Voice · 50% · due end of Week 8
+**Project 2:** Give the Model a Voice · Weeks 5–8 · 50% · due Sunday 25 April 2027, 23:59 AET  
+**Destination:** Project 2 assessment page
 
 #### 3. Build a specialist
 
 Adapt a permitted checkpoint for one measurable function. Choose a bounded narrative capability or arithmetic reasoning, test generalisation, and determine what the intervention changed as well as what it damaged.
 
-**Project 3:** Build a Specialist · 30% · due end of Week 12
+**Project 3:** Build a Specialist · Weeks 9–12 · 30% · due Sunday 23 May 2027, 23:59 AET  
+**Destination:** Project 3 assessment page
 
 ### What you will learn to do
 
@@ -88,6 +107,41 @@ The course provides working starter repositories, versioned data, Colab notebook
 | Weeks 5–8 · Post-training | Project 2 — Give the Model a Voice | 50% | Sunday 25 April 2027, 23:59 AET |
 | Weeks 9–12 · Specialisation | Project 3 — Build a Specialist | 30% | Sunday 23 May 2027, 23:59 AET |
 |  | **Total** | **100%** |  |
+
+### Your twelve-week path
+
+Each week connects one lecture, one practical or support session, and the next decision in the current project. Open either activity directly and use **This week** as the minimum project checkpoint to reach before moving on.
+
+#### Stage 1 — Build language ability · Project 1
+
+| Week | Week beginning | Lecture | Session | This week |
+| ---: | --- | --- | --- | --- |
+| 1 | 22 February | What a Language Model Learns | **Guided session:** Project 1 Launch and Data Validation | Validate the story split and define the training target. |
+| 2 | 1 March | Inside a Decoder-Only Transformer | **Formal lab:** Spend a 32M Parameter Budget | Freeze a feasible baseline architecture. |
+| 3 | 8 March | Scale, Data, and Optimisation Under Fixed Compute | **Drop-in clinic:** Project 1 Pilot Clinic | Freeze the principal run plan. |
+| 4 | 15 March | Evaluate, Decode, and Package a Base Model | **Guided session:** Project 1 Evaluation and Packaging | **Submit Project 1 by 21 March, 23:59 AET.** |
+
+#### Stage 2 — Shape model behaviour · Project 2
+
+| Week | Week beginning | Lecture | Session | This week |
+| ---: | --- | --- | --- | --- |
+| 5 | 22 March | From a Base Model to a Target Behaviour | **Guided session:** Project 2 Target and Baseline Planning | Define the target voice and unchanged-model baseline. |
+| 6 | 29 March | Supervised Fine-Tuning and Data That Teaches Behaviour | **Formal lab:** Build and Inspect a Post-Training Batch | Produce a masking check and viable pilot. |
+| — | 5 April | **Mid-semester break · 5–11 April** | No teaching | Preserve logs and checkpoints outside the runtime. |
+| 7 | 12 April | Learning from Preferences Without Hiding the Cost | **Drop-in clinic:** Project 2 Behaviour Clinic | Freeze the evaluation comparison. |
+| 8 | 19 April | Did the Behaviour Change, and What Regressed? | **Guided session:** Project 2 Blind Evaluation and Packaging | **Submit Project 2 by 25 April, 23:59 AET.** |
+
+#### Stage 3 — Build a specialist · Project 3
+
+| Week | Week beginning | Lecture | Session | This week |
+| ---: | --- | --- | --- | --- |
+| 9 | 26 April | Reasoning as Generated and Verifiable Behaviour | **Guided session:** Project 3 Task Contract and Baseline | Choose a track, define one capability, and establish the baseline. |
+| 10 | 3 May | Train a Specialist That Can Be Tested | **Formal lab:** Train and Verify a Specialist | Produce one loadable pilot and a valid task metric. |
+| 11 | 10 May | Generalisation, Supervision, and One Honest Ablation | **Drop-in clinic:** Project 3 Generalisation Clinic | Freeze the candidate checkpoint and bounded claim. |
+| 12 | 17 May | Audit the Training System | **Guided session:** Project 3 Fresh-Load Audit and Submission | **Submit Project 3 by 23 May, 23:59 AET.** |
+
+**Call to action:** Open the full schedule  
+**Destination:** Schedule page
 
 ### How the course works
 
@@ -119,13 +173,26 @@ Training begins with the target, not the training loop. In Week 1, you will turn
 
 Use the same labels in desktop and mobile navigation. The current section may be indicated visually, but colour must not be the only cue.
 
+### Home-page rendering and verification contract
+
+- Use `SLOP4225: Budgeted Language Model Training` as the public course name, Home document title, navigation identity, and visible Hero heading. Do not retain the previous working title as a competing public name.
+- Place `What you will do` and then `Who this is for` immediately after the Hero and before the three-stage pathway. Present them side by side at wide viewports and stack them in that reading order on mobile.
+- Render the three stages as linked Project cards. Each card has one assessment destination and may therefore act as one large link.
+- Render the Hero's two call-to-action buttons once, immediately after the three Project cards and before `Your twelve-week path` — not directly under the Hero copy.
+- Group the twelve Week cards into Weeks 1–4, 5–8, and 9–12, with the break as a full-width separator between Weeks 6 and 7. Use two chronological columns at wide viewports and one column on mobile.
+- Every Week card links separately to its lecture and session. Do not wrap a multi-destination Week card in one link or create nested links. Due milestones in Weeks 4, 8, and 12 also link to their assessment pages.
+- Render Home and Schedule from the same typed week metadata or content-collection-derived registry, with calendar values sourced from `course-config.ts`; do not maintain a second hand-written Home schedule array.
+- Add tests for the exact course/document title, Home section order, three Project destinations, exactly twelve chronological Week cards, the break, all lecture/session mappings, due-week links, shared-data use, and GitHub Pages base-path safety.
+- Inspect the completed Home at 1920×1080 and 390×844 for heading order, keyboard focus, readable card order, and horizontal overflow.
+
 ## Assessment-wide student-facing copy
 
 ### Course identity and calendar
 
 | Field | Approved value |
 | --- | --- |
-| Title | **Training Language Models: A Budgeted Engineering Task** |
+| Title | **SLOP4225: Budgeted Language Model Training** |
+| Browser-tab title | **SLOP4225: Budgeted Language Model Training** |
 | Code | `SLOP4225` |
 | Description | Study how modern language models are trained, then rebuild the pipeline at a controllable scale: pre-train a narrative model, reshape it through post-training, and specialise it for a defined task under a 32M design target and fixed compute budgets. |
 | Tags | Large Language Models; Training Systems; Compute-Constrained ML |
@@ -134,7 +201,7 @@ Use the same labels in desktop and mobile navigation. The current section may be
 | Teaching dates | Monday 22 February–Sunday 23 May 2027 |
 | Mid-semester break | Monday 5–Sunday 11 April 2027 |
 
-The implementation must read the final three course-code digits from the starter repository rather than asking the course designer to invent a replacement.
+Use the same concise course name for the Home document title, browser history, navigation identity, and visible Hero heading.
 
 | Assessment deadline | Date and time |
 | --- | --- |
@@ -1921,7 +1988,7 @@ Drop-in clinics are not additional lectures or graded checkpoints. They are evid
 
 ### Ready for implementation
 
-- Home-page hero, course journey, learning outcomes, assessment timeline, course operation summary, and calls to action;
+- Home-page course identity, hero, `What you will do`, `Who this is for`, linked Project pathway, twelve-week learning path, learning outcomes, assessment timeline, course operation summary, and calls to action;
 - assessment-wide marking philosophy;
 - report format and page limits;
 - default-model, 32M target/33.6M boundary, and preflight-check wording;
