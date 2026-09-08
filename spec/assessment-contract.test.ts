@@ -54,13 +54,14 @@ const pageHtml = (slug: string) => readFileSync(resolve("dist/assessments", slug
 const previewPageHtml = (slug: string) =>
   readFileSync(resolve("dist-preview-resources/assessments", slug, "index.html"), "utf8");
 
-// All three projects open in 2027, after today's build date, so every
-// submission panel currently and correctly renders its "before-opening"
-// copy (see SubmissionPanel.astro's `state` branch) rather than the upload
-// instructions. Those instructions are still real, static template content,
-// so this checks them directly in the component source rather than in a
-// build snapshot that can only show one project state at a time.
-const submissionPanelSource = readFileSync(resolve("src/components/SubmissionPanel.astro"), "utf8");
+// Mirrors SubmissionPanel.astro's own formatter exactly, so the expected
+// opening/due strings are derived the same way the component derives them,
+// rather than hard-coded and liable to drift.
+const withTime = new Intl.DateTimeFormat("en-AU", {
+  dateStyle: "long",
+  timeStyle: "short",
+  timeZone: "Australia/Sydney",
+});
 
 describe("assessment contract", () => {
   it("publishes exactly three assessment pages", () => {
@@ -103,40 +104,83 @@ describe("assessment contract", () => {
         expect(node.meta?.reportFilename).toBe(project.reportFilename);
       });
 
-      it("collects only the report upload and GitLab SHA in the submission panel, with no token field", () => {
-        expect(html).toContain("submission-panel");
+      // The required submission checklist is now always rendered (see
+      // SubmissionPanel.astro), so this is checked directly against rendered
+      // HTML from the real, currently-pre-opening `dist/` build — not
+      // against component source, and not deferred to the preview build.
+      it("visibly renders the required submission checklist on the pre-opening page", () => {
+        expect(html).toContain(project.reportFilename);
+        expect(html).toMatch(/final GitLab commit SHA/);
+        expect(html).toMatch(/submission-manifest\.json/);
+        expect(html).toMatch(/name and\s*student ID must appear on the report's first page/);
+        expect(html).toMatch(/Never paste a Hugging Face access token/);
+        const openingTime = `${withTime.format(new Date(String(node.meta?.opens)))} AET`;
+        const dueTime = `${withTime.format(new Date(String(node.meta?.due)))} AET`;
+        expect(html).toContain(openingTime);
+        expect(html).toContain(dueTime);
+      });
+
+      it("renders the pre-opening availability status and no active submission control", () => {
+        expect(html).toMatch(/Will be available at/);
+        expect(html).toMatch(/<strong>Due:<\/strong>/);
+        expect(html).not.toMatch(/<a[^>]*>\s*Open SlopU Submission Portal\s*<\/a>/i);
+        expect(html).toMatch(/aria-disabled="true"[^>]*>\s*Open SlopU Submission Portal/);
+      });
+
+      it("collects no files or credentials directly: no upload form, no file input, no token field, anywhere on the page", () => {
+        expect(html).not.toMatch(/<form[\s>]/i);
+        expect(html).not.toMatch(/type="file"/i);
         expect(html).not.toMatch(/type="password"/);
         expect(html).not.toMatch(/name="[^"]*token[^"]*"/i);
         expect(html.toLowerCase()).not.toMatch(/paste.{0,20}(access )?token.{0,20}(here|below)/);
-        expect(submissionPanelSource).toMatch(/final GitLab commit SHA/);
-        expect(submissionPanelSource).toMatch(/Never paste a Hugging Face access token/);
-        expect(submissionPanelSource).toMatch(/\{reportFilename\}/);
       });
 
-      it("renders the opening time on the pre-opening panel and states the deadline", () => {
-        expect(html).toMatch(/Will be available at/);
-        expect(html).toMatch(/<strong>Due:<\/strong>/);
+      it("never claims a personal 'To be submitted' or 'Submitted' status on the pre-opening page", () => {
+        expect(html).not.toMatch(/class="submission-panel__status">\s*(To be submitted|Submitted)\s*</);
       });
 
-      it("collects no files or credentials directly: no upload form, no file input, anywhere on the page", () => {
-        expect(html).not.toMatch(/<form[\s>]/i);
-        expect(html).not.toMatch(/type="file"/i);
+      it("still has exactly six resource cards on the pre-opening page", () => {
+        const cards = html.match(/class="resource-card"/g) ?? [];
+        expect(cards.length).toBe(6);
       });
 
-      it("names the required filename, GitLab SHA, and submission-manifest.json rule, and never simulates a personal status, once the panel is open", () => {
+      it("keeps the required submission checklist visible once the panel is open, on the future-dated preview build", () => {
         const openHtml = previewPageHtml(project.slug);
         expect(openHtml).toContain(project.reportFilename);
         expect(openHtml).toMatch(/final GitLab commit SHA/);
         expect(openHtml).toMatch(/submission-manifest\.json/);
-        expect(openHtml).not.toMatch(/type="file"/i);
-        expect(openHtml).not.toMatch(/<form[\s>]/i);
+        expect(openHtml).toMatch(/name and\s*student ID must appear on the report's first page/);
+        expect(openHtml).toMatch(/Never paste a Hugging Face access token/);
+        const dueTime = `${withTime.format(new Date(String(node.meta?.due)))} AET`;
+        expect(openHtml).toContain(dueTime);
+      });
+
+      it("renders the neutral open-state message, not a simulated personal status, once open", () => {
+        const openHtml = previewPageHtml(project.slug);
+        expect(openHtml).toMatch(
+          /Submission is open\. Your current submission status is shown in the authenticated SlopU\s*Submission Portal\./,
+        );
         // The panel may still explain, in prose, what the *authenticated
         // portal* shows ("...the portal itself shows `To be submitted`...
         // and `Submitted` afterwards") — that's honest static copy, not a
         // simulated status. What must never appear is the static page
-        // rendering either phrase itself as a status line, the way the old
+        // rendering either phrase itself as a status line, the way the
         // "before-opening" branch renders "Will be available at...".
         expect(openHtml).not.toMatch(/class="submission-panel__status">\s*(To be submitted|Submitted)\s*</);
+      });
+
+      it("collects no files or credentials, and has no active Portal URL, once open", () => {
+        const openHtml = previewPageHtml(project.slug);
+        expect(openHtml).not.toMatch(/type="file"/i);
+        expect(openHtml).not.toMatch(/<form[\s>]/i);
+        expect(openHtml).not.toMatch(/<a[^>]*>\s*Open SlopU Submission Portal\s*<\/a>/i);
+        expect(openHtml).toMatch(/aria-disabled="true"[^>]*>\s*Open SlopU Submission Portal/);
+      });
+
+      it("still has exactly six resource cards once open, on the future-dated preview build", () => {
+        const openHtml = previewPageHtml(project.slug);
+        const cards = openHtml.match(/class="resource-card"/g) ?? [];
+        expect(cards.length).toBe(6);
       });
     });
   }

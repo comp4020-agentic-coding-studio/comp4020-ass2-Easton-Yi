@@ -31,26 +31,32 @@ const withTime = new Intl.DateTimeFormat("en-AU", {
 
 <section class="submission-panel" aria-labelledby="submission-heading" data-submission-state={state}>
   <h2 id="submission-heading">Submission</h2>
+
   {
     state === "before-opening" ? (
       <p class="submission-panel__status">Will be available at {withTime.format(opens)} AET.</p>
     ) : (
-      <>
-        <p>
-          Upload <code>{reportFilename}</code> and enter the final GitLab commit SHA. Your name and
-          student ID must appear on the report's first page. The frozen commit's{" "}
-          <code>submission-manifest.json</code> identifies the exact private Hugging Face model
-          revision used for marking.
-        </p>
-        <p>
-          <strong>Never paste a Hugging Face access token into the course site, portal, report,
-          repository, or model package.</strong> Marker access is granted through the SlopU
-          Hugging Face organisation.
-        </p>
-      </>
+      <p class="submission-panel__status">
+        Submission is open. Your current submission status is shown in the authenticated SlopU
+        Submission Portal.
+      </p>
     )
   }
+
+  <h3 id="submission-heading__checklist">Required submission</h3>
+  <p>
+    Upload <code>{reportFilename}</code> and enter the final GitLab commit SHA. Your name and
+    student ID must appear on the report's first page. The frozen commit's{" "}
+    <code>submission-manifest.json</code> identifies the exact private Hugging Face model
+    revision used for marking.
+  </p>
+  <p>
+    <strong>Never paste a Hugging Face access token into the course site, portal, report,
+    repository, or model package.</strong> Marker access is granted through the SlopU
+    Hugging Face organisation.
+  </p>
   <p><strong>Due:</strong> {withTime.format(due)} AET</p>
+
   <p class="submission-panel__actions">
     <span class="at-button submission-panel__pending" aria-disabled="true">
       Open SlopU Submission Portal
@@ -60,7 +66,7 @@ const withTime = new Intl.DateTimeFormat("en-AU", {
   <p class="submission-panel__note">
     The authenticated SlopU Submission Portal is a separate system, provisioned by the teaching
     team closer to each project's opening date. This page will link to it directly once it exists;
-    it does not upload work or collect credentials. Once open, the portal itself shows{" "}
+    it does not upload work or collect credentials. Once provisioned, the portal itself shows{" "}
     <code>To be submitted</code> until you have a recorded attempt, and <code>Submitted</code>{" "}
     afterwards — this static page never guesses or simulates that personal status.
   </p>
