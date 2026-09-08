@@ -129,8 +129,8 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download evaluation pack",
     kind: "local-download",
     releaseAt: RELEASE[1],
-    localPath: "resources/project-1/p1-evaluation-kit.zip",
-    unavailableReason: "the evaluation pack is built alongside the starter repository",
+    unavailableReason:
+      "the ten real tutor-evaluation prompts are drawn from the properly source-separated narrative corpus, which the teaching team has not yet provisioned in this repository",
   },
   {
     id: "p1-template",
@@ -207,8 +207,8 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download evaluation pack",
     kind: "local-download",
     releaseAt: RELEASE[2],
-    localPath: "resources/project-2/p2-evaluation-kit.zip",
-    unavailableReason: "the evaluation pack is built alongside the starter repository",
+    unavailableReason:
+      "the ten real tutor-evaluation openings are drawn from the properly source-separated corpus, which the teaching team has not yet provisioned in this repository",
   },
   {
     id: "p2-template",
@@ -285,8 +285,8 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download evaluation pack",
     kind: "local-download",
     releaseAt: RELEASE[3],
-    localPath: "resources/project-3/p3-evaluation-kit.zip",
-    unavailableReason: "the evaluation pack is built alongside the starter repository",
+    unavailableReason:
+      "the ten real tutor-evaluation inputs, and Track B's test_pilot schema, are teaching-team/GitLab dependencies not yet provisioned in this repository",
   },
   {
     id: "p3-template",

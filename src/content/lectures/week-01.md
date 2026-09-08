@@ -96,7 +96,7 @@ qualitative failure analysis.
 - Ronen Eldan and Yuanzhi Li, [*TinyStories: How Small Can Language Models Be
   and Still Speak Coherent English?*](https://arxiv.org/abs/2305.07759),
   Sections 1–2.
-- Course note, **Project 1 Evaluation Protocol**, on the assessment page.
+- Course page, **[Evaluation Protocol](/assessments/evaluation-protocol/)**.
 
 ## Optional reading
 

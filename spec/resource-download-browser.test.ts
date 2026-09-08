@@ -129,12 +129,20 @@ describe("resource download browser smoke test (against a future-dated preview b
     await context.close();
   }, 30_000);
 
-  it("activates the Project 1 evaluation ZIP at desktop and gets a real ZIP, not a 404", async () => {
+  // Targets the CVPR template ZIP rather than the Project 1 evaluation pack:
+  // per docs/ASSIGNMENT_BRIEF.md's "Unresolved decisions", the evaluation
+  // pack's ten tutor-evaluation prompts are a teaching-team corpus dependency
+  // that does not exist in this repository, so that resource correctly
+  // renders `unavailable` with no action link (see resource-manifest.ts's
+  // p1-eval entry) — the template ZIP is a real, non-placeholder resource
+  // this smoke test can exercise instead, proving the same ZIP-download
+  // mechanism without depending on unshipped content.
+  it("activates the Project 1 CVPR template ZIP at desktop and gets a real ZIP, not a 404", async () => {
     context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, acceptDownloads: true });
     const page = await context.newPage();
     await page.goto(`http://localhost:${port}${BASE}/assessments/project-1/`);
 
-    const link = page.locator('a.resource-card__action:has-text("Download evaluation pack")').first();
+    const link = page.locator('a.resource-card__action:has-text("Download template")').first();
     await link.waitFor({ state: "visible" });
 
     const [download] = await Promise.all([context.waitForEvent("download"), link.click()]);

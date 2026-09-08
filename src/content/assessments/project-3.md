@@ -126,7 +126,10 @@ model, data, compute, and time.
 ### Submitted model — 10 marks
 
 Submission validity is a technical gate. A valid model receives up to **6⅔ marks** from the shared
-tutor-evaluation PPL rule and up to **3⅓ marks** from track-specific performance review.
+tutor-evaluation PPL rule and up to **3⅓ marks** from track-specific performance review. See the
+[Evaluation Protocol](/assessments/evaluation-protocol/) for the complete public evaluation layers,
+prohibited uses, separation validator, perplexity formula, human-evaluation process, and technical
+gates that apply to this component.
 
 **7. Tutor-evaluation perplexity — 6⅔ marks.** The shared formula applied to answer- or
 continuation-only reference-token-normalised PPL across all ten tutor prompts: P ≤ 25 earns all

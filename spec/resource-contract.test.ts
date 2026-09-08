@@ -89,10 +89,11 @@ describe("resource contract", () => {
 
   it("gives every lecture banner a local asset, source, and alt-text decision", () => {
     const lectures = api.nodes.filter((node) => node.type === "lectures");
+    expect(lectures.length, "expected all twelve weekly lectures").toBe(12);
     const withBanner = lectures.filter(
       (lecture) => typeof lecture.meta?.banner === "string" && lecture.meta.banner.length > 0,
     );
-    expect(withBanner.length, "no lecture's meta.banner points at an image").toBeGreaterThan(0);
+    expect(withBanner.length, "every lecture, not just some, must have a banner image").toBe(lectures.length);
 
     // meta.banner carries the raw frontmatter path (e.g. "./images/week-01-banner.svg"),
     // not Astro's post-optimisation ImageMetadata object, so the built file has to be

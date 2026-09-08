@@ -6,7 +6,7 @@ import SpecList from "astro-course-university/components/SpecList.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import TeachingTeam from "../../components/TeachingTeam.astro";
 import { formatCourseDate } from "../../lib/dates";
-import { graphCollections, sessionLabels, siteConfig } from "../../site-config";
+import { graphCollections, siteConfig } from "../../site-config";
 
 export async function getStaticPaths() {
   const sessions = await getPublishedCollection("sessions");
@@ -24,7 +24,7 @@ const sessionTypeLabels = {
 ---
 
 <ContentLayout
-  title={`Week ${session.data.week} ${sessionLabels.singular}: ${session.data.title}`}
+  title={`Week ${session.data.week} ${sessionTypeLabels[session.data.sessionType]}: ${session.data.title}`}
   description={session.data.description}
   {...siteConfig}
 >

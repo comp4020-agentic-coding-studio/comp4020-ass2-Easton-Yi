@@ -132,44 +132,87 @@ After each stage, run the relevant targeted tests. Before handoff, run:
 Record only material workflow decisions and verification evidence in
 `PROCESS.md`; do not turn it into a command transcript.
 
+## Content-completeness harness
+
+A stage is complete only when the implemented pages contain the approved
+student-facing meaning from `docs/CONTENT_SOURCE.md`, not merely when the
+expected routes and collection entries exist.
+
+Before accepting a stage:
+
+- remove all starter, implementation-facing, TODO, TBC, placeholder, and
+  “populate later” prose from student-facing pages;
+- verify that page titles and labels reflect the underlying content type;
+- check that shared rules deliberately written once, such as the Evaluation
+  Protocol, are rendered on a canonical page and linked wherever students
+  need them;
+- inspect diagrams for conceptual correctness as well as valid files, alt
+  text, captions, and responsive rendering;
+- verify generated teaching resources semantically: expected record counts,
+  required fields, non-placeholder content, and withheld/private-material
+  boundaries;
+- leave an unavailable resource genuinely unavailable rather than fabricating
+  its contents, destination, or release readiness;
+- treat every file committed under `public/` as immediately public:
+  `Scheduled` is a presentation state, not access control, and must never be
+  used to protect embargoed, hidden, or private material.
+
+Fix an implementation that contradicts the approved design documents. Do not
+edit the canonical design or content sources merely to make an existing
+implementation appear compliant unless the course designer explicitly
+approves that design change.
+
+Tests protect stable promises, but passing tests does not override a visible
+contradiction with the design documents. Review each rendered student-facing
+page against its corresponding source section before declaring a stage
+complete.
+
 ## Process-logging harness (Ass1 feedback: process 72/100, D-band)
 
-Marker's comment: "I would've liked to know more about the process that you
-used to get the agent to build your website." Confirmed by `spec/improvement.png`
---- a mature agentic workflow existed but wasn't shown in the repo. The gap
-is documentation, not engineering: **capture the process as it happens,
-don't reconstruct it at the end.**
+The Assignment 1 marker wrote: “I would've liked to know more about the process that you used to get the agent to build your website.” This is preserved in `spec/improvement.png`. The artefact showed that a mature agentic workflow existed, but the repository did not make that workflow sufficiently visible or verifiable. The lesson is therefore: **capture the process while it happens, then curate the strongest evidence rather than reconstructing it at the end.**
 
-- **Keep `PROCESS_LOG.md`** (gitignored, append-only, never marked). For
-  every non-trivial step, log in the same sitting: the prompt/instruction
-  given to the agent, one line on what the agent produced, and if a fix was
-  involved, the other way it could have been fixed and why this way won.
-  Memory reconstructed after the fact is not evidence.
-- **`PROCESS.md` is a curated distillation of the log**, cited to real
-  commits. Every entry needs all eight lines below, each answering one
-  question --- skip none of them, they were the exact gap Ass1 lost marks on:
-  1. Problem: what was broken/needed, one line.
-  2. Directed via: the actual instruction given to the agent (quoted/paraphrased).
-  3. Agent's result fell short because: what specifically was not ideal in
-     what the agent returned --- if nothing was wrong first try, say so and
-     skip to Verified by.
-  4. Considered and rejected: the other plausible fix, and why it lost.
-  5. My decision: which choice was mine, not the agent's, and why this
-     solution over the rejected one.
-  6. Fix/iterate: what changed, and how many rounds it took.
-  7. Verified by: the check/screenshot/viewport that confirmed it *before*
-     acceptance --- both 1920x1080 and 390x844 for anything visual.
-  8. Evidence: commit hash + link, and a CLAUDE.md diff link if the harness
-     itself changed as a result.
-  If lines 3--5 can't be filled in honestly, it's attempt-accept-repeat, not
-  judgement --- don't count the entry as HD-grade evidence.
-- **CLAUDE.md edits are first-class citations.** When a bug gets fixed at
-  the rule level (a new "never do X" line here), cite that commit
-  *separately* from the code-fix commit and name which failure mode the
-  rule now blocks permanently. This is what "systemic fix, not repetition"
-  looks like to a marker --- it's invisible unless named.
-- **Close `PROCESS.md` with one structural alternative for the whole
-  build** --- a different mechanic, data source, or framing you considered
-  for the prototype as a whole and didn't take, and why. Per-bug judgement
-  isn't enough for HD; the rubric wants judgement visible at project scale
-  too.
+### Working process log
+
+Keep `PROCESS_LOG.md` as a gitignored, append-only working record. It is not submitted or marked. For every material workflow decision, implementation problem, agent correction, or verification finding, record the following in the same sitting:
+
+1. **Problem:** what needed to be designed, implemented, or corrected.
+2. **Directed via:** the actual instruction given to the agent, quoted or closely paraphrased.
+3. **First result:** what the agent produced.
+4. **Shortfall:** what was inaccurate, incomplete, weak, or inconsistent, if anything.
+5. **Alternative considered:** another plausible response and why it was rejected.
+6. **My decision:** which choice belonged to the course designer and why it was preferred.
+7. **Fix and verification:** what changed, how many iterations were required, and which test, rendered page, screenshot, or viewport confirmed the result before acceptance.
+8. **Evidence to preserve:** the resulting commit or range, relevant `CLAUDE.md` change, curated prompt excerpt, and any useful screenshot path.
+
+Do not invent a failure or rejected alternative when the first result was acceptable. Record that it was accepted and why. A straightforward first-pass success may remain in the working log, but it is normally weaker evidence for the final account unless it demonstrates a deliberate workflow-level decision.
+
+Memory reconstructed later is not contemporaneous evidence. If a past event must be described from commits or diffs, label it honestly as reconstruction rather than presenting it as a live log entry.
+
+### Curated `PROCESS.md`
+
+`PROCESS.md` is a **400–600-word curated distillation**, not a copy of `PROCESS_LOG.md` and not a command transcript. Preserve `## What I built` and `## How I got here`, then select only three or four pivotal episodes that best demonstrate the designer’s direction, evaluation, correction, and systemic improvement.
+
+The selected episodes should collectively include:
+
+* at least one **workflow-design episode** showing how the agent was prepared before implementation—for example, auditing the whole assignment, separating `assignment_brief.md` from `CONTENT_SOURCE.md`, defining source priority, or dividing implementation into reviewable stages;
+* at least one **correction episode** showing where an agent result fell short, how it was evaluated, what alternative was considered, and how the final implementation changed;
+* at least one **systemic improvement** encoded in `CLAUDE.md` or `spec/` so that the same failure is less likely to recur; and
+* one closing **project-level structural alternative**—a different mechanic, data source, workflow, or framing considered for the build as a whole and why it was not chosen.
+
+Compress the relevant parts of the eight-field log into readable first-person prose. Do not create eight separately labelled paragraphs for every episode. If there is no honest evidence of judgement, correction, or deliberate workflow design, do not present an ordinary attempt–accept sequence as an HD-level process episode.
+
+### Evidence
+
+Every material claim in `PROCESS.md` must be tied to repository evidence. An uncited claim is not evidence.
+
+Use the shortest combination that proves the point:
+
+* quote a **curated prompt excerpt** showing the instruction given to the agent;
+* link a **commit** showing one resulting change;
+* use a **compare range** when the important point is the evolution from an initial implementation to a corrected one;
+* include a **relative-path screenshot** when a visual comparison communicates the issue better than prose; and
+* cite a `CLAUDE.md` rule change separately from the immediate code fix when the harness itself changed.
+
+When a bug leads to a new permanent rule, identify the failure mode that the rule now prevents. This makes the systemic improvement visible rather than allowing it to disappear inside the implementation commit.
+
+Before handoff, verify mechanically that `PROCESS.md` is between 400 and 600 words, contains real commit or compare links, retains the required two main sections, and ends with the project-level structural alternative.

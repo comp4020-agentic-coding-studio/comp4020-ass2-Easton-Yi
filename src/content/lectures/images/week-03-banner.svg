@@ -5,12 +5,12 @@
     <line x1="120" y1="60" x2="120" y2="330" />
     <line x1="120" y1="330" x2="1080" y2="330" />
   </g>
-  <path d="M 180 250 C 400 90, 800 90, 1020 250" fill="none" stroke="#7fa8ff" stroke-width="6" />
-  <circle cx="600" cy="105" r="9" fill="#e8ecff" />
+  <path d="M 180 120 C 400 280, 800 280, 1020 120" fill="none" stroke="#7fa8ff" stroke-width="6" />
+  <circle cx="600" cy="268" r="9" fill="#e8ecff" />
   <g font-family="ui-sans-serif, system-ui, sans-serif" fill="#e8ecff">
-    <text x="560" y="80" font-size="24">balanced allocation</text>
-    <text x="170" y="290" font-size="22" fill="#9fb2e8">too small, too many tokens</text>
-    <text x="760" y="290" font-size="22" fill="#9fb2e8">too large, too few tokens</text>
+    <text x="505" y="305" font-size="24">balanced allocation</text>
+    <text x="150" y="160" font-size="22" fill="#9fb2e8">too small, too many tokens</text>
+    <text x="740" y="160" font-size="22" fill="#9fb2e8">too large, too few tokens</text>
     <text x="470" y="375" font-size="24">model size at fixed compute</text>
     <text x="40" y="200" font-size="24" transform="rotate(-90 40 200)">loss</text>
   </g>

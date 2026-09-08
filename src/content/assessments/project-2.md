@@ -113,7 +113,10 @@ and what the project reveals about post-training under constraints.
 ### Submitted model — 15 marks
 
 Submission validity is a technical gate. A valid model receives up to **10 marks** from the shared
-tutor-evaluation PPL rule and up to **5 marks** from blinded task-specific review.
+tutor-evaluation PPL rule and up to **5 marks** from blinded task-specific review. See the
+[Evaluation Protocol](/assessments/evaluation-protocol/) for the complete public evaluation layers,
+prohibited uses, separation validator, perplexity formula, human-evaluation process, and technical
+gates that apply to this component.
 
 **7. Tutor-evaluation perplexity — 10 marks.** The shared formula applied to continuation-only
 reference-token-normalised PPL across all ten tutor prompts: P ≤ 25 earns all 10 marks; 25 < P < 50

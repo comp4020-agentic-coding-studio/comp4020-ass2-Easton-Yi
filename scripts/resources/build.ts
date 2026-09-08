@@ -127,10 +127,19 @@ const CVPR_BIB = `@misc{example2027,
 const CVPR_README = `# CVPR-style report template
 
 A compact two-column LaTeX template for the SLOP4225 engineering report, styled after the CVPR
-paper format. It intentionally does **not** bundle the proprietary \`cvpr.sty\`/\`cvpr_eso.sty\`
-class files (those carry their own redistribution terms); instead \`main.tex\` reproduces the same
-two-column, Times-based layout using only standard LaTeX packages (\`geometry\`, \`times\`,
-\`graphicx\`, \`hyperref\`), so it can be redistributed freely with this course.
+paper format. \`main.tex\` reproduces the same two-column, Times-based layout using only standard,
+freely-redistributable LaTeX packages (\`geometry\`, \`times\`, \`graphicx\`, \`hyperref\`).
+
+## Upstream source and licence status
+
+This is **not** the official CVPR author kit. The official kit (\`cvpr.sty\`, \`cvpr_eso.sty\`) is
+maintained at [github.com/cvpr-org/author-kit](https://github.com/cvpr-org/author-kit), but that
+repository does not publish an explicit redistribution licence for those class files, so this
+course cannot verify it is safe to bundle them here. Until that licence is confirmed, this template
+intentionally avoids the real class files and reproduces the same visual layout with standard
+packages instead. If the teaching team later confirms a redistribution basis, this archive should
+be replaced with the genuine \`cvpr.sty\`/\`cvpr_eso.sty\` and this note updated to record the
+confirmed source and licence.
 
 ## Use
 
@@ -335,16 +344,19 @@ function p1EvalKitEntries(): ZipEntry[] {
       continuation: "One evening a stranger asked to buy it, and she finally learned why her father kept it locked.",
     },
   ];
-  const tutorPrompts = Array.from({ length: 10 }, (_, i) =>
-    `Tutor prompt ${i + 1}: a truncated story prefix, released before the deadline. (Placeholder wording — the teaching team publishes the real ten prefixes when the resource opens; withheld continuations are never included here.)`,
-  );
-
   const readme = `# Project 1 public evaluation pack
 
 - \`dev_examples.json\` — five development prompts with reference continuations, for pipeline sanity checks.
-- \`tutor_prompts.json\` — the ten public tutor-evaluation prompt strings (continuations withheld).
 - \`separation_validator.py\` — run before training to check your corpus for overlap with the released prompts.
 - \`metrics.py\` — reference-token-normalised PPL/BPB, the marks formula, and a repetition-rate check.
+
+## Pending: tutor-evaluation prompts
+
+The ten public tutor-evaluation prompt strings are not included in this pack. They are drawn from
+the properly source-separated narrative corpus, which is a teaching-team deliverable that does not
+yet exist in this repository (see \`docs/ASSIGNMENT_BRIEF.md\`'s "Unresolved decisions"). This pack
+therefore cannot yet be marked \`Available\` on the Project 1 page; the resource card states this
+dependency and links no fabricated file. No placeholder prompt strings are shipped in their place.
 
 Withheld tutor ground truth and any clean reserve cases are never included in this pack.
 `;
@@ -352,17 +364,16 @@ Withheld tutor ground truth and any clean reserve cases are never included in th
   return [
     { name: "README.md", content: readme },
     { name: "dev_examples.json", content: `${JSON.stringify(devExamples, null, 2)}\n` },
-    { name: "tutor_prompts.json", content: `${JSON.stringify(tutorPrompts, null, 2)}\n` },
     { name: "separation_validator.py", content: separationValidatorPy() },
     { name: "metrics.py", content: metricsPy("story") },
     {
       name: "RESOURCE_MANIFEST.json",
       content: manifest(
-        "Project 1 Public Evaluation Pack",
-        "1.0.0",
-        ["dev_examples.json", "tutor_prompts.json", "separation_validator.py", "metrics.py", "README.md"],
+        "Project 1 Public Evaluation Pack (partial — tutor prompts pending)",
+        "0.9.0",
+        ["dev_examples.json", "separation_validator.py", "metrics.py", "README.md"],
         "Original course material.",
-        "Withheld tutor ground truth, clean reserve cases, and any student data.",
+        "Ten tutor-evaluation prompts (teaching-team corpus dependency, not yet available), withheld tutor ground truth, clean reserve cases, and any student data.",
       ),
     },
   ];
@@ -418,12 +429,61 @@ def dpo_loss(logp_chosen, logp_rejected, ref_logp_chosen, ref_logp_rejected, bet
     {
       type: "markdown",
       source:
-        "# Project 2 — Post-training Colab starter\n\nLoads your frozen Project 1 checkpoint (or the course fallback) and runs one of the supported post-training recipes in `cpt.py`, `sft.py`, or `dpo_toy.py`.",
+        "# Project 2 — Post-training Colab starter\n\nLoads your frozen Project 1 checkpoint (or the course fallback) and runs one of the supported post-training recipes in `cpt.py`, `sft.py`, or `dpo_toy.py`, through checkpoint reload and sampling. The assigned Project 2 GitLab repository owns the starting-checkpoint file and the target-style dataset shards; this notebook does not duplicate them.",
     },
     {
       type: "code",
       source:
-        "# checkpoint = load_checkpoint('project1_checkpoint.pt')  # or the course fallback\nfrom cpt import train_cpt\nfrom sft import build_loss_mask, masked_cross_entropy\n\nprint('Loaded post-training recipes: continued pre-training, SFT with response masking, toy DPO.')",
+        "# 1. Environment check\nimport torch\nprint('torch', torch.__version__, 'cuda available:', torch.cuda.is_available())\n\nPARAM_TARGET = 32_000_000\nPARAM_MAX = 33_600_000\nGPU_HOUR_BUDGET = 12\nFLOP_BUDGET = 1.5e17",
+    },
+    {
+      type: "markdown",
+      source: "## 2. Starting checkpoint and parameter preflight\n\nLoad your frozen Project 1 checkpoint, or the course narrative fallback, and confirm it is still within the eligibility boundary before spending compute on it.",
+    },
+    {
+      type: "code",
+      source:
+        "import torch.nn as nn\n\ndef load_checkpoint(path: str) -> nn.Module:\n    \"\"\"Loads a frozen Project 1 (or fallback) checkpoint. The checkpoint file\n    itself is provided by the assigned GitLab repository, not this notebook.\"\"\"\n    state = torch.load(path, map_location='cpu')\n    model = build_model_from_config(state['config'])\n    model.load_state_dict(state['model'])\n    return model\n\ndef build_model_from_config(config: dict) -> nn.Module:\n    raise NotImplementedError('supplied by the Project 2 GitLab repository')\n\n# model = load_checkpoint('project1_checkpoint.pt')\n# n = sum(p.numel() for p in model.parameters())\n# assert n <= PARAM_MAX, f'{n} exceeds the 33.6M eligibility boundary'",
+    },
+    {
+      type: "markdown",
+      source: "## 3. Data loading and validation\n\nLoad the assigned target-style corpus shard and run the reused separation validator before any post-training step.",
+    },
+    {
+      type: "code",
+      source:
+        "import numpy as np\n\ndef load_shard(path: str) -> np.ndarray:\n    return np.fromfile(path, dtype=np.uint16)\n\n# target_ids = load_shard('data/target_style_train.bin')\n# Run: python separation_validator.py data/target_style_train.txt dev_examples.json\n# before training on any new or expanded corpus.",
+    },
+    {
+      type: "markdown",
+      source: "## 4. Training: choose one supported recipe\n\n`cpt.py` continues pre-training on the target-style corpus; `sft.py` performs response-only-masked instruction tuning; `dpo_toy.py` is an optional preference-optimisation extension that assumes an SFT baseline already exists.",
+    },
+    {
+      type: "code",
+      source:
+        "from cpt import train_cpt\nfrom sft import build_loss_mask, masked_cross_entropy\n\ndef train_step_sft(model, batch, optimizer):\n    input_ids, target_ids, response_start_idx = batch\n    logits = model(input_ids)\n    mask = build_loss_mask(input_ids, response_start_idx)\n    loss = masked_cross_entropy(logits, target_ids, mask)\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    return loss.item()\n\n# optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)\n# for step, batch in enumerate(target_style_loader):\n#     loss = train_step_sft(model, batch, optimizer)",
+    },
+    {
+      type: "markdown",
+      source: "## 5. Checkpoint save and fresh-process reload\n\nSave the post-trained checkpoint, then reload it in a clean process before evaluating — the same fresh-environment loading test required at submission.",
+    },
+    {
+      type: "code",
+      source:
+        "# torch.save({'config': config, 'model': model.state_dict()}, 'post_trained_checkpoint.pt')\n# reloaded = load_checkpoint('post_trained_checkpoint.pt')  # run in a fresh process/session",
+    },
+    {
+      type: "markdown",
+      source: "## 6. Evaluation and sampling\n\nCompute reference-token-normalised perplexity on the withheld continuations once released, and sample de-identified outputs for the blinded task-specific review.",
+    },
+    {
+      type: "code",
+      source:
+        "import math\n\ndef reference_token_normalised_ppl(nlls: list[float], ref_token_counts: list[int]) -> float:\n    return math.exp(sum(nlls) / sum(ref_token_counts))\n\n@torch.no_grad()\ndef sample(model, prefix_ids: torch.Tensor, max_new_tokens: int = 100, temperature: float = 0.8) -> torch.Tensor:\n    ids = prefix_ids.clone()\n    for _ in range(max_new_tokens):\n        logits = model(ids)[:, -1, :] / temperature\n        probs = torch.softmax(logits, dim=-1)\n        next_id = torch.multinomial(probs, num_samples=1)\n        ids = torch.cat([ids, next_id], dim=1)\n    return ids",
+    },
+    {
+      type: "markdown",
+      source: "## Limitations and external dependencies\n\nThis notebook covers the post-training pipeline shape only. The starting checkpoint weights, the target-style dataset shards, and the tutor-evaluation prompts are owned by the assigned GitLab repository and the Hugging Face dataset release respectively, and are never duplicated here. `retention_check.py` in the evaluation pack must be run against the *unchanged* starting checkpoint, not a value hard-coded in this notebook.",
     },
   ]);
   const readme = `# Project 2 post-training starter pack
@@ -454,16 +514,42 @@ def dpo_loss(logp_chosen, logp_rejected, ref_logp_chosen, ref_logp_rejected, bet
 
 function p2EvalKitEntries(): ZipEntry[] {
   const devExamples = [
-    { id: "dev-1", opening: "Once there was a miller's daughter who had spun straw into nothing but trouble.", note: "reference style sample: Grimm-adjacent" },
-    { id: "dev-2", opening: "In the marketplace of a city with a thousand names, a beggar told the same story every night.", note: "reference style sample: Nights-adjacent" },
-    { id: "dev-3", opening: "The youngest of three sons was given nothing but a cracked whistle.", note: "reference style sample: Grimm-adjacent" },
-    { id: "dev-4", opening: "A merchant swore never to sail again, and the sea took this personally.", note: "reference style sample: Nights-adjacent" },
-    { id: "dev-5", opening: "Three wishes were granted, and every one of them was misunderstood.", note: "reference style sample: Grimm-adjacent" },
+    {
+      id: "dev-1",
+      opening: "Once there was a miller's daughter who had spun straw into nothing but trouble.",
+      continuation:
+        "By the third night she had run out of straw and out of lies, so she told the king plainly that no gold would come from wishing, only from what she chose to do next.",
+      note: "reference style sample: Grimm-adjacent",
+    },
+    {
+      id: "dev-2",
+      opening: "In the marketplace of a city with a thousand names, a beggar told the same story every night.",
+      continuation:
+        "On the night a stranger finally asked why, the beggar admitted the story was the only thing he owned outright, and he had been saving it to trade for a single true listener.",
+      note: "reference style sample: Nights-adjacent",
+    },
+    {
+      id: "dev-3",
+      opening: "The youngest of three sons was given nothing but a cracked whistle.",
+      continuation:
+        "He blew it anyway, expecting silence, and instead the whistle summoned every bird in the kingdom to carry him wherever the roads would not.",
+      note: "reference style sample: Grimm-adjacent",
+    },
+    {
+      id: "dev-4",
+      opening: "A merchant swore never to sail again, and the sea took this personally.",
+      continuation:
+        "It sent storms to his docked ship every night until he finally admitted, to no one but the water, that he missed it more than he feared it.",
+      note: "reference style sample: Nights-adjacent",
+    },
+    {
+      id: "dev-5",
+      opening: "Three wishes were granted, and every one of them was misunderstood.",
+      continuation:
+        "By the time the third wish undid the damage of the first two, the wisher had learned to want less and to say exactly what he meant.",
+      note: "reference style sample: Grimm-adjacent",
+    },
   ];
-  const tutorOpenings = Array.from(
-    { length: 10 },
-    (_, i) => `Tutor opening ${i + 1}: a public story opening for the blinded style-and-quality review. (Placeholder — published at release; withheld continuations never included here.)`,
-  );
   const retentionCheck = `"""Compares outputs from the post-trained model and the unchanged starting
 checkpoint on the same Project 1 narrative-continuation prompts, to surface
 regressions rather than hide them behind one improved metric."""
@@ -476,11 +562,17 @@ def retention_report(starting_outputs: list[str], post_trained_outputs: list[str
 `;
   const readme = `# Project 2 behaviour evaluation pack
 
-- \`dev_examples.json\` — five development openings with a style note, for pipeline sanity checks.
-- \`tutor_openings.json\` — the ten public tutor openings for blinded review (continuations withheld).
+- \`dev_examples.json\` — five development openings, each with a genuine reference continuation and style note, for pipeline sanity checks.
 - \`separation_validator.py\` — reused from Project 1; run before post-training on any new data.
 - \`retention_check.py\` — pairs starting-checkpoint and post-trained outputs for regression review.
 - \`blind_review_rubric.json\` — the four task-specific dimensions and weights raters use.
+
+## Pending: tutor-evaluation openings
+
+The ten public tutor-evaluation openings are not included in this pack. They are drawn from the
+properly source-separated corpus, which is a teaching-team deliverable that does not yet exist in
+this repository. This pack therefore cannot yet be marked \`Available\` on the Project 2 page; no
+placeholder opening strings are shipped in their place.
 `;
   const rubric = {
     dimensions: [
@@ -493,25 +585,17 @@ def retention_report(starting_outputs: list[str], post_trained_outputs: list[str
   return [
     { name: "README.md", content: readme },
     { name: "dev_examples.json", content: `${JSON.stringify(devExamples, null, 2)}\n` },
-    { name: "tutor_openings.json", content: `${JSON.stringify(tutorOpenings, null, 2)}\n` },
     { name: "separation_validator.py", content: separationValidatorPy() },
     { name: "retention_check.py", content: retentionCheck },
     { name: "blind_review_rubric.json", content: `${JSON.stringify(rubric, null, 2)}\n` },
     {
       name: "RESOURCE_MANIFEST.json",
       content: manifest(
-        "Project 2 Behaviour Evaluation Pack",
-        "1.0.0",
-        [
-          "dev_examples.json",
-          "tutor_openings.json",
-          "separation_validator.py",
-          "retention_check.py",
-          "blind_review_rubric.json",
-          "README.md",
-        ],
+        "Project 2 Behaviour Evaluation Pack (partial — tutor openings pending)",
+        "0.9.0",
+        ["dev_examples.json", "separation_validator.py", "retention_check.py", "blind_review_rubric.json", "README.md"],
         "Original course material.",
-        "Withheld tutor continuations, clean reserve cases, and any student data.",
+        "Ten tutor-evaluation openings (teaching-team corpus dependency, not yet available), withheld tutor continuations, clean reserve cases, and any student data.",
       ),
     },
   ];
@@ -527,12 +611,61 @@ function p3FinetuningPackEntries(): ZipEntry[] {
     {
       type: "markdown",
       source:
-        "# Project 3 — Fine-tuning Colab starter\n\nTrack A continues from a narrative checkpoint; Track B always starts from the course general-language checkpoint. Both use the same SFT loop with response-only masking.",
+        "# Project 3 — Fine-tuning Colab starter\n\nTrack A continues from a narrative checkpoint (Project 1, Project 2, or the course fallback); Track B always starts from the course general-language checkpoint. Both use the same SFT loop with response-only masking. Declare your track before running any training cell. The assigned Project 3 GitLab repository owns the starting checkpoints and, for Track B, the `test_pilot` schema (operations, ranges, output format) — none of that is duplicated here.",
     },
     {
       type: "code",
       source:
-        "from masking_check import verify_masking\nprint('Fine-tuning starter loaded. Declare your track before training.')",
+        "# 1. Environment check\nimport torch\nprint('torch', torch.__version__, 'cuda available:', torch.cuda.is_available())\n\nPARAM_MAX = 33_600_000\nGPU_HOUR_BUDGET = 12\nFLOP_BUDGET = 1.5e17\nTRACK = 'A'  # or 'B' — set before running any cell below",
+    },
+    {
+      type: "markdown",
+      source: "## 2. Starting checkpoint and parameter preflight\n\nLoad the declared starting checkpoint for your track and confirm it is within the eligibility boundary.",
+    },
+    {
+      type: "code",
+      source:
+        "import torch.nn as nn\n\ndef load_checkpoint(path: str) -> nn.Module:\n    \"\"\"Track A: a frozen Project 1/2 checkpoint or the narrative fallback.\n    Track B: the course general-language checkpoint. Both files are provided\n    by the assigned GitLab repository / Hugging Face release, not here.\"\"\"\n    state = torch.load(path, map_location='cpu')\n    model = build_model_from_config(state['config'])\n    model.load_state_dict(state['model'])\n    return model\n\ndef build_model_from_config(config: dict) -> nn.Module:\n    raise NotImplementedError('supplied by the Project 3 GitLab repository')\n\n# model = load_checkpoint('starting_checkpoint.pt')\n# n = sum(p.numel() for p in model.parameters())\n# assert n <= PARAM_MAX, f'{n} exceeds the 33.6M eligibility boundary'",
+    },
+    {
+      type: "markdown",
+      source: "## 3. Data loading, validation, and masking\n\nLoad your track's formatted training examples, run the reused separation validator, then verify response-only masking with `masking_check.py` before training.",
+    },
+    {
+      type: "code",
+      source:
+        "from masking_check import verify_masking\n\n# Track A: instruction/target-condition records shaped like track_a_examples.json.\n# Track B: prompt/answer records shaped like track_b_examples.json, following the\n# GitLab repository's test_pilot schema once it is provisioned.\n# examples = load_track_examples('data/track_examples.json')\n# assert all(verify_masking(ex) for ex in examples), 'response-only masking check failed'\n# Run: python separation_validator.py data/track_examples.txt dev_examples_track_a.json",
+    },
+    {
+      type: "markdown",
+      source: "## 4. Training\n\nSupervised fine-tuning with response-only loss masking, shared across both tracks.",
+    },
+    {
+      type: "code",
+      source:
+        "def train_step(model, batch, optimizer):\n    input_ids, target_ids, loss_mask = batch\n    logits = model(input_ids)\n    per_token = nn.functional.cross_entropy(\n        logits.view(-1, logits.size(-1)), target_ids.view(-1), reduction='none',\n    )\n    mask_t = torch.tensor(loss_mask, dtype=per_token.dtype).view(-1)\n    loss = (per_token * mask_t).sum() / mask_t.sum().clamp_min(1)\n    optimizer.zero_grad()\n    loss.backward()\n    optimizer.step()\n    return loss.item()\n\n# optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)\n# for step, batch in enumerate(track_loader):\n#     loss = train_step(model, batch, optimizer)",
+    },
+    {
+      type: "markdown",
+      source: "## 5. Checkpoint save, fresh-process reload, and baseline comparison\n\nSave the fine-tuned checkpoint, reload it in a clean process, and run both the starting and fine-tuned checkpoints through the same evaluation harness — see `baseline_commands.md`.",
+    },
+    {
+      type: "code",
+      source:
+        "# torch.save({'config': config, 'model': model.state_dict()}, 'final_checkpoint.pt')\n# reloaded = load_checkpoint('final_checkpoint.pt')  # run in a fresh process/session\n# then follow baseline_commands.md to compare against the unchanged starting checkpoint",
+    },
+    {
+      type: "markdown",
+      source: "## 6. Evaluation and task inference\n\nTrack A: check declared-condition satisfaction with `track_a_verifier.py`. Track B: check exact-answer and output-format validity with `track_b_verifier.py`. Both compare against the unchanged starting checkpoint with `regression_utils.py` for the required regression check.",
+    },
+    {
+      type: "code",
+      source:
+        "from track_a_verifier import contains_required_vocabulary\nfrom track_b_verifier import is_exact_match, is_valid_format\nfrom regression_utils import regression_report\n\n@torch.no_grad()\ndef sample(model, prefix_ids: torch.Tensor, max_new_tokens: int = 100, temperature: float = 0.8) -> torch.Tensor:\n    ids = prefix_ids.clone()\n    for _ in range(max_new_tokens):\n        logits = model(ids)[:, -1, :] / temperature\n        probs = torch.softmax(logits, dim=-1)\n        next_id = torch.multinomial(probs, num_samples=1)\n        ids = torch.cat([ids, next_id], dim=1)\n    return ids",
+    },
+    {
+      type: "markdown",
+      source: "## Limitations and external dependencies\n\nThis notebook covers the fine-tuning pipeline shape only. Starting checkpoints, Track B's `test_pilot` schema (supported operations, value ranges, output format, difficulty range), and the tutor-evaluation inputs are owned by the assigned GitLab repository and are never duplicated here. `track_a_examples.json`/`track_b_examples.json` in the starter pack are illustrative, not the graded task distribution.",
     },
   ]);
   const maskingCheck = `"""Sanity-checks that only response tokens receive gradient, for either
@@ -598,17 +731,39 @@ python compare.py baseline.json final.json
 }
 
 function p3EvalKitEntries(): ZipEntry[] {
+  // Five development examples total for Project 3 (not five per track): both
+  // docs/ASSIGNMENT_BRIEF.md ("The course also publishes five worked
+  // development examples and ten tutor-evaluation inputs") and
+  // docs/CONTENT_SOURCE.md's Project 3 resource table ("Five development
+  // examples, ten tutor inputs") use singular counts with no per-track
+  // qualifier, so the split below (3 Track A + 2 Track B) sums to five.
   const devA = [
-    { id: "dev-a-1", input: "The bridge had one plank missing, and the storm was getting closer.", condition: "ending type: crossing anyway", reference: "narrative continuation satisfying the condition" },
+    {
+      id: "dev-a-1",
+      input: "The gate had been open all winter, and no one had walked through it.",
+      condition: "ending type: choosing to stay",
+      reference:
+        "She stood at the threshold until the frost stung her hands, then turned back toward the fire she had almost left behind, deciding that whatever waited beyond the gate could wait another year.",
+    },
+    {
+      id: "dev-a-2",
+      input: "The tunnel narrowed until only one of them could pass.",
+      condition: "vocabulary: lantern",
+      reference:
+        "He handed her the lantern and told her to go first, watching its light shrink into the dark until only the sound of her footsteps remained.",
+    },
+    {
+      id: "dev-a-3",
+      input: "The old woman said the well had never run dry, not even in the driest summer.",
+      condition: "contradiction: the well is later described as recently emptied",
+      reference:
+        "By autumn the well had gone dry for the first time anyone could remember, and no one dared ask the old woman why she had lied.",
+    },
   ];
   const devB = [
     { id: "dev-b-1", prompt: "What is 17 * 3?", answer: "51" },
     { id: "dev-b-2", prompt: "A train travels 60 km in 1.5 hours. What is its average speed in km/h?", answer: "40" },
   ];
-  const tutorInputs = Array.from(
-    { length: 10 },
-    (_, i) => `Tutor input ${i + 1}: a public track-appropriate input for the frozen-checkpoint review. (Placeholder — published at release; tutor answers withheld.)`,
-  );
   const trackAVerifier = `"""Automatically checkable Track A constraint metrics — e.g. vocabulary
 inclusion, ending-type classification hooks. Extend per your declared task."""
 def contains_required_vocabulary(continuation: str, required_words: list[str]) -> bool:
@@ -636,20 +791,27 @@ def regression_report(starting_outputs: list[str], final_outputs: list[str]) -> 
 `;
   const readme = `# Project 3 track evaluation pack
 
-- \`dev_examples_track_a.json\` / \`dev_examples_track_b.json\` — five track-adapted development examples with ground truth (shown here abridged).
-- \`tutor_inputs.json\` — the ten public tutor-evaluation inputs (answers withheld).
+- \`dev_examples_track_a.json\` (3 examples) / \`dev_examples_track_b.json\` (2 examples) — five
+  development examples total across both tracks, each with genuine reference/ground truth.
 - \`separation_validator.py\` — reused from Project 1; run before fine-tuning on any new data.
 - \`track_a_verifier.py\` / \`track_b_verifier.py\` — the automatic constraint/answer checks.
 - \`regression_utils.py\` — shared pre-existing-capability regression comparison.
 
 Students see only the resources for their selected track when this pack is unpacked per the page's
 track guidance; the archive ships both so either track's tooling is available offline.
+
+## Pending: tutor-evaluation inputs
+
+The ten public tutor-evaluation inputs are not included in this pack. They are drawn from the
+properly source-separated corpus (and, for Track B, the private GitLab repository's \`test_pilot\`
+schema), which is a teaching-team deliverable that does not yet exist in this repository. This pack
+therefore cannot yet be marked \`Available\` on the Project 3 page; no placeholder input strings are
+shipped in their place.
 `;
   return [
     { name: "README.md", content: readme },
     { name: "dev_examples_track_a.json", content: `${JSON.stringify(devA, null, 2)}\n` },
     { name: "dev_examples_track_b.json", content: `${JSON.stringify(devB, null, 2)}\n` },
-    { name: "tutor_inputs.json", content: `${JSON.stringify(tutorInputs, null, 2)}\n` },
     { name: "separation_validator.py", content: separationValidatorPy() },
     { name: "track_a_verifier.py", content: trackAVerifier },
     { name: "track_b_verifier.py", content: trackBVerifier },
@@ -657,12 +819,11 @@ track guidance; the archive ships both so either track's tooling is available of
     {
       name: "RESOURCE_MANIFEST.json",
       content: manifest(
-        "Project 3 Track Evaluation Pack",
-        "1.0.0",
+        "Project 3 Track Evaluation Pack (partial — tutor inputs pending)",
+        "0.9.0",
         [
           "dev_examples_track_a.json",
           "dev_examples_track_b.json",
-          "tutor_inputs.json",
           "separation_validator.py",
           "track_a_verifier.py",
           "track_b_verifier.py",
@@ -670,7 +831,7 @@ track guidance; the archive ships both so either track's tooling is available of
           "README.md",
         ],
         "Original course material.",
-        "Withheld tutor answers, clean reserve cases, and any student data.",
+        "Ten tutor-evaluation inputs (teaching-team corpus/test_pilot dependency, not yet available), withheld tutor answers, clean reserve cases, and any student data.",
       ),
     },
   ];

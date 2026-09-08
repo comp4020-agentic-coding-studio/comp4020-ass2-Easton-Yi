@@ -9,12 +9,14 @@ import { siteConfig } from "../site-config";
 ---
 
 <ContentLayout
-  title={`${courseMeta.code} · ${courseMeta.session}, ${courseMeta.year}`}
+  title={courseMeta.title}
   description="Frontier practice through budgeted 32M-scale experiments."
   heroImage={heroImage}
   heroImageAlt="An original schematic diagram: a stack of token blocks feeds into a 32M-parameter model box, which produces a bar chart of next-token probabilities, above the course code SLOP4225 and its title."
   {...siteConfig}
 >
+  <p class="course-label">{courseMeta.code} · {courseMeta.session}, {courseMeta.year}</p>
+
   <ul class="course-tags" aria-label="Course tags">
     {courseMeta.tags.map((tag) => <li>{tag}</li>)}
   </ul>
@@ -201,6 +203,12 @@ import { siteConfig } from "../site-config";
 </ContentLayout>
 
 <style>
+  .course-label {
+    margin-block: 0 1rem;
+    color: var(--at-text-secondary);
+    font-weight: 600;
+  }
+
   .course-tags {
     display: flex;
     flex-wrap: wrap;

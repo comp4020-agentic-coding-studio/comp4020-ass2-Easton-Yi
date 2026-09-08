@@ -1,0 +1,198 @@
+---
+title: Evaluation Protocol
+description:
+  The shared evaluation and marking mechanics used by Project 1, Project 2,
+  and Project 3 — public evaluation layers, prohibited uses, separation
+  validation, perplexity calculation, human evaluation, and technical gates.
+---
+
+# Evaluation Protocol
+
+This page is the single canonical source for the evaluation and marking
+mechanics shared by all three projects. Each project page carries a concise,
+project-specific summary and links back here for the complete rules.
+
+## Public evaluation layers
+
+Each project supplies two public evaluation layers. They serve different
+purposes and must remain separate from training data.
+
+1. **Five development examples with ground truth.** Each example contains a
+   prompt and its reference continuation or answer. Use these examples to
+   verify that the evaluation pipeline, masking, tokenizer, and sampler work
+   end to end. They may also appear as clearly labelled qualitative cases in
+   the report. They are diagnostic examples, not the source of the official
+   submitted-model mark.
+2. **Ten tutor-evaluation prompts.** The ten prompts are public before the
+   deadline, but their reference continuations or answers are withheld. Each
+   item is stored as one string: a truncated source-story prefix for
+   Projects 1 and 2, the relevant narrative input for Project 3 Track A, or
+   the task input for Project 3 Track B. The teaching team runs the frozen
+   submission against all ten items.
+
+Being public is not being permitted for training use: releasing these prompts
+is **not permission to train or tune against them**. Both layers are subject
+to the prohibited uses below.
+
+## Prohibited uses
+
+Released prompts, development ground truth, withheld tutor ground truth, and
+clean reserve cases must not be used for:
+
+- training;
+- validation;
+- retrieval;
+- tokenizer construction;
+- filtering;
+- prompt-template design;
+- synthetic-data seeding;
+- sampler tuning;
+- checkpoint selection; or
+- manual output editing.
+
+Students must not reconstruct source continuations, search for withheld
+answers, or attempt to obtain private material from staff, peers, repository
+history, network requests, or the marking harness.
+
+## Separation validation
+
+Before training, students must run the repository's supplied **exact- and
+near-duplicate separation validator** over their proposed corpus and retain
+its report in the experiment record. The validator checks exact matches and
+likely near-duplicate overlap against the released evaluation prompts.
+
+Passing the validator is evidence of due diligence, not permission to ignore
+provenance and not a guarantee that no contamination exists. If a student
+discovers likely overlap, or encounters material they believe belongs to the
+withheld or reserve set, they must stop using it and email
+`llm-training@slopu.edu.au`; see [Policies §3](/policies/#3-evaluation-set-contamination)
+for the full contamination-disclosure process.
+
+## Perplexity calculation
+
+Official perplexity is calculated on the withheld continuation or answer
+only: prompt tokens provide context but do not contribute to scored negative
+log-likelihood. Losses are pooled across all ten tutor items before
+exponentiation. To keep the fixed thresholds meaningful when a student
+changes tokenizer, the course reports **reference-token-normalised
+perplexity**:
+
+<div class="math-block" style="display:block;margin:1rem 0;padding:0.85rem 1.1rem;border-radius:0.5rem;background:var(--at-bg-alt);font-family:ui-monospace,Menlo,monospace;overflow-x:auto;">
+  P&nbsp;=&nbsp;exp( ( Σ<sub>i</sub> NLL<sub>i</sub> ) / ( Σ<sub>i</sub> N<sub>i</sub><sup>ref</sup> ) )
+</div>
+
+where NLL<sub>i</sub> is the submitted model's total negative log-likelihood
+for the ground-truth continuation or answer of tutor-evaluation item *i*, and
+N<sub>i</sub><sup>ref</sup> is that same raw target's token count under the
+published course reference tokenizer. With the default tokenizer, this is
+ordinary continuation-only perplexity. Students who change tokenizer should
+also report **BPB** (bits-per-byte) as a diagnostic, but the official
+thresholds below still use P.
+
+For a project whose submitted-model component is worth *M* marks, two thirds
+of that component is the perplexity score:
+
+<div class="math-block" style="display:block;margin:1rem 0;padding:0.85rem 1.1rem;border-radius:0.5rem;background:var(--at-bg-alt);font-family:ui-monospace,Menlo,monospace;overflow-x:auto;">
+  S<sub>PPL</sub>&nbsp;=&nbsp;(2M/3) ×
+  <span style="display:inline-flex;flex-direction:column;vertical-align:middle;margin-left:0.4rem;padding-left:0.75rem;border-left:2px solid currentColor;">
+    <span style="white-space:nowrap;">1, &nbsp;if P ≤ 25</span>
+    <span style="white-space:nowrap;">exp[−0.1 × (P − 25)], &nbsp;if 25 &lt; P &lt; 50</span>
+    <span style="white-space:nowrap;">0, &nbsp;if P ≥ 50</span>
+  </span>
+</div>
+
+- PPL contributes **two thirds** of the submitted-model component;
+  task-specific performance contributes the remaining third.
+- P ≤ 25 earns all PPL marks, **not all submitted-model marks** — low
+  perplexity cannot substitute for the required behaviour.
+- Model marks are calculated at full precision and rounded only when the
+  project total is recorded.
+- For orientation, P = 35 retains about 36.8% of the available PPL marks and
+  P = 45 retains about 13.5%.
+
+## Human evaluation
+
+The remaining one third of each submitted-model component is calculated from
+a pre-declared task-specific review. The teaching team generates one output
+for every tutor-evaluation prompt using the **frozen checkpoint**, the
+**submitted sampler configuration**, and the published seed schedule.
+Students do not select, regenerate, or edit these outputs.
+
+Story-based outputs are de-identified — student, model, and sample
+identifiers are all removed — and independently reviewed by **three trained
+blind raters**. Raters see the prompt, output, task definition, and rating
+anchors, but not the student's identity, report, architecture, method, or
+existing marks. Output order is randomised whenever a comparison output is
+shown.
+
+If the highest and lowest ratings for an item differ by **three or more
+points** on a dimension, a **fourth blind rater** adjudicates that dimension;
+the final item score is the **median of all valid ratings**.
+
+### Shared rating anchors (0–4)
+
+| Rating | Anchor |
+| ---: | --- |
+| **4 — Strong** | The behaviour is clear and sustained; the output remains usable, coherent, and free from a material failure on this dimension. |
+| **3 — Effective** | The behaviour is present and generally reliable, with a minor lapse that does not undermine the output as a whole. |
+| **2 — Mixed** | Some relevant behaviour is present, but it is inconsistent, weak, or offset by a noticeable failure. |
+| **1 — Weak** | Only limited evidence of the behaviour is visible, or a major failure makes most of the output unusable. |
+| **0 — Absent/invalid** | The behaviour is absent, the output is empty or malformed, or failure on this dimension prevents meaningful assessment. |
+
+For a submitted-model component worth *M* marks, the task-specific score is:
+
+<div class="math-block" style="display:block;margin:1rem 0;padding:0.85rem 1.1rem;border-radius:0.5rem;background:var(--at-bg-alt);font-family:ui-monospace,Menlo,monospace;overflow-x:auto;">
+  S<sub>task</sub>&nbsp;=&nbsp;(M/3) × Σ<sub>d</sub> w<sub>d</sub> ( r̄<sub>d</sub> / 4 ),&nbsp;&nbsp; Σ<sub>d</sub> w<sub>d</sub> = 1
+</div>
+
+where w<sub>d</sub> is the published dimension weight and r̄<sub>d</sub> is its
+mean 0–4 score across the ten tutor prompts. A dimension measured by an exact
+verifier or success rate q<sub>d</sub> is converted as r̄<sub>d</sub> = 4 q<sub>d</sub>.
+Human preference cannot override an incorrect arithmetic answer or an invalid
+required format. Aggregated dimension results and the number of adjudicated
+items are returned with feedback.
+
+### Task-specific dimensions and weights
+
+| Project/track | Task-specific dimensions and weights |
+| --- | --- |
+| **Project 1** | Connection to the supplied prefix **35%**; narrative coherence and fluency **30%**; avoidance of repetition or degeneration **20%**; stopping and completeness **15%**. |
+| **Project 2** | Recognisable target behaviour **35%**; narrative coherence and usability **30%**; robustness across varied openings **20%**; retention and integrity, including unacceptable regression or copying **15%**. Raters compare de-identified outputs from the submitted and unchanged starting checkpoints where retention is relevant. |
+| **Project 3 Track A** | Objective satisfaction of the declared condition **40%**; narrative quality **25%**; held-out generalisation and prompt robustness **20%**; retention of the monitored starting capability **15%**. Automatically checkable conditions are scored by the published verifier. |
+| **Project 3 Track B** | Exact final-answer accuracy **55%**; required output-format validity **15%**; accuracy on unseen values and templates within the published scope **20%**; retained language and instruction reliability **10%**. The first three dimensions are computed by the evaluation harness; three blind raters assess only the final qualitative dimension. |
+
+Automatically verified dimensions cannot be overridden by human preference.
+The review is criterion-referenced rather than comparative: students are not
+ranked against one another, and Project 3 tracks are not placed on one
+leaderboard. Raters do not reward stylistic preference, method complexity, or
+resemblance to one withheld reference answer.
+
+## Technical gates
+
+The teaching team evaluates the frozen Hugging Face revision submitted before
+the deadline. The submitted package must load using the supplied command and
+must reproduce the declared model configuration, tokenizer, sampler, and
+parameter count.
+
+- A packaging error may be corrected only when the teaching team can verify
+  that the weights and reported results have not changed.
+- A checkpoint that cannot be evaluated after the permitted packaging
+  correction receives **zero for the submitted-model component**; the report
+  is still marked on the evidence it contains.
+- A model above the **33.6M** hard boundary, including the published 5%
+  tolerance over the 32M design target, is **not eligible for submitted-model
+  marks**.
+- Evaluation contamination, undeclared external weights, fabricated
+  evidence, or deliberate compute-accounting circumvention is handled under
+  **academic-integrity procedures**, not as a normal performance deduction.
+- Models are not ranked against classmates. Tutor-evaluation metrics and
+  blinded human judgements are interpreted against the published task
+  criteria.
+
+## See also
+
+- [Project 1 — Build a Narrative Base Model](/assessments/project-1/)
+- [Project 2 — Give the Model a Voice](/assessments/project-2/)
+- [Project 3 — Build a Specialist](/assessments/project-3/)
+- [Policies §3 — Evaluation-set contamination](/policies/#3-evaluation-set-contamination)
+- [Policies §11 — Human evaluation and privacy](/policies/#11-human-evaluation-and-privacy)

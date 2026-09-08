@@ -118,3 +118,41 @@ export function listZipEntries(buf: Buffer): string[] {
   }
   return names;
 }
+
+/** Reads one entry's stored bytes back out of a store-method ZIP (the only
+ *  method `writeZip` produces), by walking the central directory to find its
+ *  local-header offset, then reading the local header's own name/extra
+ *  lengths to locate the data — needed because the central directory's
+ *  extra-field length is not guaranteed to match the local header's. */
+export function readZipEntry(buf: Buffer, name: string): Buffer {
+  const eocdSig = 0x06054b50;
+  let eocdOffset = -1;
+  for (let i = buf.length - 22; i >= 0; i--) {
+    if (buf.readUInt32LE(i) === eocdSig) {
+      eocdOffset = i;
+      break;
+    }
+  }
+  if (eocdOffset === -1) throw new Error("not a valid ZIP: no end-of-central-directory record");
+  const total = buf.readUInt16LE(eocdOffset + 10);
+  const centralStart = buf.readUInt32LE(eocdOffset + 16);
+
+  let ptr = centralStart;
+  for (let i = 0; i < total; i++) {
+    if (buf.readUInt32LE(ptr) !== 0x02014b50) throw new Error("corrupt central directory entry");
+    const nameLen = buf.readUInt16LE(ptr + 28);
+    const extraLen = buf.readUInt16LE(ptr + 30);
+    const commentLen = buf.readUInt16LE(ptr + 32);
+    const size = buf.readUInt32LE(ptr + 24);
+    const localOffset = buf.readUInt32LE(ptr + 42);
+    const entryName = buf.toString("utf8", ptr + 46, ptr + 46 + nameLen);
+    if (entryName === name) {
+      const localNameLen = buf.readUInt16LE(localOffset + 26);
+      const localExtraLen = buf.readUInt16LE(localOffset + 28);
+      const dataStart = localOffset + 30 + localNameLen + localExtraLen;
+      return buf.subarray(dataStart, dataStart + size);
+    }
+    ptr += 46 + nameLen + extraLen + commentLen;
+  }
+  throw new Error(`entry not found in ZIP: ${name}`);
+}

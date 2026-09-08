@@ -85,7 +85,7 @@ the submitted artifact can be marked.
 
 ## Required reading
 
-- Course page, **Evaluation protocol and formula**.
+- Course page, **[Evaluation Protocol](/assessments/evaluation-protocol/)**.
 - Holtzman et al., [*The Curious Case of Neural Text
   Degeneration*](https://arxiv.org/abs/1904.09751), abstract and Sections 1–3.
 
