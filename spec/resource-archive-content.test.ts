@@ -5,7 +5,7 @@
 // complement (never replace) the existing structural checks in
 // resource-contract.test.ts and resource-download.test.ts, and the browser
 // smoke test in resource-download-browser.test.ts.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { readZipEntry, listZipEntries } from "../scripts/resources/zip.ts";
@@ -36,154 +36,32 @@ interface ResourceManifestJson {
   excludedMaterial: string;
 }
 
-// Banned filler content is checked against the actual student-facing data
-// records (dev/track example field values) — not README/manifest prose,
-// which legitimately and honestly uses words like "pending"/"placeholder"
-// to *disclose* what is withheld, per the Stage 3 instruction to state that
-// dependency rather than hide it.
-const FAKE_CONTENT_PATTERN = /\bplaceholder\b|\bTODO\b|\bTBC\b|\bTBD\b|\bTBA\b|lorem ipsum/i;
-
-function assertNoFakeContent(label: string, record: Record<string, unknown>): void {
-  for (const [key, value] of Object.entries(record)) {
-    if (typeof value !== "string") continue;
-    expect(value, `${label}.${key} looks like fake filler content: "${value}"`).not.toMatch(FAKE_CONTENT_PATTERN);
-  }
-}
-
-// Fields that would indicate a withheld tutor-evaluation ground truth has
-// leaked into a public pack. Tutor-evaluation items must ship as a single
-// input string only (see evaluation-protocol.mdx's "Public evaluation
-// layers"): the reference continuation/answer stays withheld until the
-// teaching team scores the frozen submission.
-const TUTOR_GROUND_TRUTH_KEYS = ["continuation", "answer", "reference", "target", "completion"];
-
 const ARCHIVES = {
-  cvpr: "shared/cvpr-report-template.zip",
-  p1Eval: "project-1/p1-evaluation-kit.zip",
   p2Pack: "project-2/p2-post-training-pack.zip",
-  p2Eval: "project-2/p2-evaluation-kit.zip",
   p3Pack: "project-3/p3-finetuning-pack.zip",
-  p3Eval: "project-3/p3-evaluation-kit.zip",
 } as const;
 
+// The CVPR-style report template and all three per-project evaluation-kit
+// archives are withheld: no confirmed CVPR class-file redistribution licence,
+// and no real source-separated tutor-evaluation prompt sets yet (see
+// src/data/resource-manifest.ts's unavailableReason text and
+// scripts/resources/build.ts's disabled buildZip calls). Their generator
+// functions still exist in build.ts (disabled, not deleted) so they can be
+// re-enabled once the real dependency lands, but no file may exist under
+// public/ in the meantime — CLAUDE.md's content-completeness harness
+// requires leaving a genuinely unavailable resource unavailable rather than
+// shipping a partial/incomplete archive.
+const WITHHELD_ARCHIVE_PATHS = [
+  "shared/cvpr-report-template.zip",
+  "project-1/p1-evaluation-kit.zip",
+  "project-2/p2-evaluation-kit.zip",
+  "project-3/p3-evaluation-kit.zip",
+];
+
 describe("resource archive semantic content", () => {
-  describe("development-record counts and required fields", () => {
-    it("Project 1 pack has exactly five development records, each with prompt and continuation", () => {
-      const buf = zipBuf(ARCHIVES.p1Eval);
-      const devExamples = readJson<Array<Record<string, unknown>>>(buf, "dev_examples.json");
-      expect(devExamples.length, "Project 1 dev_examples.json should have exactly five records").toBe(5);
-      for (const record of devExamples) {
-        expect(typeof record.prompt === "string" && record.prompt.trim().length > 0, "missing/empty prompt").toBe(
-          true,
-        );
-        expect(
-          typeof record.continuation === "string" && record.continuation.trim().length > 0,
-          "missing/empty reference continuation",
-        ).toBe(true);
-        assertNoFakeContent(`p1 dev ${record.id}`, record);
-      }
-    });
-
-    it("Project 2 pack has exactly five development records, each with opening and a genuine reference continuation", () => {
-      const buf = zipBuf(ARCHIVES.p2Eval);
-      const devExamples = readJson<Array<Record<string, unknown>>>(buf, "dev_examples.json");
-      expect(devExamples.length, "Project 2 dev_examples.json should have exactly five records").toBe(5);
-      for (const record of devExamples) {
-        expect(typeof record.opening === "string" && record.opening.trim().length > 0, "missing/empty opening").toBe(
-          true,
-        );
-        expect(
-          typeof record.continuation === "string" && record.continuation.trim().length > 0,
-          "missing/empty reference continuation (a style label alone is not ground truth)",
-        ).toBe(true);
-        assertNoFakeContent(`p2 dev ${record.id}`, record);
-      }
-    });
-
-    it("Project 3 provides five development examples total, split across both tracks", () => {
-      // Per docs/ASSIGNMENT_BRIEF.md ("five worked development examples and
-      // ten tutor-evaluation inputs") and docs/CONTENT_SOURCE.md's Project 3
-      // resource table ("Five development examples, ten tutor inputs"):
-      // both canonical sources use a singular count with no per-track
-      // qualifier, so this is five total, not five per track.
-      const buf = zipBuf(ARCHIVES.p3Eval);
-      const devA = readJson<Array<Record<string, unknown>>>(buf, "dev_examples_track_a.json");
-      const devB = readJson<Array<Record<string, unknown>>>(buf, "dev_examples_track_b.json");
-      expect(devA.length + devB.length, "Project 3 total development examples should be five").toBe(5);
-      expect(devA.length, "Track A development example count").toBe(3);
-      expect(devB.length, "Track B development example count").toBe(2);
-
-      for (const record of devA) {
-        expect(typeof record.input === "string" && record.input.trim().length > 0, "Track A missing input").toBe(
-          true,
-        );
-        expect(
-          typeof record.condition === "string" && record.condition.trim().length > 0,
-          "Track A missing declared condition",
-        ).toBe(true);
-        expect(
-          typeof record.reference === "string" && record.reference.trim().length > 0,
-          "Track A missing reference continuation",
-        ).toBe(true);
-        assertNoFakeContent(`p3 devA ${record.id}`, record);
-      }
-      for (const record of devB) {
-        expect(typeof record.prompt === "string" && record.prompt.trim().length > 0, "Track B missing prompt").toBe(
-          true,
-        );
-        expect(typeof record.answer === "string" && record.answer.trim().length > 0, "Track B missing answer").toBe(
-          true,
-        );
-        assertNoFakeContent(`p3 devB ${record.id}`, record);
-      }
-    });
-  });
-
-  describe("tutor-evaluation inputs: exactly ten where present, honestly pending otherwise", () => {
-    const cases = [
-      { label: "Project 1", archive: ARCHIVES.p1Eval, filenames: ["tutor_prompts.json"] },
-      { label: "Project 2", archive: ARCHIVES.p2Eval, filenames: ["tutor_openings.json"] },
-      { label: "Project 3", archive: ARCHIVES.p3Eval, filenames: ["tutor_inputs.json"] },
-    ];
-
-    for (const { label, archive, filenames } of cases) {
-      it(`${label}: a shipped tutor-input file has exactly ten entries and no withheld ground truth`, () => {
-        const buf = zipBuf(archive);
-        const names = listZipEntries(buf);
-        const tutorFile = filenames.find((name) => names.includes(name));
-
-        if (!tutorFile) {
-          // No real teaching-team corpus is available yet (see
-          // docs/ASSIGNMENT_BRIEF.md's "Unresolved decisions"): the pack must
-          // say so honestly rather than shipping fabricated prompts or
-          // silently pretending the pack is complete.
-          const readme = readText(buf, "README.md");
-          const manifest = readJson<ResourceManifestJson>(buf, "RESOURCE_MANIFEST.json");
-          expect(readme, `${label} README should disclose the pending tutor-input dependency`).toMatch(
-            /pending|not yet available/i,
-          );
-          expect(
-            manifest.excludedMaterial,
-            `${label} manifest should name the tutor-input dependency in excludedMaterial`,
-          ).toMatch(/tutor/i);
-          return;
-        }
-
-        const entries = readJson<Array<string | Record<string, unknown>>>(buf, tutorFile);
-        expect(entries.length, `${label} tutor-input file should have exactly ten entries`).toBe(10);
-        for (const entry of entries) {
-          if (typeof entry === "string") {
-            expect(entry.trim().length, `${label} tutor input string is empty`).toBeGreaterThan(0);
-            continue;
-          }
-          for (const bannedKey of TUTOR_GROUND_TRUTH_KEYS) {
-            expect(
-              Object.prototype.hasOwnProperty.call(entry, bannedKey),
-              `${label} tutor-input record must not carry a "${bannedKey}" ground-truth field`,
-            ).toBe(false);
-          }
-        }
-      });
+  it("the withheld CVPR template and all three evaluation-kit archives are absent from public/", () => {
+    for (const relPath of WITHHELD_ARCHIVE_PATHS) {
+      expect(existsSync(resolve(PUBLIC_DIR, relPath)), `${relPath} should not exist — it is withheld`).toBe(false);
     }
   });
 
@@ -306,8 +184,18 @@ describe("resource archive semantic content", () => {
       const unavailableIds = resourceManifest
         .filter((e) => resourceState(e, AFTER_ALL_RELEASES) === "unavailable")
         .map((e) => e.id);
-      expect(unavailableIds, "expected the three eval-kit entries to still be unavailable").toEqual(
-        expect.arrayContaining(["p1-eval", "p2-eval", "p3-eval"]),
+      expect(
+        unavailableIds,
+        "expected the three eval-kit entries and the three withheld CVPR template entries to still be unavailable",
+      ).toEqual(
+        expect.arrayContaining([
+          "p1-eval",
+          "p2-eval",
+          "p3-eval",
+          "p1-template",
+          "p2-template",
+          "p3-template",
+        ]),
       );
 
       for (const slug of ["project-1", "project-2", "project-3"]) {

@@ -129,20 +129,23 @@ describe("resource download browser smoke test (against a future-dated preview b
     await context.close();
   }, 30_000);
 
-  // Targets the CVPR template ZIP rather than the Project 1 evaluation pack:
-  // per docs/ASSIGNMENT_BRIEF.md's "Unresolved decisions", the evaluation
-  // pack's ten tutor-evaluation prompts are a teaching-team corpus dependency
-  // that does not exist in this repository, so that resource correctly
-  // renders `unavailable` with no action link (see resource-manifest.ts's
-  // p1-eval entry) — the template ZIP is a real, non-placeholder resource
-  // this smoke test can exercise instead, proving the same ZIP-download
-  // mechanism without depending on unshipped content.
-  it("activates the Project 1 CVPR template ZIP at desktop and gets a real ZIP, not a 404", async () => {
+  // Targets Project 2's post-training starter pack rather than Project 1's
+  // evaluation pack or either project's CVPR report template: per
+  // docs/ASSIGNMENT_BRIEF.md's "Unresolved decisions", the evaluation packs'
+  // tutor-evaluation prompts are a teaching-team corpus dependency that does
+  // not exist in this repository, and the CVPR template is withheld pending a
+  // confirmed redistribution licence for the official class files (see
+  // resource-manifest.ts's p1-eval/p1-template entries and
+  // CVPR_UNAVAILABLE_REASON) — both correctly render `unavailable` with no
+  // action link. The post-training starter pack is a real, non-placeholder
+  // ZIP this smoke test can exercise instead, proving the same ZIP-download
+  // mechanism without depending on unshipped or withheld content.
+  it("activates the Project 2 post-training starter pack ZIP at desktop and gets a real ZIP, not a 404", async () => {
     context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, acceptDownloads: true });
     const page = await context.newPage();
-    await page.goto(`http://localhost:${port}${BASE}/assessments/project-1/`);
+    await page.goto(`http://localhost:${port}${BASE}/assessments/project-2/`);
 
-    const link = page.locator('a.resource-card__action:has-text("Download template")').first();
+    const link = page.locator('a.resource-card__action:has-text("Download starter pack")').first();
     await link.waitFor({ state: "visible" });
 
     const [download] = await Promise.all([context.waitForEvent("download"), link.click()]);

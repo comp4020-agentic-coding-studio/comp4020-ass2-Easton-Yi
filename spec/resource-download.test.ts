@@ -27,11 +27,17 @@ const briefPdfPaths = [
 ];
 
 describe("resource download contract", () => {
-  it("shows every resource as Scheduled on today's build, ahead of its 2027 release", () => {
+  it("shows every resource with a real destination as Scheduled on today's build, ahead of its 2027 release", () => {
+    // A resource without a real file/URL yet (e.g. the withheld CVPR
+    // template, an evaluation pack pending real tutor prompts, or a
+    // not-yet-provisioned GitLab/Hugging Face destination) must report
+    // Unavailable even this far ahead of its release date — see
+    // resourceState()'s destination-first check in resource-manifest.ts.
     const now = new Date();
     for (const entry of resourceManifest) {
       expect(now < entry.releaseAt, `${entry.id} release date is not in the future`).toBe(true);
-      expect(resourceState(entry, now)).toBe("scheduled");
+      const hasDestination = entry.kind === "local-download" ? Boolean(entry.localPath) : Boolean(entry.externalUrl);
+      expect(resourceState(entry, now)).toBe(hasDestination ? "scheduled" : "unavailable");
     }
   });
 

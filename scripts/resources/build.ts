@@ -157,21 +157,27 @@ pdflatex main.tex && pdflatex main.tex\`.
 Original content for this course; reuse and adapt freely within SLOP4225.
 `;
 
-buildZip(`${ROOT}/shared/cvpr-report-template.zip`, [
-  { name: "main.tex", content: CVPR_MAIN_TEX },
-  { name: "references.bib", content: CVPR_BIB },
-  { name: "README.md", content: CVPR_README },
-  {
-    name: "RESOURCE_MANIFEST.json",
-    content: manifest(
-      "CVPR-style Report Template",
-      "1.0.0",
-      ["main.tex", "references.bib", "README.md"],
-      "Original course material; free to reuse and adapt within SLOP4225.",
-      "None — this archive contains only the empty report skeleton.",
-    ),
-  },
-]);
+// Disabled: no confirmed redistribution licence for the official CVPR
+// author-kit class files (cvpr.sty/cvpr_eso.sty) — see CVPR_README above and
+// src/data/resource-manifest.ts's CVPR_UNAVAILABLE_REASON. The template
+// entries render `unavailable` (no localPath is set) rather than shipping
+// this interim substitute. Re-enable only once a real licence basis is
+// confirmed and CVPR_README/the manifest are updated to record it.
+// buildZip(`${ROOT}/shared/cvpr-report-template.zip`, [
+//   { name: "main.tex", content: CVPR_MAIN_TEX },
+//   { name: "references.bib", content: CVPR_BIB },
+//   { name: "README.md", content: CVPR_README },
+//   {
+//     name: "RESOURCE_MANIFEST.json",
+//     content: manifest(
+//       "CVPR-style Report Template",
+//       "1.0.0",
+//       ["main.tex", "references.bib", "README.md"],
+//       "Original course material; free to reuse and adapt within SLOP4225.",
+//       "None — this archive contains only the empty report skeleton.",
+//     ),
+//   },
+// ]);
 
 // --- Project 1: pre-training Colab + public evaluation pack ----------------
 
@@ -229,7 +235,13 @@ const P1_NOTEBOOK = notebook([
   },
 ]);
 
-buildZip(`${ROOT}/project-1/p1-evaluation-kit.zip`, p1EvalKitEntries());
+// Disabled: the ten real tutor-evaluation prompts are drawn from the
+// properly source-separated narrative corpus, which the teaching team has
+// not yet provisioned — see p1EvalKitEntries()'s own README pending-note and
+// src/data/resource-manifest.ts's p1-eval unavailableReason. No localPath is
+// set on that manifest entry, so the card renders `unavailable` without this
+// partial archive existing in public/.
+// buildZip(`${ROOT}/project-1/p1-evaluation-kit.zip`, p1EvalKitEntries());
 
 writeFileSync(`${ROOT}/project-1/p1-colab-starter.ipynb`, P1_NOTEBOOK);
 console.log(`✓ wrote ${ROOT}/project-1/p1-colab-starter.ipynb`);
@@ -602,7 +614,10 @@ placeholder opening strings are shipped in their place.
 }
 
 buildZip(`${ROOT}/project-2/p2-post-training-pack.zip`, p2PostTrainingPackEntries());
-buildZip(`${ROOT}/project-2/p2-evaluation-kit.zip`, p2EvalKitEntries());
+// Disabled: same tutor-prompt provisioning gap as Project 1's evaluation
+// pack — see p2EvalKitEntries()'s README pending-note and the p2-eval
+// manifest entry's unavailableReason.
+// buildZip(`${ROOT}/project-2/p2-evaluation-kit.zip`, p2EvalKitEntries());
 
 // --- Project 3: fine-tuning starter pack + track evaluation pack -----------
 
@@ -838,6 +853,10 @@ shipped in their place.
 }
 
 buildZip(`${ROOT}/project-3/p3-finetuning-pack.zip`, p3FinetuningPackEntries());
-buildZip(`${ROOT}/project-3/p3-evaluation-kit.zip`, p3EvalKitEntries());
+// Disabled: same tutor-input provisioning gap (plus Track B's unprovisioned
+// test_pilot schema) as the other two evaluation packs — see
+// p3EvalKitEntries()'s README pending-note and the p3-eval manifest entry's
+// unavailableReason.
+// buildZip(`${ROOT}/project-3/p3-evaluation-kit.zip`, p3EvalKitEntries());
 
 console.log("\nresources:build complete. Run `pnpm resources:build:briefs` after the assessment pages build to generate the three brief PDFs.");

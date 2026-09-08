@@ -43,20 +43,28 @@ export interface ResourceEntry {
 // link and a real file response, without ever making the submitted site
 // itself claim an early release. Unset in every normal build, dev server, and
 // deploy — only the smoke test's own throwaway build sets it.
-function previewNow(): Date | undefined {
+export function previewNow(): Date | undefined {
   const raw = process.env.RESOURCE_PREVIEW_NOW;
   return raw ? new Date(raw) : undefined;
 }
 
 /** Computes the four-state rendering contract from release time and whether
  *  a real destination exists yet — never a value stored directly on the
- *  entry, so a card can't drift out of sync with its own release date. */
+ *  entry, so a card can't drift out of sync with its own release date.
+ *  Existence is checked *before* the release date is consulted: a resource
+ *  with no real file/destination yet is `unavailable` regardless of how far
+ *  in the future its release date is — a future release date never promises
+ *  a resource that doesn't actually exist. Only once a real destination
+ *  exists does the release date decide `scheduled` vs. `available`/
+ *  `access-controlled`. */
 export function resourceState(entry: ResourceEntry, now: Date = previewNow() ?? new Date()): ResourceState {
+  const hasDestination =
+    entry.kind === "local-download"
+      ? Boolean(entry.localPath && existsSync(`${PUBLIC_DIR}${entry.localPath}`))
+      : Boolean(entry.externalUrl);
+  if (!hasDestination) return "unavailable";
   if (now < entry.releaseAt) return "scheduled";
-  if (entry.kind === "local-download") {
-    return entry.localPath && existsSync(`${PUBLIC_DIR}${entry.localPath}`) ? "available" : "unavailable";
-  }
-  return entry.externalUrl ? "access-controlled" : "unavailable";
+  return entry.kind === "local-download" ? "available" : "access-controlled";
 }
 
 const RELEASE = {
@@ -65,7 +73,13 @@ const RELEASE = {
   3: new Date("2027-04-26T09:00:00+10:00"),
 } as const;
 
-const CVPR_TEMPLATE = "resources/shared/cvpr-report-template.zip";
+// Withheld pending a confirmed redistribution licence for the official CVPR
+// author-kit class files (cvpr.sty/cvpr_eso.sty) — see
+// scripts/resources/build.ts's disabled build step. No localPath is set on
+// any of the three template entries below, so resourceState() correctly
+// reports them as unavailable regardless of release date.
+const CVPR_UNAVAILABLE_REASON =
+  "a confirmed redistribution licence for the official CVPR author-kit class files has not been obtained; the interim template is withheld until it is";
 
 export const resourceManifest: ResourceEntry[] = [
   // --- Project 1 ---------------------------------------------------------
@@ -142,8 +156,7 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download template",
     kind: "local-download",
     releaseAt: RELEASE[1],
-    localPath: CVPR_TEMPLATE,
-    unavailableReason: "the shared report template is published with the first project brief",
+    unavailableReason: CVPR_UNAVAILABLE_REASON,
   },
 
   // --- Project 2 ---------------------------------------------------------
@@ -220,8 +233,7 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download template",
     kind: "local-download",
     releaseAt: RELEASE[2],
-    localPath: CVPR_TEMPLATE,
-    unavailableReason: "the shared report template is published with the first project brief",
+    unavailableReason: CVPR_UNAVAILABLE_REASON,
   },
 
   // --- Project 3 ---------------------------------------------------------
@@ -298,8 +310,7 @@ export const resourceManifest: ResourceEntry[] = [
     actionLabel: "Download template",
     kind: "local-download",
     releaseAt: RELEASE[3],
-    localPath: CVPR_TEMPLATE,
-    unavailableReason: "the shared report template is published with the first project brief",
+    unavailableReason: CVPR_UNAVAILABLE_REASON,
   },
 ];
 

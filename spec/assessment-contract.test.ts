@@ -44,6 +44,16 @@ const PROJECTS = [
 
 const pageHtml = (slug: string) => readFileSync(resolve("dist/assessments", slug, "index.html"), "utf8");
 
+// A second build with the release clock pushed past every project's opening
+// date (see resource-manifest.ts's RESOURCE_PREVIEW_NOW override, and
+// package.json's "resources:preview-build" script that produces this
+// directory before vitest runs). Used here only to prove the panel's "open"
+// branch renders the right instructional copy and never fabricates a
+// personal "To be submitted"/"Submitted" status — never to claim an early
+// release on the real site.
+const previewPageHtml = (slug: string) =>
+  readFileSync(resolve("dist-preview-resources/assessments", slug, "index.html"), "utf8");
+
 // All three projects open in 2027, after today's build date, so every
 // submission panel currently and correctly renders its "before-opening"
 // copy (see SubmissionPanel.astro's `state` branch) rather than the upload
@@ -101,6 +111,32 @@ describe("assessment contract", () => {
         expect(submissionPanelSource).toMatch(/final GitLab commit SHA/);
         expect(submissionPanelSource).toMatch(/Never paste a Hugging Face access token/);
         expect(submissionPanelSource).toMatch(/\{reportFilename\}/);
+      });
+
+      it("renders the opening time on the pre-opening panel and states the deadline", () => {
+        expect(html).toMatch(/Will be available at/);
+        expect(html).toMatch(/<strong>Due:<\/strong>/);
+      });
+
+      it("collects no files or credentials directly: no upload form, no file input, anywhere on the page", () => {
+        expect(html).not.toMatch(/<form[\s>]/i);
+        expect(html).not.toMatch(/type="file"/i);
+      });
+
+      it("names the required filename, GitLab SHA, and submission-manifest.json rule, and never simulates a personal status, once the panel is open", () => {
+        const openHtml = previewPageHtml(project.slug);
+        expect(openHtml).toContain(project.reportFilename);
+        expect(openHtml).toMatch(/final GitLab commit SHA/);
+        expect(openHtml).toMatch(/submission-manifest\.json/);
+        expect(openHtml).not.toMatch(/type="file"/i);
+        expect(openHtml).not.toMatch(/<form[\s>]/i);
+        // The panel may still explain, in prose, what the *authenticated
+        // portal* shows ("...the portal itself shows `To be submitted`...
+        // and `Submitted` afterwards") — that's honest static copy, not a
+        // simulated status. What must never appear is the static page
+        // rendering either phrase itself as a status line, the way the old
+        // "before-opening" branch renders "Will be available at...".
+        expect(openHtml).not.toMatch(/class="submission-panel__status">\s*(To be submitted|Submitted)\s*</);
       });
     });
   }

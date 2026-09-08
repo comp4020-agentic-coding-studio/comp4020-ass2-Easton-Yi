@@ -1,5 +1,6 @@
 ---
 import { withBase } from "astro-theme-university/url";
+import { previewNow } from "../data/resource-manifest";
 
 interface Props {
   opens: Date;
@@ -8,8 +9,18 @@ interface Props {
 }
 
 const { opens, due, reportFilename } = Astro.props;
-const now = new Date();
-const state: "before-opening" | "to-be-submitted" = now < opens ? "before-opening" : "to-be-submitted";
+// Same build-time-only RESOURCE_PREVIEW_NOW override resource-manifest.ts
+// documents (unset in every normal build, dev server, and deploy) — reused
+// here so the download-preview build can also exercise this panel's "open"
+// copy, instead of that build always landing on "before-opening" regardless
+// of the override.
+const now = previewNow() ?? new Date();
+// The static site distinguishes only "before opening" (schedule-driven) from
+// "open" — it never renders "To be submitted" or "Submitted" itself, since
+// only the authenticated portal knows whether *this* student has an attempt
+// recorded. See docs/CONTENT_SOURCE.md's "Submission panels" section: "the
+// public site must not guess or simulate a student's submission status."
+const state: "before-opening" | "open" = now < opens ? "before-opening" : "open";
 
 const withTime = new Intl.DateTimeFormat("en-AU", {
   dateStyle: "long",
@@ -25,7 +36,6 @@ const withTime = new Intl.DateTimeFormat("en-AU", {
       <p class="submission-panel__status">Will be available at {withTime.format(opens)} AET.</p>
     ) : (
       <>
-        <p class="submission-panel__status">To be submitted</p>
         <p>
           Upload <code>{reportFilename}</code> and enter the final GitLab commit SHA. Your name and
           student ID must appear on the report's first page. The frozen commit's{" "}
@@ -45,12 +55,14 @@ const withTime = new Intl.DateTimeFormat("en-AU", {
     <span class="at-button submission-panel__pending" aria-disabled="true">
       Open SlopU Submission Portal
     </span>
-    <a class="at-button at-button--outline" href={withBase("/policies/")}>Review the submission rules</a>
+    <a class="at-button at-button--outline" href={withBase("/policies/")}>Review the submission checklist</a>
   </p>
   <p class="submission-panel__note">
     The authenticated SlopU Submission Portal is a separate system, provisioned by the teaching
     team closer to each project's opening date. This page will link to it directly once it exists;
-    it does not upload work or collect credentials.
+    it does not upload work or collect credentials. Once open, the portal itself shows{" "}
+    <code>To be submitted</code> until you have a recorded attempt, and <code>Submitted</code>{" "}
+    afterwards — this static page never guesses or simulates that personal status.
   </p>
 </section>
 

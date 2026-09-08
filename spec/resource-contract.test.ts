@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -70,11 +70,64 @@ describe("resource contract", () => {
     }
   });
 
-  it("references the shared CVPR template from all three projects but stores it once", () => {
+  it("names the same withheld CVPR template on all three projects, with no stored file yet", () => {
+    // The official CVPR author-kit class files have no confirmed
+    // redistribution licence (see resource-manifest.ts's
+    // CVPR_UNAVAILABLE_REASON and build.ts's disabled buildZip call), so all
+    // three entries deliberately carry no localPath rather than pointing at
+    // an interim substitute — resourceState() must report them unavailable
+    // regardless of release date.
+    const now = new Date();
     const templateEntries = resourceManifest.filter((e: ResourceEntry) => e.title === "CVPR Report Template");
     expect(templateEntries.length).toBe(3);
-    const paths = new Set(templateEntries.map((e) => e.localPath));
-    expect(paths.size, "the CVPR template should resolve to a single stored path").toBe(1);
+    for (const entry of templateEntries) {
+      expect(entry.localPath, `${entry.id} should have no stored file while the licence is unconfirmed`).toBeUndefined();
+      expect(resourceState(entry, now), `${entry.id} should be unavailable with no real destination`).toBe(
+        "unavailable",
+      );
+    }
+  });
+
+  it("a missing destination reports unavailable even with a future release date, overriding the schedule", () => {
+    const future = new Date("2099-01-01T00:00:00Z");
+    const withoutDestination = resourceManifest.filter(
+      (e) => !(e.kind === "local-download" ? e.localPath : e.externalUrl),
+    );
+    expect(withoutDestination.length, "expected at least one entry with no real destination yet").toBeGreaterThan(0);
+    for (const entry of withoutDestination) {
+      expect(
+        resourceState(entry, future),
+        `${entry.id} has no destination, so a far-future release date must not report scheduled/available`,
+      ).toBe("unavailable");
+    }
+  });
+
+  it("every scheduled entry's localPath genuinely exists on disk", () => {
+    const now = new Date();
+    for (const entry of resourceManifest) {
+      if (entry.kind !== "local-download") continue;
+      if (resourceState(entry, now) !== "scheduled") continue;
+      expect(entry.localPath, `${entry.id} is scheduled but has no localPath`).toBeTruthy();
+      expect(existsSync(resolve("public", entry.localPath!)), `${entry.id}'s scheduled file does not exist`).toBe(
+        true,
+      );
+    }
+  });
+
+  it("unavailable resources render no active action link on their assessment page", () => {
+    const now = new Date();
+    for (const slug of ["project-1", "project-2", "project-3"]) {
+      const html = readFileSync(resolve("dist/assessments", slug, "index.html"), "utf8");
+      const project = Number(slug.split("-")[1]) as 1 | 2 | 3;
+      for (const entry of resourcesForProject(project)) {
+        if (resourceState(entry, now) !== "unavailable") continue;
+        const cardMatch = html.match(new RegExp(`<li class="resource-card" data-resource-id="${entry.id}"[^]*?</li>`));
+        expect(cardMatch, `${entry.id} card not found on ${slug}`).toBeTruthy();
+        expect(cardMatch![0], `${entry.id} is unavailable but still renders an action link`).not.toMatch(
+          /resource-card__action/,
+        );
+      }
+    }
   });
 
   it("builds every assessment page's resource list from the shared registry, not page-level links", () => {
