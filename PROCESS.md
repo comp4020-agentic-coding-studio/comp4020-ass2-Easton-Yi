@@ -10,6 +10,10 @@ is the requirement, and its
 [word counts](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#word-counts)
 cover every deliverable.
 
+## The deployed url:
+
+https://comp4020-agentic-coding-studio.github.io/comp4020-ass2-Easton-Yi/
+
 ## What I built
 
 At this stage, I have designed and prepared the implementation-ready content foundation for **Training Language Models: A Budgeted Engineering Task**, a twelve-week, project-led course in which students build, post-train, and specialise a small language model under explicit parameter, data, and compute constraints. The idea is to teach language-model development as evidence-led engineering rather than unconstrained model chasing: three linked projects make students justify what they train, measure behaviour as well as loss, work reproducibly within a budget, and carry lessons from pre-training into post-training and specialist reasoning. The two planning documents now separate the rationale and constraints that guide implementation from the approved student-facing copy that the website can use directly.
