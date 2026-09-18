@@ -65,7 +65,7 @@ const weekGroups = [
 
 <ContentLayout
   title={courseMeta.title}
-  description={`Hands-on frontier practice for language model training & fine tuning:\nIt is a Budgeted Engineering Task.`}
+  description={`Hands-on frontier practice to perceive language model training & fine tuning:\nIt is a Budgeted Engineering Task.`}
   heroImage={heroImage}
   heroImageAlt="An original 3D rendering of a wide bank of translucent, server-rack-like panels linked by glowing gold threads, narrowing from a wide token input on the left to a compact output stack on the right."
   {...siteConfig}
@@ -357,6 +357,66 @@ const weekGroups = [
   </CardGrid>
 </ContentLayout>
 
+<script>
+  // ContentLayout renders `description` as plain text inside `.lead`, and
+  // the course label (`p.course-label` below) is likewise plain text ---
+  // neither admits markup, so the per-letter flicker is built here by
+  // re-splitting each element's already-rendered text into spans, client-side,
+  // rather than by changing the theme component. Runs on first load and again
+  // after every ClientRouter view-transition navigation (`astro:page-load`
+  // fires for both), since a module script only executes once per swap
+  // otherwise.
+  function flickerize(el: HTMLElement | null) {
+    if (!el || el.dataset.flickerReady) return;
+    el.dataset.flickerReady = "true";
+
+    const text = el.textContent ?? "";
+
+    const accessibleText = document.createElement("span");
+    accessibleText.className = "visually-hidden";
+    accessibleText.textContent = text;
+
+    const decorative = document.createElement("span");
+    decorative.setAttribute("aria-hidden", "true");
+
+    // Split into words (keeping the space/newline separators) rather than
+    // appending every letter span as a direct sibling --- adjacent
+    // inline-block letters with nothing but element boundaries between them
+    // are each their own break opportunity to Chromium, which otherwise
+    // wraps mid-word at narrow viewports. Grouping a word's letters inside
+    // one inline-block span keeps the word atomic, the same way a plain text
+    // word never breaks internally.
+    for (const segment of text.split(/(\n| )/)) {
+      if (segment === "") continue;
+      if (segment === "\n" || segment === " ") {
+        decorative.append(document.createTextNode(segment));
+        continue;
+      }
+      const word = document.createElement("span");
+      word.className = "flicker-word";
+      for (const char of segment) {
+        const letter = document.createElement("span");
+        letter.className = "flicker-letter";
+        letter.textContent = char;
+        letter.style.setProperty("--flicker-delay", `${(Math.random() * 4).toFixed(2)}s`);
+        letter.style.setProperty("--flicker-duration", `${(2.2 + Math.random() * 2.2).toFixed(2)}s`);
+        word.append(letter);
+      }
+      decorative.append(word);
+    }
+
+    el.replaceChildren(accessibleText, decorative);
+  }
+
+  function flickerizeAll() {
+    flickerize(document.querySelector<HTMLParagraphElement>("p.lead"));
+    flickerize(document.querySelector<HTMLParagraphElement>("p.course-label"));
+  }
+
+  flickerizeAll();
+  document.addEventListener("astro:page-load", flickerizeAll);
+</script>
+
 <style>
   /* ContentLayout renders `description` as `.lead`, a plain <p> whose
      default white-space collapses the newline in the string above --- this
@@ -366,10 +426,135 @@ const weekGroups = [
     white-space: pre-line;
   }
 
+  /* Stage-light flicker: each letter is a separate inline-block so its own
+     randomized delay/duration (set inline by the script) can drift in and
+     out of phase with its neighbours, giving an arbitrary, never-synchronised
+     blink rather than a uniform pulse. Gated on prefers-reduced-motion so the
+     text itself --- unchanged by this rule --- is all a reduced-motion user
+     ever sees; the JS still runs for them, it just never visibly animates. */
+  :global(.lead .flicker-word) {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.lead .flicker-letter) {
+      display: inline-block;
+      animation: lead-flicker-light var(--flicker-duration, 3s) ease-in-out var(--flicker-delay, 0s) infinite;
+    }
+
+    /* Dark mode swaps to a keyframe set that also animates text-shadow (see
+       below) --- kept as a separate @keyframes rather than a shared one with
+       light-dark() shadow colors, because animating a shadow list between
+       "none" (light mode's peak) and a populated list (dark mode's peak) asks
+       the browser to interpolate lists of different lengths, which several
+       engines resolve with a discrete snap partway *through* the transition
+       instead of exactly at the keyframe boundary --- a stray in-between
+       frame can then paint a half-applied blur even though the value at the
+       keyframe stop itself is clean. Giving each mode its own keyframes means
+       light mode's never mentions text-shadow at all, so there's nothing for
+       any engine to interpolate and no smear is possible regardless of how
+       it handles mismatched shadow lists. */
+    :global([data-theme="dark"] .lead .flicker-letter) {
+      animation-name: lead-flicker-dark;
+    }
+  }
+
+  @keyframes lead-flicker-light {
+    0%,
+    40%,
+    100% {
+      color: var(--at-text-muted);
+      font-weight: 400;
+    }
+    50% {
+      color: var(--at-text);
+      font-weight: 700;
+    }
+  }
+
+  @keyframes lead-flicker-dark {
+    0%,
+    40%,
+    100% {
+      color: var(--at-text-muted);
+      text-shadow: none;
+      font-weight: 400;
+    }
+    50% {
+      color: var(--at-text);
+      /* The glow reads as a lit stage light against dark mode's near-black
+         --at-bg; kept dark-mode-only per the note above. */
+      text-shadow:
+        0 0 6px var(--at-text),
+        0 0 18px var(--at-primary),
+        0 0 32px var(--at-primary);
+      font-weight: 700;
+    }
+  }
+
   .course-label {
     margin-block: 0 1rem;
     color: var(--at-text-secondary);
     font-weight: 600;
+  }
+
+  /* Same per-letter flicker mechanism and same animated properties as
+     .lead above (shared flicker-word / flicker-letter markup, color +
+     font-weight, plus a dark-mode-only text-shadow, split across light/dark
+     keyframes for the same reason .lead's are split --- see the note on
+     lead-flicker-dark) --- just at lower contrast: the peak font-weight and
+     the dark-mode glow are both dialled back from .lead's, instead of
+     dropping those dimensions entirely (an earlier version here animated
+     color only, which measured as running correctly but read as static at
+     a glance --- weight and glow are what make a flicker actually visible,
+     not just the color swing). */
+  :global(.course-label .flicker-word) {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.course-label .flicker-letter) {
+      display: inline-block;
+      animation: course-label-flicker-light var(--flicker-duration, 3s) ease-in-out var(--flicker-delay, 0s) infinite;
+    }
+
+    :global([data-theme="dark"] .course-label .flicker-letter) {
+      animation-name: course-label-flicker-dark;
+    }
+  }
+
+  @keyframes course-label-flicker-light {
+    0%,
+    40%,
+    100% {
+      color: var(--at-text-muted);
+      font-weight: 400;
+    }
+    50% {
+      /* Further back from .lead's full-opacity peak --- 65% of the way
+         from muted to solid text now, not 85%. */
+      color: color-mix(in oklab, var(--at-text) 65%, var(--at-text-muted));
+      font-weight: 500;
+    }
+  }
+
+  @keyframes course-label-flicker-dark {
+    0%,
+    40%,
+    100% {
+      color: var(--at-text-muted);
+      text-shadow: none;
+      font-weight: 400;
+    }
+    50% {
+      color: color-mix(in oklab, var(--at-text) 65%, var(--at-text-muted));
+      /* Smaller blur radii and lower glow opacity again. */
+      text-shadow:
+        0 0 2px var(--at-text),
+        0 0 5px rgb(from var(--at-primary) r g b / 30%),
+        0 0 9px rgb(from var(--at-primary) r g b / 30%);
+      font-weight: 500;
+    }
   }
 
   .course-tags {
