@@ -4,16 +4,21 @@ import { getPublishedCollection } from "astro-course-university/content";
 import RelatedContent from "astro-course-university/components/RelatedContent.astro";
 import SpecList from "astro-course-university/components/SpecList.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
+import SequenceNav from "../../components/SequenceNav.astro";
 import TeachingTeam from "../../components/TeachingTeam.astro";
 import { formatCourseDate } from "../../lib/dates";
 import { graphCollections, siteConfig } from "../../site-config";
 
 export async function getStaticPaths() {
   const sessions = await getPublishedCollection("sessions");
-  return sessions.map((session) => ({ params: { slug: session.id }, props: { session } }));
+  const sorted = sessions.slice().sort((a, b) => a.data.week - b.data.week);
+  return sorted.map((session, i) => ({
+    params: { slug: session.id },
+    props: { session, prevSession: sorted[i - 1], nextSession: sorted[i + 1] },
+  }));
 }
 
-const { session } = Astro.props;
+const { session, prevSession, nextSession } = Astro.props;
 const { Content } = await render(session);
 
 const sessionTypeLabels = {
@@ -21,6 +26,9 @@ const sessionTypeLabels = {
   lab: "Formal lab",
   clinic: "Drop-in clinic",
 } as const;
+
+const prevLink = prevSession && { href: `/sessions/${prevSession.id}/`, label: `Week ${prevSession.data.week}` };
+const nextLink = nextSession && { href: `/sessions/${nextSession.id}/`, label: `Week ${nextSession.data.week}` };
 ---
 
 <ContentLayout
@@ -39,4 +47,5 @@ const sessionTypeLabels = {
   </SpecList>
   <TeachingTeam teachers={session.data.teachers} />
   <RelatedContent entry={session} collections={graphCollections} />
+  <SequenceNav prev={prevLink} next={nextLink} ariaLabel="Week navigation" />
 </ContentLayout>

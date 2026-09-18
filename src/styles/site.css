@@ -38,3 +38,18 @@
     padding-inline: 0.3rem;
   }
 }
+
+/* The site brand is the "Slop / University" wordmark baked into
+   slop-horizontal-gold-black.svg (crest + lettering as one vector graphic,
+   not text), rendered via .at-nav-logo at the theme's default 2.5rem height.
+   That, plus --at-font-size-sm nav links, read oversized against the
+   six-link row at this content width --- shrunk per course-designer
+   request, referencing the more compact nav sizing on the
+   comp4020-ass2-am167 cohort site. */
+.at-nav-logo {
+  height: 2rem;
+}
+
+.at-nav-links a {
+  font-size: 0.8125rem;
+}

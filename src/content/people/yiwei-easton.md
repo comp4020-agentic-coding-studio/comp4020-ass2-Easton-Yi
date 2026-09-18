@@ -5,6 +5,8 @@ description:
   learning, empirical evaluation, and resource-aware systems.
 affiliation: Slop University School of Invented Disciplines
 role: convenor
+photo: ./images/yiwei-easton.png
+photoAlt: An AI-generated illustrated avatar portrait of Dr Yiwei Easton.
 email: llm-training@slopu.edu.au
 contact: General questions through the course forum or llm-training@slopu.edu.au; personal or confidential matters to yiwei.easton@slopu.edu.au.
 ---

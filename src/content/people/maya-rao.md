@@ -6,6 +6,8 @@ description:
   reproducible evaluation.
 affiliation: Slop University School of Invented Disciplines
 role: tutor
+photo: ./images/maya-rao.png
+photoAlt: A portrait photo of Maya Rao.
 email: maya.rao@slopu.edu.au
 contact: The Technical help area of the course forum, or maya.rao@slopu.edu.au for an individual access problem.
 ---

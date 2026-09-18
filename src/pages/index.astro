@@ -1,15 +1,31 @@
 ---
+import { getImage } from "astro:assets";
 import Card from "astro-theme-university/components/Card.astro";
 import CardGrid from "astro-theme-university/components/CardGrid.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import { withBase } from "astro-theme-university/url";
-import heroImage from "../assets/images/hero-home.avif";
+import PeopleGrid from "../components/PeopleGrid.astro";
+import heroImage from "../assets/images/hero-home-threads.png";
+import bgCircuitBoard from "../assets/images/bg-circuit-board.jpg";
+import bgServerRoom from "../assets/images/bg-server-room.jpg";
+import bgPcbMacro from "../assets/images/bg-pcb-macro.jpg";
 import { courseMeta } from "../course-config";
 import { siteConfig } from "../site-config";
 import { getWeeklySchedule } from "../data/weekly-schedule";
 import { formatCourseDeadline, formatWeekBeginning } from "../lib/dates";
 
 const { weeks, projects } = await getWeeklySchedule();
+
+// One decorative photo per project stage (Unsplash License: free to use, no
+// attribution required), reused across both the three stage cards and their
+// twelve associated week cards. Resized here via getImage rather than a raw
+// src="..." import so the same 1400px-wide originals aren't shipped at full
+// size for what's only ever shown as a low-opacity card backdrop.
+const stageBackgrounds = {
+  1: await getImage({ src: bgCircuitBoard, width: 800, format: "webp" }),
+  2: await getImage({ src: bgServerRoom, width: 800, format: "webp" }),
+  3: await getImage({ src: bgPcbMacro, width: 800, format: "webp" }),
+} as const;
 
 // Home-only editorial framing for each project stage, approved verbatim from
 // the "The course in three stages" section of docs/CONTENT_SOURCE.md. Weekly
@@ -49,9 +65,9 @@ const weekGroups = [
 
 <ContentLayout
   title={courseMeta.title}
-  description="Frontier practice through budgeted 32M-scale experiments."
+  description={`Hands-on frontier practice for language model training & fine tuning:\nIt is a Budgeted Engineering Task.`}
   heroImage={heroImage}
-  heroImageAlt="An original schematic diagram: a stack of token blocks feeds into a 32M-parameter model box, which produces a bar chart of next-token probabilities, above the course code SLOP4225 and its title."
+  heroImageAlt="An original 3D rendering of a wide bank of translucent, server-rack-like panels linked by glowing gold threads, narrowing from a wide token input on the left to a compact output stack on the right."
   {...siteConfig}
 >
   <p class="course-label">{courseMeta.code} · {courseMeta.session}, {courseMeta.year}</p>
@@ -108,20 +124,28 @@ const weekGroups = [
   </div>
 
   <h2>The course in three stages</h2>
-  <CardGrid columns={3}>
-    {
-      projects.map((project) => (
-        <Card title={stageCopy[project.project].heading} href={project.href} headingLevel="h3">
-          <p>{stageCopy[project.project].purpose}</p>
-          <p>
-            <strong>Project {project.project}:</strong> {project.title.replace(/^Project \d+ — /, "")}
-            {" "}· Weeks {project.weeks[0]}–{project.weeks[1]} · {project.weight}% · due{" "}
-            {formatCourseDeadline(project.due)}
-          </p>
-        </Card>
-      ))
-    }
-  </CardGrid>
+  <div
+    style={{
+      "--stage1BgImage": `url(${stageBackgrounds[1].src})`,
+      "--stage2BgImage": `url(${stageBackgrounds[2].src})`,
+      "--stage3BgImage": `url(${stageBackgrounds[3].src})`,
+    }}
+  >
+    <CardGrid columns={3}>
+      {
+        projects.map((project) => (
+          <Card title={stageCopy[project.project].heading} href={project.href} headingLevel="h3">
+            <p>{stageCopy[project.project].purpose}</p>
+            <p>
+              <strong>Project {project.project}:</strong> {project.title.replace(/^Project \d+ — /, "")}
+              {" "}· Weeks {project.weeks[0]}–{project.weeks[1]} · {project.weight}% · due{" "}
+              {formatCourseDeadline(project.due)}
+            </p>
+          </Card>
+        ))
+      }
+    </CardGrid>
+  </div>
 
   <p class="hero-ctas">
     <a class="at-button" href={withBase("/lectures/week-01/")}>Start with Week 1</a>
@@ -139,7 +163,7 @@ const weekGroups = [
     weekGroups.map((group) => (
       <>
         <h3>{group.label}</h3>
-        <div class="week-grid">
+        <div class="week-grid" style={{ "--card-bg-image": `url(${stageBackgrounds[group.stage].src})` }}>
           {group.weeks.map((entry) => (
             <>
               <article class="week-card">
@@ -267,6 +291,18 @@ const weekGroups = [
     </table>
   </div>
 
+  <h2>Meet your teaching team</h2>
+  <p>
+    Three roles carry deliberately different responsibilities: the convenor
+    for course concepts and assessment design, a teaching fellow for
+    implementation questions, and a compute steward for platform and budget
+    issues. Open a card for a teacher's full profile and contact details.
+  </p>
+  <PeopleGrid />
+  <p class="hero-ctas">
+    <a class="at-button at-button--outline" href={withBase("/people/")}>View the full People page</a>
+  </p>
+
   <h2>How the course works</h2>
   <ul>
     <li><strong>Lectures</strong> connect mechanisms, public evidence, and the decisions students must make at 32M scale.</li>
@@ -322,6 +358,14 @@ const weekGroups = [
 </ContentLayout>
 
 <style>
+  /* ContentLayout renders `description` as `.lead`, a plain <p> whose
+     default white-space collapses the newline in the string above --- this
+     page's description is the only one on the site meant to render as two
+     lines, so pre-line is scoped here rather than on the shared .lead rule. */
+  :global(.lead) {
+    white-space: pre-line;
+  }
+
   .course-label {
     margin-block: 0 1rem;
     color: var(--at-text-secondary);
@@ -392,6 +436,8 @@ const weekGroups = [
 
   .week-card h4 {
     margin-block-start: 0;
+    color: #fff;
+    text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
   }
 
   .week-card p {
@@ -409,24 +455,81 @@ const weekGroups = [
     border-radius: 0.5rem;
   }
 
-  /* hero-home.avif bakes in a retired working subtitle ("Training Language
-     Models: A Budgeted Engineering Task") as part of the illustration itself
-     (not DOM text; the "SLOP4225" caption above it has been erased from the
-     asset). The theme's hero band is very wide and short relative to the
-     16:9 source, so object-fit: cover's default centred position crops that
-     region out of view. object-position: 20% 43% clears the vertical crop
-     window across widths from 390px to 1920px (checked in 20px steps
-     through the 1400-1920px band, where the hero's height itself jumps
-     partway through --- the <h1> box nearly fills the hero there, leaving
-     almost no clearance) without ever letting the subtitle's bottom edge
-     collide with the title's first glyph row, and with a comfortable margin
-     above the single razor-thin point (39%) that a strict never-collide scan
-     found for that band. Narrower breakpoints have much wider tolerance;
-     this value is only load-bearing in the 1400-1920px range. Matched by the
-     resolved image src rather than the theme's shared .at-hero-image class,
-     so this doesn't shift the People-page or 404 hero photos, which reuse
-     that class too. */
-  :global(img[src*="hero-home"].at-hero-image) {
-    object-position: 20% 43%;
+  /* A light, decorative photo behind each week card's text, one per project
+     stage (set as the --card-bg-image custom property on the surrounding
+     .week-grid in the markup above, which this inherits down to every
+     .week-card in that group --- no per-card prop needed). .week-card gets
+     its own stacking context via position: relative so the pseudo-element's
+     z-index: -1 paints it above the card's own background-color but below
+     the in-flow heading/paragraph text, the same ordering already relied on
+     for the theme's own .at-card below. Kept at a moderate opacity so the
+     photo is clearly visible as a backdrop without ever competing with the
+     card's own text --- checked against the automated contrast check in
+     `pnpm check`. */
+  .week-card {
+    position: relative;
+    overflow: hidden;
   }
+
+  .week-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--card-bg-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.28;
+  }
+
+  /* Same treatment for the three project-stage cards above, one photo per
+     stage. Card.astro forwards only `href` onto its rendered <a
+     class="at-card">, not class/style/data-*, so the stage is identified by
+     matching the stable, base-path-safe assessment slug at the end of the
+     href (see src/data/weekly-schedule.ts's `href: `/assessments/${id}/``)
+     rather than DOM position or an added prop. :global() is required here
+     for the same reason as the hero-image rule below: .at-card is rendered
+     inside the imported Card component, not authored in this file's own
+     template, so Astro's per-file style scoping never reaches it.
+     The --stageNBgImage values come from a plain inline style attribute on
+     the <div> this file wraps around that <CardGrid> (not a scoped <style>
+     define:vars, which only ever lands on the first real element *inside*
+     this file's own template --- a sibling of the CardGrid here, not an
+     ancestor, so it wouldn't inherit into the grid's Card-rendered
+     children). A genuine ancestor div makes the custom-property inheritance
+     that :global() then reads actually work. */
+  :global(.at-card[href$="/assessments/project-1/"]) {
+    position: relative;
+    overflow: hidden;
+  }
+  :global(.at-card[href$="/assessments/project-2/"]) {
+    position: relative;
+    overflow: hidden;
+  }
+  :global(.at-card[href$="/assessments/project-3/"]) {
+    position: relative;
+    overflow: hidden;
+  }
+
+  :global(.at-card[href$="/assessments/project-1/"])::before,
+  :global(.at-card[href$="/assessments/project-2/"])::before,
+  :global(.at-card[href$="/assessments/project-3/"])::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.28;
+  }
+  :global(.at-card[href$="/assessments/project-1/"])::before {
+    background-image: var(--stage1BgImage);
+  }
+  :global(.at-card[href$="/assessments/project-2/"])::before {
+    background-image: var(--stage2BgImage);
+  }
+  :global(.at-card[href$="/assessments/project-3/"])::before {
+    background-image: var(--stage3BgImage);
+  }
+
 </style>

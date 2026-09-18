@@ -1,0 +1,48 @@
+---
+// Sequential "previous/next" navigation between adjacent entries in a
+// content collection (week-by-week lectures/sessions, or the three
+// projects), so a reader moving through the course doesn't have to return to
+// the homepage or schedule and re-navigate for each step. Reuses the
+// theme's own `.at-pagination`/`.at-pagination-link` classes (see
+// astro-theme-university/styles/components.css) --- built for Astro's
+// `paginate()` list pages, but the classes are just a space-between flex row
+// with a divider and gold underlined links, which is exactly this layout
+// too, so a bespoke class set was skipped in favour of the theme's existing
+// one.
+import { withBase } from "astro-theme-university/url";
+
+export interface SequenceLink {
+  href: string;
+  label: string;
+}
+
+export interface Props {
+  prev?: SequenceLink;
+  next?: SequenceLink;
+  /** Overrides the default aria-label, e.g. "Week navigation". */
+  ariaLabel?: string;
+}
+
+const { prev, next, ariaLabel = "Sequence navigation" } = Astro.props;
+---
+
+<nav class="at-pagination" aria-label={ariaLabel}>
+  {
+    prev ? (
+      <a href={withBase(prev.href)} class="at-pagination-link">
+        &larr; {prev.label}
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  {
+    next ? (
+      <a href={withBase(next.href)} class="at-pagination-link">
+        {next.label} &rarr;
+      </a>
+    ) : (
+      <span />
+    )
+  }
+</nav>

@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { render } from "astro:content";
 import { getPublishedCollection } from "astro-course-university/content";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
@@ -31,13 +32,19 @@ const photoAlt = typeof rawPhotoAlt === "string" ? rawPhotoAlt : "";
 const description = person.data.description;
 ---
 
-<ContentLayout
-  title={person.data.title}
-  description={description}
-  heroImage={person.data.photo ?? undefined}
-  heroImageAlt={photoAlt}
-  {...siteConfig}
->
+<ContentLayout title={person.data.title} description={description} {...siteConfig}>
+  {
+    person.data.photo && (
+      <Image
+        src={person.data.photo}
+        alt={photoAlt}
+        width={192}
+        height={192}
+        densities={[1, 2]}
+        class="person-avatar"
+      />
+    )
+  }
   <dl>
     {roleLabel && (
       <>
@@ -73,3 +80,25 @@ const description = person.data.description;
 
   <Content />
 </ContentLayout>
+
+<style>
+  /* The people collection's `photo` is a portrait headshot, not a wide
+     banner --- ContentLayout's Hero is built for the latter (a full-bleed,
+     very wide/short band; see the object-position tuning on hero-home in
+     src/pages/index.astro) and crops a square headshot down to an unusable
+     close-up of the nose and mouth. Rendered as a plain, circular in-body
+     image instead --- the same treatment PeopleGrid.astro uses for the card
+     thumbnail on /people/, so a person's photo looks the same avatar shape
+     everywhere it appears. */
+  .person-avatar {
+    display: block;
+    width: 12rem;
+    height: 12rem;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-block-end: var(--at-spacing-lg);
+    outline: 1px solid rgb(0 0 0 / 8%);
+    outline-offset: -1px;
+  }
+</style>

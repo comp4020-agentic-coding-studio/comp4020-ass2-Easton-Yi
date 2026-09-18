@@ -38,23 +38,47 @@ const visible = people.sort((a, b) => {
 });
 ---
 
-<CardGrid columns={2}>
-  {
-    visible.map((person) => (
-      <Card
-        headingLevel="h2"
-        title={person.data.title}
-        href={`/people/${person.id}/`}
-        image={person.data.photo ?? undefined}
-        imageAlt={photoAlt(person.data)}
-      >
-        {person.data.role && roleLabels[person.data.role] && (
-          <p>
-            <small>{roleLabels[person.data.role]}</small>
-          </p>
-        )}
-        <p>{person.data.description}</p>
-      </Card>
-    ))
+<div class="people-grid">
+  <CardGrid columns={2}>
+    {
+      visible.map((person) => (
+        <Card
+          headingLevel="h2"
+          title={person.data.title}
+          href={`/people/${person.id}/`}
+          image={person.data.photo ?? undefined}
+          imageAlt={photoAlt(person.data)}
+        >
+          {person.data.role && roleLabels[person.data.role] && (
+            <p>
+              <small>{roleLabels[person.data.role]}</small>
+            </p>
+          )}
+          <p>{person.data.description}</p>
+        </Card>
+      ))
+    }
+  </CardGrid>
+</div>
+
+<style>
+  /* Card/CardGrid are shared theme components used all over the site for
+     rectangular 16:9 thumbnails (project/week cards, etc.), so this can't be
+     a change to their own CSS. Scoped through the .people-grid DOM ancestor
+     (a real wrapper element, not an Astro `:global()` leak) so a person's
+     headshot renders as a round avatar here without touching any other
+     Card usage's image treatment. */
+  :global(.people-grid .at-card-image-frame) {
+    display: flex;
+    justify-content: center;
+    padding-block-start: var(--at-spacing-lg);
+    line-height: normal;
   }
-</CardGrid>
+
+  :global(.people-grid .at-card-image) {
+    width: 4rem;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    outline-width: 2px;
+  }
+</style>

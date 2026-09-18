@@ -7,20 +7,30 @@ import Callout from "astro-theme-university/components/Callout.astro";
 import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import MarkingModel from "../../components/MarkingModel.astro";
 import ResourceList from "../../components/ResourceList.astro";
+import SequenceNav from "../../components/SequenceNav.astro";
 import SubmissionPanel from "../../components/SubmissionPanel.astro";
 import { formatCourseDate } from "../../lib/dates";
 import { graphCollections, siteConfig } from "../../site-config";
 
 export async function getStaticPaths() {
   const assessments = await getPublishedCollection("assessments");
-  return assessments.map((assessment) => ({
+  const sorted = assessments.slice().sort((a, b) => a.data.project - b.data.project);
+  return sorted.map((assessment, i) => ({
     params: { slug: assessment.id },
-    props: { assessment },
+    props: { assessment, prevAssessment: sorted[i - 1], nextAssessment: sorted[i + 1] },
   }));
 }
 
-const { assessment } = Astro.props;
+const { assessment, prevAssessment, nextAssessment } = Astro.props;
 const { Content } = await render(assessment);
+const prevLink = prevAssessment && {
+  href: `/assessments/${prevAssessment.id}/`,
+  label: `Project ${prevAssessment.data.project}`,
+};
+const nextLink = nextAssessment && {
+  href: `/assessments/${nextAssessment.id}/`,
+  label: `Project ${nextAssessment.data.project}`,
+};
 ---
 
 <ContentLayout
@@ -52,6 +62,7 @@ const { Content } = await render(assessment);
     reportFilename={assessment.data.reportFilename}
   />
   <RelatedContent entry={assessment} collections={graphCollections} />
+  <SequenceNav prev={prevLink} next={nextLink} ariaLabel="Project navigation" />
 </ContentLayout>
 
 <style is:global>
@@ -65,7 +76,8 @@ const { Content } = await render(assessment);
     .at-hero,
     .visually-hidden,
     .submission-panel__actions,
-    .submission-panel__note {
+    .submission-panel__note,
+    .at-pagination {
       display: none !important;
     }
   }

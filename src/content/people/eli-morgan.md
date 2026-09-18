@@ -5,6 +5,8 @@ description:
   environment, from compute accounting to platform incidents.
 affiliation: Slop University School of Invented Disciplines
 role: compute-steward
+photo: ./images/eli-morgan.png
+photoAlt: A portrait photo of Eli Morgan.
 email: compute@slopu.edu.au
 contact: compute@slopu.edu.au. Cohort-wide incidents and resolutions are posted in the course status area.
 ---
