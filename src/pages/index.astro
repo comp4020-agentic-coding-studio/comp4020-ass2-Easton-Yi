@@ -6,9 +6,9 @@ import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import { withBase } from "astro-theme-university/url";
 import PeopleGrid from "../components/PeopleGrid.astro";
 import heroImage from "../assets/images/hero-home-threads.png";
-import bgCircuitBoard from "../assets/images/bg-circuit-board.jpg";
+import bgDatacenterAisle from "../assets/images/bg-datacenter-aisle.jpg";
 import bgServerRoom from "../assets/images/bg-server-room.jpg";
-import bgPcbMacro from "../assets/images/bg-pcb-macro.jpg";
+import bgCoolingCluster from "../assets/images/bg-cooling-cluster.jpg";
 import { courseMeta } from "../course-config";
 import { siteConfig } from "../site-config";
 import { getWeeklySchedule } from "../data/weekly-schedule";
@@ -22,9 +22,9 @@ const { weeks, projects } = await getWeeklySchedule();
 // src="..." import so the same 1400px-wide originals aren't shipped at full
 // size for what's only ever shown as a low-opacity card backdrop.
 const stageBackgrounds = {
-  1: await getImage({ src: bgCircuitBoard, width: 800, format: "webp" }),
+  1: await getImage({ src: bgDatacenterAisle, width: 800, format: "webp" }),
   2: await getImage({ src: bgServerRoom, width: 800, format: "webp" }),
-  3: await getImage({ src: bgPcbMacro, width: 800, format: "webp" }),
+  3: await getImage({ src: bgCoolingCluster, width: 800, format: "webp" }),
 } as const;
 
 // Home-only editorial framing for each project stage, approved verbatim from
